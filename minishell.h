@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/03 20:09:57 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/08 14:52:42 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdbool.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #define COLOR_RESET "\x1b[0m"
@@ -30,10 +31,16 @@ typedef struct command_node // start line cmd
 
 typedef enum tokenize
 {
-	SPACE,
-	STRING,
-	PIPE,
-	DOUBEL_Q,
+	SPACE,			//" "
+	STRING,			//"belguabd"
+	PIPE,			//"|"
+	DOUBLE_Q,		//""
+	SINGLE_Q,		//''
+	REDIRECT_IN,	// <
+	REDIRECT_OUT,	// >
+	HEREDOC,		// <<
+	REDIRECT_APPEND, // >>
+	VAR//variable
 } t_token;
 
 typedef struct token_node
@@ -56,6 +63,8 @@ typedef struct s_vars
 char **ft_split(char const *str, char c);
 size_t ft_strlen(const char *s);
 
-
-char	*ft_strdup(const char *s1);
+char *ft_strdup(const char *s1);
+// char *ft_strdup(const char *cmd, int start, int end);
+/*libft*/
+char *ft_substr(char const *s, unsigned int start, size_t len);
 #endif

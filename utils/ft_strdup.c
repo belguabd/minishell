@@ -6,12 +6,27 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 01:13:58 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/03 17:50:09 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/04 04:59:21 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+// char *ft_strdup(const char *cmd, int start, int end)
+// {
+// 	int i;
+// 	char *new;
+// 	int len;
+// 	len = end - start;
+// 	new = (char *)malloc((len + 1) * sizeof(char));
+// 	if (!new)
+// 		return (NULL);
+// 	i = 0;
+// 	while (start < end)
+// 		new[i++] = cmd[start++];
+// 	new[i] = '\0';
+// 	return (new);
+// }
 char	*ft_strdup(const char *s1)
 {
 	int		len;

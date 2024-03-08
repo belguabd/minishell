@@ -1,14 +1,11 @@
 NAME = minishell
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
 #-------folder-------#
 UTILS = utils
 SRC = minishell.c \
-	$(UTILS)/ft_split.c $(UTILS)/ft_strlen.c $(UTILS)/ft_strdup.c
-
-
-
-
+	$(UTILS)/ft_split.c $(UTILS)/ft_strlen.c $(UTILS)/ft_strdup.c $(UTILS)/ft_substr.c
+	
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)
