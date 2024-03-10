@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/08 14:52:42 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/10 08:23:09 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,24 +31,26 @@ typedef struct command_node // start line cmd
 
 typedef enum tokenize
 {
-	SPACE,			//" "
-	STRING,			//"belguabd"
-	PIPE,			//"|"
-	DOUBLE_Q,		//""
-	SINGLE_Q,		//''
-	REDIRECT_IN,	// <
-	REDIRECT_OUT,	// >
-	HEREDOC,		// <<
+	SPACE,			 //" "
+	STRING,			 //"belguabd"
+	PIPE,			 //"|"
+	DOUBLE_Q,		 //""
+	SINGLE_Q,		 //''
+	REDIRECT_IN,	 // <
+	REDIRECT_OUT,	 // >
+	HEREDOC,		 // <<
 	REDIRECT_APPEND, // >>
-	VAR//variable
+	VAR,			 // variable
+	UNKNOWN,		 // unknown or other token
 } t_token;
 
 typedef struct token_node
 {
-	t_token type;
-	char *value;
-	struct token_node *next;
-} t_tkn_node;
+    t_token type;
+    char *value;
+    struct token_node *next;
+} token_node;
+
 
 typedef struct s_vars
 {
