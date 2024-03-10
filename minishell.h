@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/10 08:23:09 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/10 12:02:38 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,6 @@ char *ft_strdup(const char *s1);
 // char *ft_strdup(const char *cmd, int start, int end);
 /*libft*/
 char *ft_substr(char const *s, unsigned int start, size_t len);
+char	*ft_strjoin(char const *s1, char const *s2);
+void	ft_putendl_fd(char *s, int fd);
 #endif

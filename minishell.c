@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/10 08:48:11 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/10 15:30:45 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void lstadd_back(token_node **lst, token_node *new)
 	cur->next = new;
 }
 
-token_node *tokenization(char *cmd, token_node **head)
+token_node *tokenization(const char *cmd, token_node **head)
 {
 	size_t i = 0;
 	size_t start = 0;
@@ -155,52 +155,144 @@ token_node *tokenization(char *cmd, token_node **head)
 	}
 	return (*head);
 }
-int ft_strcmp(char *str1, char *str2)
+int ft_strcmp(const char *str1, const char *str2)
 {
 	int i = 0;
 	while (str1[i] && str2[i] && str1[i] == str2[i])
 		i++;
 	return (str1[i] - str2[i]);
 }
-void handle_errors(token_node *head)
+void handle_errors_cmd(const char *cmd)
 {
-	token_node *curr = head;
-	if (!ft_strcmp(head->value, "|")) // starting with pipe generates error : | echo coucou
+	int i = 0;
+	int start = 0;
+	int end = 0;
+	char *buffer;
+	buffer = NULL;
+	char *str;
+
+	while (cmd[i])
 	{
-		write(2, "Error: Unexpected pipe symbol '|'\n", 34);
-		exit(EXIT_FAILURE);
+		while (cmd[i] == ' ' || (cmd[i] >= 9 && cmd[i] <= 13))
+			i++;
+		start = i;
+		while (cmd[i] && cmd[i] != ' ' && !(cmd[i] >= 9 && cmd[i] <= 13))
+			i++;
+		end = i;
+		str = ft_substr(cmd, start, end - start);
+		if (!buffer)
+			buffer = ft_strdup("");
+		char *tmp = buffer;
+		buffer = ft_strjoin(buffer, str);
+		free(tmp);
+		free(str);
 	}
-	while (curr)
+	// printf("%s\n", buffer);
+	// exit(0);
+
+	i = 0;
+	while (buffer[i])
 	{
-		if (ft_strcmp(curr->value, ">"))
+		if (buffer[i] == '>' && buffer[i + 1] == '<')
 		{
-			while ()
-			{
-					
-			}
-			
+			printf("Error: syntax error\n");
+			return;
 		}
-		curr = curr->next;
+		if (buffer[i] == '<' || buffer[i] == '>')
+		{
+			if (buffer[i + 1] == '<' || buffer[i + 1] == '>')
+				i++;
+			if (buffer[i + 1] == '>' || buffer[i + 1] == '<' || buffer[i + 1] == '|')
+			{
+				printf("Error: syntax error\n");
+				return;
+			}
+		}
+		i++;
 	}
+
+	
+
+	i = 0;
+	if (buffer[i] == '|')
+	{ // starting with pipe generates error : | echo coucou
+		ft_putendl_fd("Error: syntax error near unexpected token `|'", 2);
+		return;
+	}
+	i = 0;
+	while (buffer[i])
+	{
+		if (buffer[i] == '|')
+		{
+			if (buffer[i + 1] == '\0')
+			{
+				ft_putendl_fd("Error: syntax error near unexpected token `newline'", 2);
+				return;
+			}
+		}
+		i++;
+	}
+
+	i = 0;
+
+	while (buffer[i])
+	{
+		if (buffer[i] == '|')
+		{
+			if (buffer[i + 1] == '|')
+			{
+				ft_putendl_fd("Error: syntax error near unexpected token `|'", 2);
+				return;
+			}
+		}
+		i++;
+	}
+	i = 0;
+	while (buffer[i])
+	{
+		if ((buffer[i] == '>' || buffer[i] == '<') &&
+			(buffer[i + 1] == '|' || (buffer[i] == '>' && buffer[i + 1] == '>' && buffer[i + 2] == '|') ||
+			 (buffer[i] == '<' && buffer[i + 1] == '<' && buffer[i + 2] == '|')))
+		{
+			ft_putendl_fd("Error: syntax error near unexpected token `|'", 2);
+			return;
+		}
+		i++;
+	}
+	i = 0;
+	while (buffer[i]) // echo < , echo >, echo >> , echo << : error
+	{
+		if ((buffer[i] == '>' || buffer[i] == '<') &&
+			(buffer[i + 1] == '\0' || (buffer[i] == '>' && buffer[i + 1] == '>' && buffer[i + 2] == '\0') ||
+			 (buffer[i] == '<' && buffer[i + 1] == '<' && buffer[i + 2] == '\0')))
+		{
+			ft_putendl_fd("Error: syntax error near unexpected token `newline'", 2);
+			return;
+		}
+		i++;
+	}
+	free(buffer);
 }
+
 int main()
 {
-	char *input = NULL;
+	const char *cmd = NULL;
 	token_node *head;
 	head = NULL;
 	while (1)
 	{
-		input = readline(COLOR_GREEN "minishell$ " COLOR_RESET);
-		head = tokenization(input, &head);
-		handle_errors(head);
-		displayLinkedList(head);
-		token_node *tmp;
-		while (head)
-		{
-			tmp = head;
-			head = head->next;
-			free(tmp);
-		}
+		cmd = readline(COLOR_GREEN "minishell$ " COLOR_RESET);
+		handle_errors_cmd(cmd);
+		// head = tokenization(cmd, &head);
+		// handle_errors(head);
+		// displayLinkedList(head);
+		// token_node *tmp;
+		// while (head)
+		// {
+		// 	tmp = head;
+		// 	head = head->next;
+		// 	free(tmp);
+		// }
 	}
 	return 0;
 }
