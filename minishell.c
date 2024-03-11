@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/10 15:30:45 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/11 14:17:44 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ token_node *tokenization(const char *cmd, token_node **head)
 		else if (cmd[i] == '>')
 			lstadd_back(head, addnew_tkn_node(REDIRECT_OUT, ">"));
 		else if (cmd[i] == '<')
-			lstadd_back(head, addnew_tkn_node(REDIRECT_OUT, "<"));
+			lstadd_back(head, addnew_tkn_node(REDIRECT_IN, "<"));
 		else
 		{
 			int j = i;
@@ -162,7 +162,7 @@ int ft_strcmp(const char *str1, const char *str2)
 		i++;
 	return (str1[i] - str2[i]);
 }
-void handle_errors_cmd(const char *cmd)
+char *merge_substrings(const char *cmd)
 {
 	int i = 0;
 	int start = 0;
@@ -187,10 +187,39 @@ void handle_errors_cmd(const char *cmd)
 		free(tmp);
 		free(str);
 	}
-	// printf("%s\n", buffer);
-	// exit(0);
+	return (buffer);
+}
+void quote_error_handling(const char *buffer, size_t *i, char c)
+{
+	while (buffer[(*i)] && buffer[(*i)] != c)
+		(*i)++;
+	if (buffer[(*i)] && buffer[(*i)] == c)
+		return;
+	else
+	{
+		ft_putendl_fd("close quote", 2);
+		return;
+	}
+}
+void handle_errors_cmd(const char *buffer)
+{
+	size_t i = 0;
+	size_t len = ft_strlen(buffer);
 
+	while (i < len)
+	{
+		if (buffer[i] == '\"' || buffer[i] == '\'')
+		{
+			i++;
+			quote_error_handling(buffer, &i, buffer[i - 1]);
+		}
+		i++;
+	}
+
+	// if (quote_error_handling(buffer) == -1)
+	// 	return;
 	i = 0;
+
 	while (buffer[i])
 	{
 		if (buffer[i] == '>' && buffer[i + 1] == '<')
@@ -202,7 +231,7 @@ void handle_errors_cmd(const char *cmd)
 		{
 			if (buffer[i + 1] == '<' || buffer[i + 1] == '>')
 				i++;
-			if (buffer[i + 1] == '>' || buffer[i + 1] == '<' || buffer[i + 1] == '|')
+			if ((buffer[i + 1] == '>' || buffer[i + 1] == '<' || buffer[i + 1] == '|') && buffer[i + 1] == '\0')
 			{
 				printf("Error: syntax error\n");
 				return;
@@ -211,11 +240,9 @@ void handle_errors_cmd(const char *cmd)
 		i++;
 	}
 
-	
-
 	i = 0;
 	if (buffer[i] == '|')
-	{ // starting with pipe generates error : | echo coucou
+	{
 		ft_putendl_fd("Error: syntax error near unexpected token `|'", 2);
 		return;
 	}
@@ -226,7 +253,7 @@ void handle_errors_cmd(const char *cmd)
 		{
 			if (buffer[i + 1] == '\0')
 			{
-				ft_putendl_fd("Error: syntax error near unexpected token `newline'", 2);
+				ft_putendl_fd("Error: syntax error near unexpected token `newline`", 2);
 				return;
 			}
 		}
@@ -248,7 +275,7 @@ void handle_errors_cmd(const char *cmd)
 		i++;
 	}
 	i = 0;
-	while (buffer[i])
+	while (buffer[i]) //< |, > |, >> |, << | : error
 	{
 		if ((buffer[i] == '>' || buffer[i] == '<') &&
 			(buffer[i + 1] == '|' || (buffer[i] == '>' && buffer[i + 1] == '>' && buffer[i + 2] == '|') ||
@@ -271,7 +298,6 @@ void handle_errors_cmd(const char *cmd)
 		}
 		i++;
 	}
-	free(buffer);
 }
 
 int main()
@@ -282,17 +308,19 @@ int main()
 	while (1)
 	{
 		cmd = readline(COLOR_GREEN "minishell$ " COLOR_RESET);
-		handle_errors_cmd(cmd);
-		// head = tokenization(cmd, &head);
-		// handle_errors(head);
-		// displayLinkedList(head);
-		// token_node *tmp;
-		// while (head)
-		// {
-		// 	tmp = head;
-		// 	head = head->next;
-		// 	free(tmp);
-		// }
+		char *buffer = merge_substrings(cmd);
+		printf("%s\n", buffer);
+		handle_errors_cmd(buffer);
+		head = tokenization(cmd, &head);
+
+		displayLinkedList(head);
+		token_node *tmp;
+		while (head)
+		{
+			tmp = head;
+			head = head->next;
+			free(tmp);
+		}
 	}
 	return 0;
 }
