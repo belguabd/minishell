@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/12 02:54:58 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/12 15:17:17 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,13 @@ typedef enum tokenize
 	SINGLE_Q,		 //''
 	VAR,			 // variable
 	UNKNOWN,		 // unknown or other token
-} t_token;	
+} t_token;
 typedef struct token_node
 {
-    t_token type;
-    char *value;
-    struct token_node *next;
+	t_token type;
+	char *value;
+	struct token_node *next;
 } token_node;
-
 
 typedef struct s_vars
 {
@@ -59,7 +58,12 @@ typedef struct s_vars
 	int flage;
 	int start;
 } t_vars;
-
+typedef struct s_expand
+{
+	char *key;
+	char *value;
+	struct s_expand *next;
+} t_expand;
 /*ft_split*/
 char **ft_split(char const *str, char c);
 size_t ft_strlen(const char *s);
@@ -68,7 +72,7 @@ char *ft_strdup(const char *s1);
 // char *ft_strdup(const char *cmd, int start, int end);
 /*libft*/
 char *ft_substr(char const *s, unsigned int start, size_t len);
-char	*ft_strjoin(char const *s1, char const *s2);
-void	ft_putendl_fd(char *s, int fd);
-int	ft_lstsize(token_node *lst);
+char *ft_strjoin(char const *s1, char const *s2);
+void ft_putendl_fd(char *s, int fd);
+int ft_lstsize(token_node *lst);
 #endif

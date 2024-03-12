@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/12 03:10:34 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/12 15:28:53 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,7 +215,7 @@ void handle_errors_cmd(token_node *head, const char *cmd)
 		i++;
 	}
 	token_node *tmp = head;
-	while (tmp)//redirection
+	while (tmp) // redirection
 	{
 		if (tmp->type >= REDIRECT_APPEND && tmp->type <= HEREDOC)
 		{
@@ -246,7 +246,7 @@ void handle_errors_cmd(token_node *head, const char *cmd)
 
 	tmp = head;
 	// int size = ft_lstsize(tmp);
-	while (tmp)//||
+	while (tmp) //||
 	{
 		if (tmp->type == PIPE)
 		{
@@ -267,17 +267,76 @@ void handle_errors_cmd(token_node *head, const char *cmd)
 		tmp = tmp->next;
 	}
 }
+// void skip_whitespace(token_node **lst)
+// {
+// 	token_node *tmp = *lst;
+// 	while (tmp)
+// 	{
 
-int main()
+// 		if (tmp->type == SPACE)
+// 		{
+
+// 		}
+// 		tmp = tmp->next;
+// 	}
+// }
+t_expand *addnew_expand_node(char *key, char *value)
 {
+	t_expand *new_node = (t_expand *)malloc(sizeof(t_expand));
+	if (!new_node)
+		return NULL;
+
+	new_node->key = ft_strdup(key);
+	new_node->value = ft_strdup(value);
+	new_node->next = NULL;
+	return new_node;
+}
+
+void lstadd_back_expand(t_expand **lst, t_expand *new_node)
+{
+	if (!*lst)
+	{
+		*lst = new_node;
+		return;
+	}
+	t_expand *last = *lst;
+	while (last->next)
+		last = last->next;
+
+	last->next = new_node;
+}
+void init_env(t_expand **head, char *env[])
+{
+	int i = 0;
+	while (env[i] != NULL)
+	{
+		char **arr = ft_split(env[i], '=');
+		int j = 0;
+		if (arr[0] && arr[1])
+		{
+			t_expand *new_node = addnew_expand_node(arr[0], arr[1]);
+			lstadd_back_expand(head, new_node);
+			while (arr[j] != NULL)
+				free(arr[j++]);
+		}
+		free(arr);
+		i++;
+	}
+}
+int main(int ac, char const *av[], char *env[])
+{
+	(void)ac;
+	(void)av;
 	const char *cmd = NULL;
 	token_node *head;
+	t_expand *env_expand = NULL;
 	head = NULL;
 	while (1)
 	{
 		cmd = readline(COLOR_GREEN "minishell$ " COLOR_RESET);
 		add_history(cmd);
 		head = tokenization(cmd, &head);
+		init_env(&env_expand, env);
 		handle_errors_cmd(head, cmd);
 		displayLinkedList(head);
 		token_node *tmp;
