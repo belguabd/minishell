@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/11 14:17:44 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/12 03:10:34 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,102 +201,70 @@ void quote_error_handling(const char *buffer, size_t *i, char c)
 		return;
 	}
 }
-void handle_errors_cmd(const char *buffer)
+void handle_errors_cmd(token_node *head, const char *cmd)
 {
 	size_t i = 0;
-	size_t len = ft_strlen(buffer);
-
+	size_t len = ft_strlen(cmd);
 	while (i < len)
 	{
-		if (buffer[i] == '\"' || buffer[i] == '\'')
+		if (cmd[i] == '\"' || cmd[i] == '\'')
 		{
 			i++;
-			quote_error_handling(buffer, &i, buffer[i - 1]);
+			quote_error_handling(cmd, &i, cmd[i - 1]);
 		}
 		i++;
 	}
-
-	// if (quote_error_handling(buffer) == -1)
-	// 	return;
-	i = 0;
-
-	while (buffer[i])
+	token_node *tmp = head;
+	while (tmp)//redirection
 	{
-		if (buffer[i] == '>' && buffer[i + 1] == '<')
+		if (tmp->type >= REDIRECT_APPEND && tmp->type <= HEREDOC)
 		{
-			printf("Error: syntax error\n");
-			return;
-		}
-		if (buffer[i] == '<' || buffer[i] == '>')
-		{
-			if (buffer[i + 1] == '<' || buffer[i + 1] == '>')
-				i++;
-			if ((buffer[i + 1] == '>' || buffer[i + 1] == '<' || buffer[i + 1] == '|') && buffer[i + 1] == '\0')
+			tmp = tmp->next;
+			if (tmp && tmp->type == SPACE)
+				tmp = tmp->next;
+			if (tmp && tmp->type != STRING && tmp->type != DOUBLE_Q && tmp->type != SINGLE_Q && tmp->type != VAR)
 			{
-				printf("Error: syntax error\n");
+				printf("ERROR1\n");
+				return;
+			}
+			if (!tmp)
+			{
+				printf("ERROR2\n");
 				return;
 			}
 		}
-		i++;
+		tmp = tmp->next;
 	}
-
-	i = 0;
-	if (buffer[i] == '|')
+	tmp = head; // check pipe in line start
+	if (tmp->type == SPACE)
+		tmp = tmp->next;
+	if (tmp && tmp->type == PIPE)
 	{
-		ft_putendl_fd("Error: syntax error near unexpected token `|'", 2);
+		printf("ERROR3\n");
 		return;
 	}
-	i = 0;
-	while (buffer[i])
+
+	tmp = head;
+	// int size = ft_lstsize(tmp);
+	while (tmp)//||
 	{
-		if (buffer[i] == '|')
+		if (tmp->type == PIPE)
 		{
-			if (buffer[i + 1] == '\0')
+			tmp = tmp->next;
+			if (tmp && tmp->type == SPACE)
+				tmp = tmp->next;
+			if (tmp && tmp->type == PIPE)
 			{
-				ft_putendl_fd("Error: syntax error near unexpected token `newline`", 2);
+				printf("ERROR4\n");
+				return;
+			}
+			if (!tmp)
+			{
+				printf("ERROR4\n");
 				return;
 			}
 		}
-		i++;
-	}
-
-	i = 0;
-
-	while (buffer[i])
-	{
-		if (buffer[i] == '|')
-		{
-			if (buffer[i + 1] == '|')
-			{
-				ft_putendl_fd("Error: syntax error near unexpected token `|'", 2);
-				return;
-			}
-		}
-		i++;
-	}
-	i = 0;
-	while (buffer[i]) //< |, > |, >> |, << | : error
-	{
-		if ((buffer[i] == '>' || buffer[i] == '<') &&
-			(buffer[i + 1] == '|' || (buffer[i] == '>' && buffer[i + 1] == '>' && buffer[i + 2] == '|') ||
-			 (buffer[i] == '<' && buffer[i + 1] == '<' && buffer[i + 2] == '|')))
-		{
-			ft_putendl_fd("Error: syntax error near unexpected token `|'", 2);
-			return;
-		}
-		i++;
-	}
-	i = 0;
-	while (buffer[i]) // echo < , echo >, echo >> , echo << : error
-	{
-		if ((buffer[i] == '>' || buffer[i] == '<') &&
-			(buffer[i + 1] == '\0' || (buffer[i] == '>' && buffer[i + 1] == '>' && buffer[i + 2] == '\0') ||
-			 (buffer[i] == '<' && buffer[i + 1] == '<' && buffer[i + 2] == '\0')))
-		{
-			ft_putendl_fd("Error: syntax error near unexpected token `newline'", 2);
-			return;
-		}
-		i++;
+		tmp = tmp->next;
 	}
 }
 
@@ -308,11 +276,9 @@ int main()
 	while (1)
 	{
 		cmd = readline(COLOR_GREEN "minishell$ " COLOR_RESET);
-		char *buffer = merge_substrings(cmd);
-		printf("%s\n", buffer);
-		handle_errors_cmd(buffer);
+		add_history(cmd);
 		head = tokenization(cmd, &head);
-
+		handle_errors_cmd(head, cmd);
 		displayLinkedList(head);
 		token_node *tmp;
 		while (head)
