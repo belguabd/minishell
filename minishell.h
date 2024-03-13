@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/12 15:17:17 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/12 17:34:45 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ typedef enum tokenize
 	DOUBLE_Q,		 //""
 	SINGLE_Q,		 //''
 	VAR,			 // variable
-	UNKNOWN,		 // unknown or other token
 } t_token;
 typedef struct token_node
 {

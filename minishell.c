@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/12 15:28:53 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/13 03:20:16 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void displayLinkedList(token_node *head)
 }
 bool is_string(char c)
 {
-	return (c == '\"' || c == '\'' || c == '$' || c == '|' || c == '>' || c == '<' || c == ' ' || c == '\t');
+	return (c == '\"' || c == '\'' || c == '|' || c == '>' || c == '<' || c == ' ' || c == '\t');
 }
 token_node *addnew_tkn_node(t_token token, char *value)
 {
@@ -79,20 +79,13 @@ token_node *tokenization(const char *cmd, token_node **head)
 			lstadd_back(head, addnew_tkn_node(PIPE, "|"));
 		else if (cmd[i] == '$')
 		{
-			t_token tokenType;
 			size_t j = i;
 			start = j;
-			while (cmd[j] && cmd[j] == '$')
-				j++;
-			if ((j - i) % 2 == 0)
-				tokenType = UNKNOWN;
-			else
-				tokenType = VAR;
 			while (cmd[j] && !is_string(cmd[j]))
 				j++;
 			end = --j;
-			str = ft_substr(cmd, start, end - start + 1);
-			lstadd_back(head, addnew_tkn_node(tokenType, str));
+			str = ft_substr(cmd, start, (end + 1) - start);
+			lstadd_back(head, addnew_tkn_node(VAR, str));
 		}
 		else if (cmd[i] == '>' && cmd[i + 1] == '>')
 			lstadd_back(head, addnew_tkn_node(REDIRECT_APPEND, ">>"));
@@ -131,6 +124,7 @@ token_node *tokenization(const char *cmd, token_node **head)
 					break;
 				j++;
 			}
+
 			end = j;
 			str = ft_substr(cmd, start, (end + 1) - start);
 			lstadd_back(head, addnew_tkn_node(DOUBLE_Q, str));
@@ -146,7 +140,7 @@ token_node *tokenization(const char *cmd, token_node **head)
 
 			while (cmd[j] && !is_string(cmd[j]))
 				j++;
-			end = --j; //--i overflow i += ft_strlen(ft_lstlast(*head)->value);
+			end = --j;
 
 			str = ft_substr(cmd, start, (end + 1) - start);
 			lstadd_back(head, addnew_tkn_node(STRING, str));
@@ -305,6 +299,16 @@ void lstadd_back_expand(t_expand **lst, t_expand *new_node)
 
 	last->next = new_node;
 }
+void display_expand_list(t_expand *head)
+{
+	t_expand *current = head;
+
+	while (current != NULL)
+	{
+		printf("%s=%s\n", current->key, current->value);
+		current = current->next;
+	}
+}
 void init_env(t_expand **head, char *env[])
 {
 	int i = 0;
@@ -323,6 +327,61 @@ void init_env(t_expand **head, char *env[])
 		i++;
 	}
 }
+void expand_and_print_vars(token_node *head, t_expand *env)
+{
+	while (head)
+	{
+		if (head->type == VAR)
+		{
+			int i = 0;
+			char *str = head->value;
+			i++;
+			while (str[i] && str[i] == '$')
+				printf("%c", str[i++]);
+			while (env)
+			{
+				if (!ft_strcmp(str + i, env->key))
+				{
+					printf("%s\n", env->value);
+					return;
+				}
+				env = env->next;
+			}
+		}
+		if (head->type == DOUBLE_Q)
+		{
+			int i = 0;
+			int start = 0;
+			int end = 0;
+			char *str = head->value;
+			while (str[i])
+			{
+				if (str[i] == '$')
+				{
+					while (str[i] && str[i] == '$')
+						i++;
+					start = i;
+					while (str[i] && !is_string(str[i]))
+						i++;
+					end = i;
+					char *tmp = ft_substr(str, start, end - start);
+					while (env)
+					{
+						if (!ft_strcmp(tmp, env->key))
+						{
+							printf("%s\n", env->value);
+							return;
+						}
+						env = env->next;
+					}
+				}
+				i++;
+			}
+		}
+
+		head = head->next;
+	}
+}
 int main(int ac, char const *av[], char *env[])
 {
 	(void)ac;
@@ -337,9 +396,12 @@ int main(int ac, char const *av[], char *env[])
 		add_history(cmd);
 		head = tokenization(cmd, &head);
 		init_env(&env_expand, env);
+		expand_and_print_vars(head, env_expand);
+		// display_expand_list(env_expand);
 		handle_errors_cmd(head, cmd);
 		displayLinkedList(head);
 		token_node *tmp;
+
 		while (head)
 		{
 			tmp = head;
