@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/12 17:34:45 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/13 14:16:10 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,11 @@
 #define COLOR_RESET "\x1b[0m"
 #define COLOR_GREEN "\x1b[32m"
 
-typedef struct command_node // start line cmd
+typedef struct command_node
 {
-	char *cmd;
-	char *arg;
+	char **args;
+	int input;
+	int ouput;
 	struct command_node *next;
 } t_cmd;
 

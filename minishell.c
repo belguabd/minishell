@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/13 03:20:16 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/14 04:25:29 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void displayLinkedList(token_node *head)
 }
 bool is_string(char c)
 {
-	return (c == '\"' || c == '\'' || c == '|' || c == '>' || c == '<' || c == ' ' || c == '\t');
+	return (c == '\"' || c == '\'' || c == '$' || c == '|' || c == '>' || c == '<' || c == ' ' || c == '\t');
 }
 token_node *addnew_tkn_node(t_token token, char *value)
 {
@@ -63,7 +63,20 @@ void lstadd_back(token_node **lst, token_node *new)
 		cur = cur->next;
 	cur->next = new;
 }
+bool is_variable(char c)
+{
+	return (c == '\"' || c == '\'' || c == '|' || c == '$' || c == '>' || c == '<' || c == ' ' || c == '\t');
+}
 
+// char *get_var(const char *cmd, int j)
+// {
+// 	int i = j;
+// 	if (cmd[i] >= '0' && cmd[i] <= '9')
+// 		return (ft_substr(cmd + i, i - 1, 1));
+// 	while (cmd[i] && ((cmd[i] >= 'a' && cmd[i] <= 'z') || (cmd[i] >= 'A' && cmd[i] <= 'Z') || (cmd[i] >= '0' && cmd[i] <= '9') || cmd[i] == '_'))
+// 		i++;
+// 	return (ft_substr(cmd, j, i - j));
+// }
 token_node *tokenization(const char *cmd, token_node **head)
 {
 	size_t i = 0;
@@ -79,13 +92,27 @@ token_node *tokenization(const char *cmd, token_node **head)
 			lstadd_back(head, addnew_tkn_node(PIPE, "|"));
 		else if (cmd[i] == '$')
 		{
+
 			size_t j = i;
 			start = j;
-			while (cmd[j] && !is_string(cmd[j]))
+
+			while (cmd[j] && cmd[j] == '$')
 				j++;
-			end = --j;
-			str = ft_substr(cmd, start, (end + 1) - start);
-			lstadd_back(head, addnew_tkn_node(VAR, str));
+			end = j;
+			if (cmd[j] >= '0' && cmd[j] <= '9')
+			{
+				char *str = ft_substr(cmd, start, (end + 1) - start);
+				lstadd_back(head, addnew_tkn_node(VAR, str));
+			}
+			else
+			{
+
+				while (cmd[j] && ((cmd[j] >= 'a' && cmd[j] <= 'z') || (cmd[j] >= 'A' && cmd[j] <= 'Z') || (cmd[j] >= '0' && cmd[j] <= '9') || cmd[j] == '_'))
+					j++;
+				end = j;
+				char *str = ft_substr(cmd, start, (end)-start);
+				lstadd_back(head, addnew_tkn_node(VAR, str));
+			}
 		}
 		else if (cmd[i] == '>' && cmd[i + 1] == '>')
 			lstadd_back(head, addnew_tkn_node(REDIRECT_APPEND, ">>"));
@@ -327,58 +354,36 @@ void init_env(t_expand **head, char *env[])
 		i++;
 	}
 }
+bool check_exist_env(char *str, t_expand *env)
+{
+
+	while (env)
+	{
+		if (!ft_strcmp(str, env->key))
+			printf("%s\n", env->value);
+		env = env->next;
+	}
+	return (1);
+}
 void expand_and_print_vars(token_node *head, t_expand *env)
 {
+	char *buffer;
+	(void)buffer;
+	(void)env;
 	while (head)
 	{
 		if (head->type == VAR)
 		{
-			int i = 0;
 			char *str = head->value;
-			i++;
-			while (str[i] && str[i] == '$')
-				printf("%c", str[i++]);
-			while (env)
-			{
-				if (!ft_strcmp(str + i, env->key))
-				{
-					printf("%s\n", env->value);
-					return;
-				}
-				env = env->next;
-			}
-		}
-		if (head->type == DOUBLE_Q)
-		{
 			int i = 0;
-			int start = 0;
-			int end = 0;
-			char *str = head->value;
 			while (str[i])
 			{
-				if (str[i] == '$')
-				{
-					while (str[i] && str[i] == '$')
-						i++;
-					start = i;
-					while (str[i] && !is_string(str[i]))
-						i++;
-					end = i;
-					char *tmp = ft_substr(str, start, end - start);
-					while (env)
-					{
-						if (!ft_strcmp(tmp, env->key))
-						{
-							printf("%s\n", env->value);
-							return;
-						}
-						env = env->next;
-					}
-				}
+				while (str[i] && str[i] == '$')
+					i++;
+				check_exist_env(str + i, env);
 				i++;
 			}
 		}
-
 		head = head->next;
 	}
 }
@@ -389,10 +394,12 @@ int main(int ac, char const *av[], char *env[])
 	const char *cmd = NULL;
 	token_node *head;
 	t_expand *env_expand = NULL;
+	(void)env_expand;
+	(void)env;
 	head = NULL;
 	while (1)
 	{
-		cmd = readline(COLOR_GREEN "minishell$ " COLOR_RESET);
+		cmd = readline(COLOR_GREEN "➜  minishell " COLOR_RESET);
 		add_history(cmd);
 		head = tokenization(cmd, &head);
 		init_env(&env_expand, env);
@@ -401,7 +408,6 @@ int main(int ac, char const *av[], char *env[])
 		handle_errors_cmd(head, cmd);
 		displayLinkedList(head);
 		token_node *tmp;
-
 		while (head)
 		{
 			tmp = head;

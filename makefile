@@ -11,15 +11,19 @@ OBJ = $(SRC:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -lreadline -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJ) -lreadline -o $(NAME)
+	@echo "\033[0;32m[MINISHELL] Minishell compiled\033[0m"
 
 %.o: %.c minishell.h
-	$(CC) $(CFLAGS) -c $< -o $@
+	@printf "\033[0;32m[MINISHELL] Compiling minishell: \033[0;33m$<\033[0m\r"
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJ)
+	@rm -f $(OBJ)
+	@echo "\033[0;32m[MINISHELL] Cleaned\033[0m"
 
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
+	@echo "\033[0;32m[MINISHELL] Fcleaned\033[0m"
 
 re: fclean all
