@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/13 14:16:10 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/15 14:18:22 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef enum tokenize
 	DOUBLE_Q,		 //""
 	SINGLE_Q,		 //''
 	VAR,			 // variable
+	EXIT_STATUS
 } t_token;
 typedef struct token_node
 {
@@ -75,4 +76,5 @@ char *ft_substr(char const *s, unsigned int start, size_t len);
 char *ft_strjoin(char const *s1, char const *s2);
 void ft_putendl_fd(char *s, int fd);
 int ft_lstsize(token_node *lst);
+int	ft_isalnum(int c);
 #endif
