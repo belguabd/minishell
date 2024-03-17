@@ -1,28 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/15 21:44:34 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/16 01:27:23 by soel-bou         ###   ########.fr       */
+/*   Created: 2024/03/16 02:14:56 by soel-bou          #+#    #+#             */
+/*   Updated: 2024/03/17 01:17:30 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void    f()
+void    ft_cd(char *path)
 {
-    system("leaks a.out");
-}
-
-int main(int argc, char const *argv[], char *envp[])
-{
-    char *cmd[3];
-    cmd[0] = "/bin/ls";
-    cmd[1] = "-l";
-    cmd[2] = NULL;
-
-    execve(cmd[0], cmd, envp);
+    if (chdir(path) < 0)
+        perror("cd ");
 }
