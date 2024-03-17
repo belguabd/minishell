@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/17 01:16:48 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/17 01:35:42 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,4 +90,5 @@ void	ft_pwd();
 void    ft_cd(char *path);
 void	ft_echo(char **cmd);
 
+int test(char *str);
 #endif
