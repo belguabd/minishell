@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 02:14:56 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/17 00:47:25 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/17 01:17:30 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,4 @@ void    ft_cd(char *path)
 {
     if (chdir(path) < 0)
         perror("cd ");
-}
-int main()
-{
-    ft_cd(NULL);
 }

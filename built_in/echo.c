@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 01:34:47 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/17 01:12:23 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/17 01:16:58 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int checkn(char **cmd)
 }
 
 
-void	ft_echo(char **cmd) //
+void	ft_echo(char **cmd)
 {
 	int	i;
 	int n;
