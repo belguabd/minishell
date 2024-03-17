@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/15 14:18:22 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/17 01:16:48 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <stdbool.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <sys/param.h>
 #define COLOR_RESET "\x1b[0m"
 #define COLOR_GREEN "\x1b[32m"
 
@@ -77,4 +78,16 @@ char *ft_strjoin(char const *s1, char const *s2);
 void ft_putendl_fd(char *s, int fd);
 int ft_lstsize(token_node *lst);
 int	ft_isalnum(int c);
+
+
+
+
+
+//execution
+
+//builtin
+void	ft_pwd();
+void    ft_cd(char *path);
+void	ft_echo(char **cmd);
+
 #endif
