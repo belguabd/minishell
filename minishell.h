@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/15 14:18:22 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/17 01:31:16 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,4 +77,5 @@ char *ft_strjoin(char const *s1, char const *s2);
 void ft_putendl_fd(char *s, int fd);
 int ft_lstsize(token_node *lst);
 int	ft_isalnum(int c);
+int test(char *str);
 #endif
