@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/17 01:18:13 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/17 10:44:09 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -358,7 +358,7 @@ char *get_str_env(t_expand *env, char *str_var)
 	}
 	return (ft_strdup(""));
 }
-char *get_var(char *str_var)
+char *ft_get_var(char *str_var)
 {
 	int i = 0;
 	int start = 0;
@@ -368,10 +368,65 @@ char *get_var(char *str_var)
 		i++;
 	return (ft_substr(str_var, start, i));
 }
-char *get_new_str(char *str, char *str_exp, char *str_var)
+// char *get_new_str(char *str, char *str_exp, char *str_var)
+// {
+// 	size_t len_totale = (ft_strlen(str) - (ft_strlen(str_var) + 1)) + ft_strlen(str_exp);
+// 	char *new = (char *)malloc(len_totale + 1);
+// 	if (!new)
+// 		return (NULL);
+// 	int i = 0;
+// 	while (str[i] && str[i] != '$')
+// 	{
+// 		new[i] = str[i];
+// 		i++;
+// 	}
+// }
+char *remove_double_q(char *str)
 {
-	size_t len_totale = ((ft_strlen(str) - 2) - (ft_strlen(str_var) + 1)) + ft_strlen(str_exp);
-	char *new = (char *)malloc(len_totale + 1);
+	int len = ft_strlen(str) - 2; // 2 for double quotes
+	char *new = (char *)malloc(len + 1);
+	if (!new)
+		return (NULL);
+	int j = 1;
+	int i = 0;
+	while (str[j] && str[j] != '\"')
+		new[i++] = str[j++];
+	new[i] = '\0';
+	return (new);
+}
+char *get_until_var(char *str_var)
+{
+	int i = 0;
+	int start = 0;
+	while (str_var[i])
+	{
+
+		if (str_var[i] == '$')
+		{
+			while (str_var[i] && str_var[i] == '$')
+				i++;
+			while (str_var[i] && (ft_isalnum(str_var[i]) || str_var[i] == '_'))
+				i++;
+			break;
+		}
+		i++;
+	}
+	return (ft_substr(str_var, start, i));
+}
+char *get_string_exp(char *str, char *old_var, char *new_var)
+{
+	size_t len = (ft_strlen(str) - (ft_strlen(old_var))) + ft_strlen(new_var);
+	if (ft_strlen(old_var))
+		len++;
+	// printf("%zu\n", len);
+	// printf("%zu\n", ft_strlen(str));
+	// printf("%zu\n", ft_strlen(old_var));
+	// printf("%zu\n", ft_strlen(new_var));
+	// printf("%s\n", str);
+	// printf("%s\n", old_var);
+	// printf("%s\n", new_var);
+
+	char *new = (char *)malloc(len + 1);
 	if (!new)
 		return (NULL);
 	int i = 0;
@@ -380,26 +435,57 @@ char *get_new_str(char *str, char *str_exp, char *str_var)
 		new[i] = str[i];
 		i++;
 	}
+	while (str[i] && str[i] == '$') //$$$HOME
+	{
+		if (str[i + 1] != '$')
+			break;
+		new[i] = str[i];
+		i++;
+	}
+	int j = 0;
+	if (new_var)
+	{
+		while (new_var[j])
+		{
+			new[i++] = new_var[j++];
+		}
+	}
 	new[i] = '\0';
+	return (new);
+	// printf("%zu\n", len);
+	// printf("%zu\n", ft_strlen(str));
+	// printf("%zu\n", ft_strlen(old_var));
+	// printf("%zu\n", ft_strlen(new_var));
+	// printf("%s\n", str);
+	// printf("%s\n", old_var);
+	// printf("%s\n", new_var);
 
-	printf("%s\n", new);
-	exit(0);
-	return ("hello");
+	// exit(0);
 }
-char *remove_double_q(char *str)
+char *ft_str_exp(char *str_var, t_expand *env)
 {
-	int len = ft_strlen(str) - 2;
-	char new = (char *)malloc(len + 1);
-	if (!new)
-		return (NULL);
 	int i = 0;
-	int j = 1;
-	
-	
+	char *get_var = NULL;
+	char *str_exp = NULL;
+	// int start = i;
+	while (str_var[i])
+	{
+		if (str_var[i] == '$')
+		{
+			while (str_var[i] && str_var[i] == '$')
+				i++;
+			get_var = ft_get_var(str_var + i);
+			str_exp = get_str_env(env, get_var);
+			break;
+		}
+		i++;
+	}
+
+	return (get_string_exp(str_var, get_var, str_exp));
 }
 void expand_and_print_vars(token_node *head, t_expand *env)
 {
-	char *buffer;
+	char *buffer = NULL;
 	(void)buffer;
 	(void)env;
 	while (head)
@@ -422,22 +508,19 @@ void expand_and_print_vars(token_node *head, t_expand *env)
 		}
 		if (head->type == DOUBLE_Q)
 		{
-			int i = 0;
+			size_t i = 0;
 			char *str = head->value;
-			str = remove_double_q();
+			str = remove_double_q(str);
 			while (str[i])
 			{
-				if (str[i] == '$')
-				{
-					while (str[i] && str[i] == '$')
-						i++;
-					char *str_var = get_var(str + i);
-					char *str_exp = get_str_env(env, str_var);
-					char *new_str = get_new_str(str, str_exp, str_var);
-					(void)new_str;
-				}
-				i++;
+				char *str_var = get_until_var(str + i);
+				char *str_exp = ft_str_exp(str_var, env);
+				if (!buffer)
+					buffer = ft_strdup("");
+				buffer = ft_strjoin(buffer, str_exp);
+				i += ft_strlen(str_var);
 			}
+			head->value = buffer;
 		}
 		head = head->next;
 	}
