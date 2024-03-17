@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/15 15:48:48 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/17 01:18:13 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,14 +99,8 @@ token_node *tokenization(const char *cmd, token_node **head)
 			end = j;
 			if (cmd[j] >= '0' && cmd[j] <= '9')
 			{
-				char *str = ft_substr(cmd, start, (end)-start);
+				char *str = ft_substr(cmd, start, (end + 1) - start);
 				lstadd_back(head, addnew_tkn_node(VAR, str));
-				if (j >= strlen(cmd))
-				{
-					// Handle overflow
-					fprintf(stderr, "Error: Index out of bounds----\n");
-					return (NULL); // or handle the error appropriately
-				}
 			}
 			else
 			{
@@ -185,33 +179,7 @@ int ft_strcmp(const char *str1, const char *str2)
 		i++;
 	return (str1[i] - str2[i]);
 }
-char *merge_substrings(const char *cmd)
-{
-	int i = 0;
-	int start = 0;
-	int end = 0;
-	char *buffer;
-	buffer = NULL;
-	char *str;
 
-	while (cmd[i])
-	{
-		while (cmd[i] == ' ' || (cmd[i] >= 9 && cmd[i] <= 13))
-			i++;
-		start = i;
-		while (cmd[i] && cmd[i] != ' ' && !(cmd[i] >= 9 && cmd[i] <= 13))
-			i++;
-		end = i;
-		str = ft_substr(cmd, start, end - start);
-		if (!buffer)
-			buffer = ft_strdup("");
-		char *tmp = buffer;
-		buffer = ft_strjoin(buffer, str);
-		free(tmp);
-		free(str);
-	}
-	return (buffer);
-}
 void quote_error_handling(const char *buffer, size_t *i, char c)
 {
 	while (buffer[(*i)] && buffer[(*i)] != c)
@@ -390,6 +358,45 @@ char *get_str_env(t_expand *env, char *str_var)
 	}
 	return (ft_strdup(""));
 }
+char *get_var(char *str_var)
+{
+	int i = 0;
+	int start = 0;
+	if (str_var[i] >= '0' && str_var[i] <= '9')
+		return (ft_substr(str_var, i, 1));
+	while (str_var[i] && (ft_isalnum(str_var[i]) || str_var[i] == '_'))
+		i++;
+	return (ft_substr(str_var, start, i));
+}
+char *get_new_str(char *str, char *str_exp, char *str_var)
+{
+	size_t len_totale = ((ft_strlen(str) - 2) - (ft_strlen(str_var) + 1)) + ft_strlen(str_exp);
+	char *new = (char *)malloc(len_totale + 1);
+	if (!new)
+		return (NULL);
+	int i = 0;
+	while (str[i] && str[i] != '$')
+	{
+		new[i] = str[i];
+		i++;
+	}
+	new[i] = '\0';
+
+	printf("%s\n", new);
+	exit(0);
+	return ("hello");
+}
+char *remove_double_q(char *str)
+{
+	int len = ft_strlen(str) - 2;
+	char new = (char *)malloc(len + 1);
+	if (!new)
+		return (NULL);
+	int i = 0;
+	int j = 1;
+	
+	
+}
 void expand_and_print_vars(token_node *head, t_expand *env)
 {
 	char *buffer;
@@ -406,9 +413,31 @@ void expand_and_print_vars(token_node *head, t_expand *env)
 			while (str[i] && str[i] == '$')
 				i++;
 			end = i - 1;
-			char *buffer = ft_strjoin(ft_substr(str, start, end), get_str_env(env, str + i));
+			if (str[i] >= '0' && str[i] <= '9')
+				buffer = ft_strjoin(ft_substr(str, start, end), get_str_env(env, str + i));
+			else
+				buffer = ft_strjoin(ft_substr(str, start, end), get_str_env(env, str + i));
 			free(head->value);
 			head->value = buffer;
+		}
+		if (head->type == DOUBLE_Q)
+		{
+			int i = 0;
+			char *str = head->value;
+			str = remove_double_q();
+			while (str[i])
+			{
+				if (str[i] == '$')
+				{
+					while (str[i] && str[i] == '$')
+						i++;
+					char *str_var = get_var(str + i);
+					char *str_exp = get_str_env(env, str_var);
+					char *new_str = get_new_str(str, str_exp, str_var);
+					(void)new_str;
+				}
+				i++;
+			}
 		}
 		head = head->next;
 	}
