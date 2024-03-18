@@ -19,11 +19,11 @@ $(NAME): $(OBJ)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	@rm -f $(OBJ)
+	@rm -rf $(OBJ)
 	@echo "\033[0;32m Cleaned\033[0m"
 
 fclean: clean
-	@rm -f $(NAME)
+	@rm -rf $(NAME)
 	@echo "\033[0;32m Fcleaned\033[0m"
 
 re: fclean all

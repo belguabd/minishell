@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/17 10:44:09 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/17 23:30:00 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -331,7 +331,9 @@ bool check_exist_env(char *str, t_expand *env)
 	{
 		// if (!ft_strncmp(str, env->key, ft_strlen(env->key)))
 		// 	return (true);
+		t_expand *tmp = env;
 		env = env->next;
+		free(tmp);
 	}
 	return (false);
 }
@@ -525,6 +527,30 @@ void expand_and_print_vars(token_node *head, t_expand *env)
 		head = head->next;
 	}
 }
+void remove_single_q(token_node *head)
+{
+	while (head)
+	{
+		if (head->type == SINGLE_Q)
+		{
+			char *str = head->value;
+			size_t len = ft_strlen(str) - 2;
+			char *str_sgl = (char *)malloc(len + 1);
+			if (str_sgl)
+			{
+				
+				int i = 0;
+				int j = 1;
+				while (str[j] && str[j] != '\'')
+					str_sgl[i++] = str[j++];
+				str_sgl[i] = '\0';
+				printf("%s\n", str_sgl);
+				head->value = str_sgl;
+			}
+		}
+		head = head->next;
+	}
+}
 int main(int ac, char const *av[], char *env[])
 {
 	(void)ac;
@@ -542,6 +568,7 @@ int main(int ac, char const *av[], char *env[])
 		head = tokenization(cmd, &head);
 		init_env(&env_expand, env);
 		expand_and_print_vars(head, env_expand);
+		remove_single_q(head);
 		// display_expand_list(env_expand);
 		handle_errors_cmd(head, cmd);
 		displayLinkedList(head);
