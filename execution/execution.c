@@ -1,19 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cd.c                                               :+:      :+:    :+:   */
+/*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/16 02:14:56 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/19 01:51:24 by soel-bou         ###   ########.fr       */
+/*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
+/*   Updated: 2024/03/18 22:07:31 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "minishell.h"
 
-void	ft_cd(char *path)
+void    ft_execute(char **cmd)
 {
-	if (chdir(path) < 0)
-		perror("cd ");
+    if (ft_strncmp(cmd[0], "cd", 2) == 0)
+        ;
+    else if (ft_strncmp(cmd[0], "pwd", 3) == 0)
+        ft_pwd();
+    else if (ft_strncmp(cmd[0], "echo", 4) == 0)
+        ft_echo(cmd);
+    
 }
