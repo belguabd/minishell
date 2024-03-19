@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/17 01:43:23 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/19 01:32:06 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ typedef struct s_vars
 	int flage;
 	int start;
 } t_vars;
+
 typedef struct s_expand
 {
 	char *key;
