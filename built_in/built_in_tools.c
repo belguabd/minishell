@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 23:57:58 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/19 02:38:14 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/19 22:45:21 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,17 @@ void	ft_del_node(t_expand **lst, char *key)
 		}
 		head = head->next;
 	}
+}
+
+t_expand	*ft_lst_new(char *key, char *val)
+{
+	t_expand *new;
+
+	new = (t_expand*)malloc(sizeof(t_expand));
+	if (!new)
+		return (NULL);
+	new->key = key;
+	new->value = val;
+	new->next = NULL;
+	return (new);
 }

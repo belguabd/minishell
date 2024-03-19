@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/19 01:32:06 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/19 22:45:31 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,14 @@ int	ft_isalnum(int c);
 void	ft_pwd();
 void    ft_cd(char *path);
 void	ft_echo(char **cmd);
-void test2();
+void	ft_env(char **cmd, t_expand *envp);
 
-int test(char *str);
+//tools
+
+t_expand	*ft_lstlast(t_expand *lst);
+void		ft_lst_add_back(t_expand **lst, t_expand *new_node);
+int			ft_strcmp(char *s1, char *s2);
+void		ft_del_node(t_expand **lst, char *key);
+t_expand	*ft_lst_new(char *key, char *val);
+
 #endif
