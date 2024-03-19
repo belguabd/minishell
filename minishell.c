@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/19 06:24:54 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/19 09:44:40 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,10 +90,11 @@ token_node *tokenization(const char *cmd, token_node **head)
 			lstadd_back(head, addnew_tkn_node(EXIT_STATUS, "$?"));
 		else if (cmd[i] == '$')
 		{
-			int count = 0;
+			int count = i;
+			int start = i;
 			while (cmd[count] && cmd[count] == '$')
 				count++;
-			// printf("%d\n", count);
+			count = count - start;
 			if (count % 2 != 0)
 			{
 				size_t j = i;
@@ -119,9 +120,23 @@ token_node *tokenization(const char *cmd, token_node **head)
 			else
 			{
 				start = i;
-				end = count;
-				char *str = ft_substr(cmd, start, (end)-start);
-				lstadd_back(head, addnew_tkn_node(STRING, str));
+				int j = i;
+				while (cmd[j] && cmd[j] == '$')
+					j++;
+				end = j;
+				if (cmd[j] >= '0' && cmd[j] <= '9')
+				{
+					char *str = ft_substr(cmd, start, (end + 1) - start);
+					lstadd_back(head, addnew_tkn_node(STRING, str));
+				}
+				else
+				{
+					while (cmd[j] && ((cmd[j] >= 'a' && cmd[j] <= 'z') || (cmd[j] >= 'A' && cmd[j] <= 'Z') || (cmd[j] >= '0' && cmd[j] <= '9') || cmd[j] == '_'))
+						j++;
+					end = j;
+					char *str = ft_substr(cmd, start, (end)-start);
+					lstadd_back(head, addnew_tkn_node(STRING, str));
+				}
 			}
 		}
 		else if (cmd[i] == '>' && cmd[i + 1] == '>')
@@ -509,7 +524,15 @@ void expand_and_print_vars(token_node *head, t_expand *env)
 	(void)env;
 	while (head)
 	{
-		if (head->type == VAR)
+		if (head->type == HEREDOC)
+		{
+			token_node *tmp = head->next;
+			if (tmp && tmp->type == SPACE)
+				head = tmp;
+			if (head->next->type == VAR)
+				head = head->next;
+		}
+		else if (head->type == VAR)
 		{
 			int i = 0;
 			char *str = head->value;
@@ -525,7 +548,7 @@ void expand_and_print_vars(token_node *head, t_expand *env)
 			free(head->value);
 			head->value = buffer;
 		}
-		if (head->type == DOUBLE_Q)
+		else if (head->type == DOUBLE_Q)
 		{
 			buffer = NULL;
 			size_t i = 0;
@@ -586,7 +609,7 @@ int main(int ac, char const *av[], char *env[])
 		init_env(&env_expand, env);
 		expand_and_print_vars(head, env_expand);
 		remove_single_q(head);
-		display_expand_list(env_expand);
+		// display_expand_list(env_expand);
 		handle_errors_cmd(head, cmd);
 		displayLinkedList(head);
 		token_node *tmp;
