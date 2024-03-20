@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 23:57:58 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/19 22:45:21 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/20 09:44:05 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,10 @@ t_expand	*ft_lstlast(t_expand *lst)
 {
 	t_expand	*last;
 
+	if (lst == NULL)
+		return (NULL);
 	last = lst;
-	while (last->next)
+	while (last && last->next)
 	{
 		last = last->next;
 	}
@@ -40,31 +42,15 @@ int	ft_strcmp(char *s1, char *s2)
 	int i;
 
 	i = 0;
+	if(!s1 || !s2)
+		return (0);
 	while (s1[i] == s2[i] && s1[i] != '\0' && s2[i] != '\0')
 		i++;
 	return (s1[i] - s2[i]);
 }
 
-void	ft_del_node(t_expand **lst, char *key)
-{
-	t_expand *tmp;
-	t_expand *head;
-	
-	tmp = NULL;
-	head = *lst;
-	while (head)
-	{
-		if (ft_strcmp(head->key, key) == 0)
-		{
-			tmp = head;
-			head = head->next;
-			free(tmp->key);
-			free(tmp->value);
-			free(tmp);
-		}
-		head = head->next;
-	}
-}
+
+
 
 t_expand	*ft_lst_new(char *key, char *val)
 {
@@ -77,4 +63,11 @@ t_expand	*ft_lst_new(char *key, char *val)
 	new->value = val;
 	new->next = NULL;
 	return (new);
+}
+
+void	ft_free_node(t_expand *node)
+{
+	free(node->key);
+	free(node->value);
+	free(node);
 }
