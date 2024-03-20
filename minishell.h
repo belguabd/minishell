@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/19 22:45:31 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/20 09:19:13 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ char *ft_strjoin(char const *s1, char const *s2);
 void ft_putendl_fd(char *s, int fd);
 int ft_lstsize(token_node *lst);
 int	ft_isalnum(int c);
+int	ft_isdigit(int c);
 
 
 
@@ -91,6 +92,8 @@ void	ft_pwd();
 void    ft_cd(char *path);
 void	ft_echo(char **cmd);
 void	ft_env(char **cmd, t_expand *envp);
+void	ft_unset(char **cmd, t_expand **envp);
+void	ft_export(char **cmd, t_expand **envp);
 
 //tools
 
@@ -99,5 +102,6 @@ void		ft_lst_add_back(t_expand **lst, t_expand *new_node);
 int			ft_strcmp(char *s1, char *s2);
 void		ft_del_node(t_expand **lst, char *key);
 t_expand	*ft_lst_new(char *key, char *val);
+void		ft_free_node(t_expand *node);
 
 #endif
