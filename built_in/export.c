@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 01:53:18 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/20 09:37:08 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/21 00:25:09 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,10 +100,10 @@ int main()
 	ft_lst_add_back(&envp, ft_lst_new("var3", "jkanf"));
 	ft_lst_add_back(&envp, ft_lst_new("var5", "jkanf"));
 
-	char *cmd[] = {"export","bdjs","aafsa", "aafsa", NULL};
+	char *cmd[] = {"export","bdjs=","aafsa", "saafsa=hjdbv", NULL};
 	ft_export(cmd, &envp);
 	ft_env(cmd, envp);
-	char *cmd2[] = {"export","var1", NULL};
-	ft_unset(cmd2, &envp);
-	ft_env(cmd, envp);
+	// char *cmd2[] = {"export","var1", NULL};
+	// //ft_unset(cmd2, &envp);
+	// ft_env(cmd, envp);
 }

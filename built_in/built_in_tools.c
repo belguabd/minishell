@@ -6,13 +6,13 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 23:57:58 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/20 09:44:05 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/21 01:03:20 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_expand	*ft_lstlast(t_expand *lst)
+t_expand	*ft_lst_last(t_expand *lst)
 {
 	t_expand	*last;
 
@@ -30,7 +30,7 @@ void	ft_lst_add_back(t_expand **lst, t_expand *new_node)
 {
 	t_expand	*last;
 
-	last = ft_lstlast(*lst);
+	last = ft_lst_last(*lst);
 	if (!last)
 		*lst = new_node;
 	else
