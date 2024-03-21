@@ -1,6 +1,6 @@
 NAME = minishell
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -fsanitize=address
 #-------folder-------#
 UTILS = utils
 SRC = minishell.c \
@@ -11,7 +11,7 @@ OBJ = $(SRC:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@$(CC) $(CFLAGS) $(OBJ) -lreadline -o $(NAME)
+	@$(CC) -g $(CFLAGS) $(OBJ) -lreadline -o $(NAME)
 	@echo "\033[0;32m Minishell compiled\033[0m"
 
 %.o: %.c minishell.h

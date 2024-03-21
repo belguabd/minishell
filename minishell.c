@@ -6,20 +6,24 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/19 09:44:40 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/20 23:32:47 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include <string.h>
+bool is_var(char c)
+{
+	if (ft_isalnum(c) || c == '_')
+		return (true);
+	return (false);
+}
 token_node *ft_lstlast(token_node *lst)
 {
 	if (!lst)
 		return (NULL);
 	while (lst->next)
-	{
 		lst = lst->next;
-	}
 	return (lst);
 }
 void displayLinkedList(token_node *head)
@@ -94,12 +98,14 @@ token_node *tokenization(const char *cmd, token_node **head)
 			int start = i;
 			while (cmd[count] && cmd[count] == '$')
 				count++;
+			printf("%d\n", count);
+			printf("%d\n", start);
 			count = count - start;
+			printf("%d\n", count);
 			if (count % 2 != 0)
 			{
 				size_t j = i;
 				start = j;
-
 				while (cmd[j] && cmd[j] == '$')
 					j++;
 				end = j;
@@ -110,11 +116,17 @@ token_node *tokenization(const char *cmd, token_node **head)
 				}
 				else
 				{
-					while (cmd[j] && ((cmd[j] >= 'a' && cmd[j] <= 'z') || (cmd[j] >= 'A' && cmd[j] <= 'Z') || (cmd[j] >= '0' && cmd[j] <= '9') || cmd[j] == '_'))
-						j++;
-					end = j;
-					char *str = ft_substr(cmd, start, (end)-start);
-					lstadd_back(head, addnew_tkn_node(VAR, str));
+					if (is_var(cmd[j]))
+					{
+						while (ft_isalnum(cmd[j]) || cmd[j] == '_')
+							j++;
+						end = j;
+
+						char *str = ft_substr(cmd, start, (end)-start);
+						lstadd_back(head, addnew_tkn_node(VAR, str));
+					}
+					else
+						lstadd_back(head, addnew_tkn_node(STRING, "$"));
 				}
 			}
 			else
@@ -499,8 +511,16 @@ char *ft_str_exp(char *str_var, t_expand *env)
 			while (str_var[i] && str_var[i] == '$')
 				i++;
 			count = i - count;
+				// printf("%s\n",str_var);
 			if (count % 2 != 0)
 			{
+				puts("OK");
+				// printf("%s\n", str_var +i);
+				// printf("%c\n", str_var[i]);
+				// exit(0);
+				// if (is_var())
+				// {
+				// }
 				get_var = ft_get_var(str_var + i);
 				str_exp = get_str_env(env, get_var);
 				break;
@@ -517,6 +537,7 @@ char *ft_str_exp(char *str_var, t_expand *env)
 
 	return (get_string_exp(str_var, get_var, str_exp));
 }
+
 void expand_and_print_vars(token_node *head, t_expand *env)
 {
 	char *buffer = NULL;
@@ -524,15 +545,15 @@ void expand_and_print_vars(token_node *head, t_expand *env)
 	(void)env;
 	while (head)
 	{
-		if (head->type == HEREDOC)
-		{
-			token_node *tmp = head->next;
-			if (tmp && tmp->type == SPACE)
-				head = tmp;
-			if (head->next->type == VAR)
-				head = head->next;
-		}
-		else if (head->type == VAR)
+		// if (head->type == HEREDOC)
+		// {
+		// 	token_node *tmp = head->next;
+		// 	if (tmp && tmp->type == SPACE)
+		// 		head = tmp;
+		// 	if (head->next->type == VAR)
+		// 		head = head->next;
+		// }
+		if (head->type == VAR)
 		{
 			int i = 0;
 			char *str = head->value;
