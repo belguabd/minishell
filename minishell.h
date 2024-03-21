@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/20 09:19:13 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/21 00:17:17 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,9 +97,9 @@ void	ft_export(char **cmd, t_expand **envp);
 
 //tools
 
-t_expand	*ft_lstlast(t_expand *lst);
+// t_expand	*ft_lstlast(t_expand *lst);
 void		ft_lst_add_back(t_expand **lst, t_expand *new_node);
-int			ft_strcmp(char *s1, char *s2);
+// int			ft_strcmp(char *s1, char *s2);
 void		ft_del_node(t_expand **lst, char *key);
 t_expand	*ft_lst_new(char *key, char *val);
 void		ft_free_node(t_expand *node);
