@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/20 23:32:47 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/22 11:20:07 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -529,19 +529,16 @@ char *ft_str_exp(char *str_var, t_expand *env)
 			while (str_var[i] && str_var[i] == '$')
 				i++;
 			count = i - count;
-			// printf("%s\n",str_var);
 			if (count % 2 != 0)
 			{
-				// puts("OK");
-				// printf("%s\n", str_var +i);
-				// printf("%c\n", str_var[i]);
-				// exit(0);
-				// if (is_var())
-				// {
-				// }
 				get_var = ft_get_var(str_var + i);
-				str_exp = get_str_env(env, get_var);
-				break;
+				if (get_var[0])
+					str_exp = get_str_env(env, get_var);
+				else
+				{
+					str_exp = ft_strdup("$");
+					break;
+				}
 			}
 			else
 			{
