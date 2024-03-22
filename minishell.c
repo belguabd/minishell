@@ -120,6 +120,7 @@ token_node *tokenization(const char *cmd, token_node **head)
 			int start = i;
 			while (cmd[count] && cmd[count] == '$')
 				count++;
+			count = count - i;
 			if (count % 2 != 0)
 			{
 				size_t j = i;
@@ -155,18 +156,15 @@ token_node *tokenization(const char *cmd, token_node **head)
 					j++;
 				end = j;
 				if (cmd[j] >= '0' && cmd[j] <= '9')
-				{
-					char *str = ft_substr(cmd, start, (end + 1) - start);
-					lstadd_back(head, addnew_tkn_node(STRING, str));
-				}
+					str = ft_substr(cmd, start, (end + 1) - start);
 				else
 				{
-					while (cmd[j] && ((cmd[j] >= 'a' && cmd[j] <= 'z') || (cmd[j] >= 'A' && cmd[j] <= 'Z') || (cmd[j] >= '0' && cmd[j] <= '9') || cmd[j] == '_'))
+					while (cmd[j] && (ft_isalnum(cmd[j]) || cmd[j] == '_'))
 						j++;
 					end = j;
-					char *str = ft_substr(cmd, start, (end)-start);
-					lstadd_back(head, addnew_tkn_node(STRING, str));
+					str = ft_substr(cmd, start, (end)-start);
 				}
+				lstadd_back(head, addnew_tkn_node(STRING, str));
 			}
 		}
 		else if (cmd[i] == '>' && cmd[i + 1] == '>')
@@ -518,10 +516,11 @@ char *get_string_exp(char *str, char *old_var, char *new_var)
 }
 char *ft_str_exp(char *str_var, t_expand *env)
 {
-	int i = 0;
+	size_t i = 0;
 	char *get_var = NULL;
 	char *str_exp = NULL;
-	while (str_var[i])
+	size_t len = ft_strlen(str_var);
+	while (i < len)
 	{
 		if (str_var[i] == '$')
 		{
@@ -731,7 +730,7 @@ int main(int ac, char const *av[], char *env[])
 		add_history(cmd);
 		head = tokenization(cmd, &head);
 		init_env(&env_expand, env);
-		// expand_and_print_vars(head, env_expand);
+		expand_and_print_vars(head, env_expand);
 		remove_single_q(head);
 		remove_double_q(head);
 		ft_headoc(head, env_expand);
