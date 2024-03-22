@@ -14,6 +14,7 @@
 #define MINISHELL_H
 
 #include <stdio.h>
+#include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
@@ -31,23 +32,34 @@ typedef struct command_node
 	struct command_node *next;
 } t_cmd;
 
-typedef enum tokenize
-{
-	REDIRECT_APPEND, // >>
-	REDIRECT_OUT,	 // >
-	REDIRECT_IN,	 // <
-	HEREDOC,		 // <<
-	SPACE,			 //" "
-	STRING,			 //"belguabd"
-	PIPE,			 //"|"
-	DOUBLE_Q,		 //""
-	SINGLE_Q,		 //''
-	VAR,			 // variable
-	EXIT_STATUS
-} t_token;
+// #define REDIRECT_APPEND 0 // >>
+// #define REDIRECT_OUT 1  // >
+// #define REDIRECT_IN 2	// <
+// #define HEREDOC 3	// <<
+// #define SPACE_ 4		//" "
+// #define STRING 5	//"belguabd"
+// #define PIPE 6		//"|"
+// #define DOUBLE_Q 7 	//""
+// #define SINGLE_Q 8	//''
+// #define VAR 9		// variable
+// #define EXIT_STATUS 10
+// typedef enum tokenize
+// {
+// 	REDIRECT_APPEND, // >>
+// 	REDIRECT_OUT,	 // >
+// 	REDIRECT_IN,	 // <
+// 	HEREDOC,		 // <<
+// 	SPACE_,			 //" "
+// 	STRING,			 //"belguabd"
+// 	PIPE,			 //"|"
+// 	DOUBLE_Q,		 //""
+// 	SINGLE_Q,		 //''
+// 	VAR,			 // variable
+// 	EXIT_STATUS
+// } t_token;
 typedef struct token_node
 {
-	t_token type;
+	int type;
 	char *value;
 	struct token_node *next;
 } token_node;
@@ -80,7 +92,7 @@ void ft_putendl_fd(char *s, int fd);
 int ft_lstsize(token_node *lst);
 int	ft_isalnum(int c);
 int	ft_isdigit(int c);
-
+char	*ft_itoa(int n);
 
 
 

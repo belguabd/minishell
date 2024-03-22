@@ -27,11 +27,11 @@
 // 	new[i] = '\0';
 // 	return (new);
 // }
-char	*ft_strdup(const char *s1)
+char *ft_strdup(const char *s1)
 {
-	int		len;
-	int		i;
-	char	*string;
+	int len;
+	int i;
+	char *string;
 
 	len = ft_strlen(s1);
 	string = (char *)malloc((len + 1) * sizeof(char));
