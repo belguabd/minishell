@@ -649,9 +649,13 @@ void remove_double_q(token_node *head)
 		head = head->next;
 	}
 }
-bool is_str_quoted(token_node *dlmr)
+// bool is_str_quoted(token_node *dlmr)
+// {
+// 	return (dlmr->type == STRING || dlmr->type == DOUBLE_Q || dlmr->type == SINGLE_Q || dlmr->type == VAR);
+// }
+int is_string_type(int type)
 {
-	return (dlmr->type == STRING || dlmr->type == DOUBLE_Q || dlmr->type == SINGLE_Q || dlmr->type == VAR);
+	return (type == STRING || type == SINGLE_Q || type == DOUBLE_Q || type == VAR);
 }
 char *expand_heardoc(char *cmd, t_expand *env)
 {
@@ -672,11 +676,9 @@ void readline_hdc(char *dlmtr, t_expand *env, int flage)
 {
 	static int i;
 	(void)dlmtr;
-	char *file_tmp = ft_strdup("file_tmp_");
+	char *buffer = NULL;
+	char *file_tmp = ft_strdup("/tmp/file_tmp_");
 	file_tmp = ft_strjoin(file_tmp, ft_itoa(i++));
-	int fd = open(file_tmp, O_CREAT | O_RDWR, 0777);
-	if (fd < 0)
-		write(2, "Error\n", 6);
 	while (1)
 	{
 		char *cmd = readline("> ");
@@ -684,9 +686,15 @@ void readline_hdc(char *dlmtr, t_expand *env, int flage)
 			break;
 		if (flage != 1337)
 			cmd = expand_heardoc(cmd, env);
-		write(fd, cmd, ft_strlen(cmd));
-		write(fd, "\n", 1);
+		if (!buffer)
+			buffer = ft_strdup("");
+		buffer = ft_strjoin(buffer, cmd);
+		buffer = ft_strjoin(buffer, "\n");
 	}
+	int fd = open(file_tmp, O_CREAT | O_RDWR | O_TRUNC, 0777);
+	if (fd < 0)
+		write(2, "Error\n", 6);
+	write(fd, buffer, ft_strlen(buffer));
 }
 void ft_headoc(token_node *head, t_expand *env)
 {
@@ -699,7 +707,7 @@ void ft_headoc(token_node *head, t_expand *env)
 			token_node *tmp = head->next;
 			if (tmp && tmp->type == SPACE_)
 				tmp = tmp->next;
-			while (tmp && is_str_quoted(tmp))
+			while (tmp && is_string_type(tmp->type))
 			{
 				if (!flage && (tmp->type == SINGLE_Q || tmp->type == DOUBLE_Q))
 					flage = 1337;
@@ -713,6 +721,34 @@ void ft_headoc(token_node *head, t_expand *env)
 		}
 		head = head->next;
 	}
+}
+
+token_node *ft_concatenate(token_node *head)
+{
+	token_node *new = NULL;
+	char *buffer = NULL;
+
+	while (head != NULL)
+	{
+		if (is_string_type(head->type))
+		{
+			buffer = NULL;
+			while (head != NULL && is_string_type(head->type))
+			{
+				if (!buffer)
+					buffer = ft_strdup("");
+				buffer = ft_strjoin(buffer, head->value);
+				head = head->next;
+			}
+			lstadd_back(&new, addnew_tkn_node(STRING, buffer));
+		}
+		else
+		{
+			lstadd_back(&new, addnew_tkn_node(head->type, head->value));
+			head = head->next;
+		}
+	}
+	return new;
 }
 int main(int ac, char const *av[], char *env[])
 {
@@ -730,10 +766,11 @@ int main(int ac, char const *av[], char *env[])
 		add_history(cmd);
 		head = tokenization(cmd, &head);
 		init_env(&env_expand, env);
-		expand_and_print_vars(head, env_expand);
+		// expand_and_print_vars(head, env_expand);
 		remove_single_q(head);
 		remove_double_q(head);
 		ft_headoc(head, env_expand);
+		head = ft_concatenate(head);
 		// exit(0);
 		// display_expand_list(env_expand);
 		handle_errors_cmd(head, cmd);
