@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/22 11:20:07 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/23 12:09:06 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,20 +23,7 @@
 #define VAR 9	   // variable
 #define EXIT_STATUS 10
 #include <string.h>
-bool is_var(char c)
-{
-	if (ft_isalnum(c) || c == '_')
-		return (true);
-	return (false);
-}
-token_node *ft_lstlast(token_node *lst)
-{
-	if (!lst)
-		return (NULL);
-	while (lst->next)
-		lst = lst->next;
-	return (lst);
-}
+
 void displayLinkedList(token_node *head)
 {
 	printf("\n+--------+---------------+\n");
@@ -51,10 +38,10 @@ void displayLinkedList(token_node *head)
 	}
 	printf("+--------+---------------+\n");
 }
-bool is_string(char c)
-{
-	return (c == '\"' || c == '\'' || c == '|' || c == '>' || c == '$' || c == '<' || c == ' ' || c == '\t');
-}
+// bool is_string(char c)
+// {
+// 	return (c == '\"' || c == '\'' || c == '|' || c == '>' || c == '$' || c == '<' || c == ' ' || c == '\t');
+// }
 // token_node *addnew_tkn_node(t_token token, char *value)
 // {
 // 	token_node *new;
@@ -66,29 +53,29 @@ bool is_string(char c)
 // 	new->next = NULL;
 // 	return (new);
 // }
-token_node *addnew_tkn_node(int token, char *value)
-{
-	token_node *new;
-	new = (token_node *)malloc(sizeof(token_node));
-	if (!new)
-		return (NULL);
-	new->type = token;
-	new->value = value;
-	new->next = NULL;
-	return (new);
-}
-void lstadd_back(token_node **lst, token_node *new)
-{
-	if (!*lst)
-	{
-		*lst = new;
-		return;
-	}
-	token_node *cur = *lst;
-	while (cur->next)
-		cur = cur->next;
-	cur->next = new;
-}
+// token_node *addnew_tkn_node(int token, char *value)
+// {
+// 	token_node *new;
+// 	new = (token_node *)malloc(sizeof(token_node));
+// 	if (!new)
+// 		return (NULL);
+// 	new->type = token;
+// 	new->value = value;
+// 	new->next = NULL;
+// 	return (new);
+// }
+// void lstadd_back(token_node **lst, token_node *new)
+// {
+// 	if (!*lst)
+// 	{
+// 		*lst = new;
+// 		return;
+// 	}
+// 	token_node *cur = *lst;
+// 	while (cur->next)
+// 		cur = cur->next;
+// 	cur->next = new;
+// }
 
 // char *get_var(const char *cmd, int j)
 // {
@@ -99,134 +86,134 @@ void lstadd_back(token_node **lst, token_node *new)
 // 		i++;
 // 	return (ft_substr(cmd, j, i - j));
 // }
-token_node *tokenization(const char *cmd, token_node **head)
-{
-	size_t i = 0;
-	size_t start = 0;
-	size_t end = 0;
-	char *str;
-	size_t len = ft_strlen(cmd);
-	while (cmd[i] == ' ' || (cmd[i] >= 9 && cmd[i] <= 13))
-		i++;
-	while (i < len) // use len of handle overflow
-	{
-		if (cmd[i] == '|')
-			lstadd_back(head, addnew_tkn_node(PIPE, "|"));
-		else if (cmd[i] == '$' && cmd[i + 1] == '?')
-			lstadd_back(head, addnew_tkn_node(EXIT_STATUS, "$?"));
-		else if (cmd[i] == '$')
-		{
-			int count = i;
-			int start = i;
-			while (cmd[count] && cmd[count] == '$')
-				count++;
-			count = count - i;
-			if (count % 2 != 0)
-			{
-				size_t j = i;
-				start = j;
-				while (cmd[j] && cmd[j] == '$')
-					j++;
-				end = j;
-				if (cmd[j] >= '0' && cmd[j] <= '9')
-				{
-					char *str = ft_substr(cmd, start, (end + 1) - start);
-					lstadd_back(head, addnew_tkn_node(VAR, str));
-				}
-				else
-				{
-					if (is_var(cmd[j]))
-					{
-						while (ft_isalnum(cmd[j]) || cmd[j] == '_')
-							j++;
-						end = j;
+// token_node *tokenization(const char *cmd, token_node **head)
+// {
+// 	size_t i = 0;
+// 	size_t start = 0;
+// 	size_t end = 0;
+// 	char *str;
+// 	size_t len = ft_strlen(cmd);
+// 	while (cmd[i] == ' ' || (cmd[i] >= 9 && cmd[i] <= 13))
+// 		i++;
+// 	while (i < len) // use len of handle overflow
+// 	{
+// 		if (cmd[i] == '|')
+// 			lstadd_back(head, addnew_tkn_node(PIPE, "|"));
+// 		else if (cmd[i] == '$' && cmd[i + 1] == '?')
+// 			lstadd_back(head, addnew_tkn_node(EXIT_STATUS, "$?"));
+// 		else if (cmd[i] == '$')
+// 		{
+// 			int count = i;
+// 			int start = i;
+// 			while (cmd[count] && cmd[count] == '$')
+// 				count++;
+// 			count = count - i;
+// 			if (count % 2 != 0)
+// 			{
+// 				size_t j = i;
+// 				start = j;
+// 				while (cmd[j] && cmd[j] == '$')
+// 					j++;
+// 				end = j;
+// 				if (cmd[j] >= '0' && cmd[j] <= '9')
+// 				{
+// 					char *str = ft_substr(cmd, start, (end + 1) - start);
+// 					lstadd_back(head, addnew_tkn_node(VAR, str));
+// 				}
+// 				else
+// 				{
+// 					if (is_var(cmd[j]))
+// 					{
+// 						while (ft_isalnum(cmd[j]) || cmd[j] == '_')
+// 							j++;
+// 						end = j;
 
-						char *str = ft_substr(cmd, start, (end)-start);
-						lstadd_back(head, addnew_tkn_node(VAR, str));
-					}
-					else
-						lstadd_back(head, addnew_tkn_node(STRING, "$"));
-				}
-			}
-			else
-			{
-				start = i;
-				int j = i;
-				while (cmd[j] && cmd[j] == '$')
-					j++;
-				end = j;
-				if (cmd[j] >= '0' && cmd[j] <= '9')
-					str = ft_substr(cmd, start, (end + 1) - start);
-				else
-				{
-					while (cmd[j] && (ft_isalnum(cmd[j]) || cmd[j] == '_'))
-						j++;
-					end = j;
-					str = ft_substr(cmd, start, (end)-start);
-				}
-				lstadd_back(head, addnew_tkn_node(STRING, str));
-			}
-		}
-		else if (cmd[i] == '>' && cmd[i + 1] == '>')
-			lstadd_back(head, addnew_tkn_node(REDIRECT_APPEND, ">>"));
-		else if (cmd[i] == '<' && cmd[i + 1] == '<')
-			lstadd_back(head, addnew_tkn_node(HEREDOC, "<<"));
-		else if (cmd[i] == ' ' || (cmd[i] >= 9 && cmd[i] <= 13))
-		{
-			lstadd_back(head, addnew_tkn_node(SPACE_, " "));
-			while (cmd[i] == ' ' || (cmd[i] >= 9 && cmd[i] <= 13))
-				i++;
-			i--;
-		}
-		else if (cmd[i] == '\'')
-		{
-			int j = i;
-			start = j;
-			j++;
-			while (cmd[j])
-			{
-				if (cmd[j] == '\'')
-					break;
-				j++;
-			}
-			end = j;
-			str = ft_substr(cmd, start, (end + 1) - start);
-			lstadd_back(head, addnew_tkn_node(SINGLE_Q, str));
-		}
-		else if (cmd[i] == '\"')
-		{
-			int j = i;
-			start = j;
-			j++;
-			while (cmd[j])
-			{
-				if (cmd[j] == '\"')
-					break;
-				j++;
-			}
+// 						char *str = ft_substr(cmd, start, (end)-start);
+// 						lstadd_back(head, addnew_tkn_node(VAR, str));
+// 					}
+// 					else
+// 						lstadd_back(head, addnew_tkn_node(STRING, "$"));
+// 				}
+// 			}
+// 			else
+// 			{
+// 				start = i;
+// 				int j = i;
+// 				while (cmd[j] && cmd[j] == '$')
+// 					j++;
+// 				end = j;
+// 				if (cmd[j] >= '0' && cmd[j] <= '9')
+// 					str = ft_substr(cmd, start, (end + 1) - start);
+// 				else
+// 				{
+// 					while (cmd[j] && (ft_isalnum(cmd[j]) || cmd[j] == '_'))
+// 						j++;
+// 					end = j;
+// 					str = ft_substr(cmd, start, (end)-start);
+// 				}
+// 				lstadd_back(head, addnew_tkn_node(STRING, str));
+// 			}
+// 		}
+// 		else if (cmd[i] == '>' && cmd[i + 1] == '>')
+// 			lstadd_back(head, addnew_tkn_node(REDIRECT_APPEND, ">>"));
+// 		else if (cmd[i] == '<' && cmd[i + 1] == '<')
+// 			lstadd_back(head, addnew_tkn_node(HEREDOC, "<<"));
+// 		else if (cmd[i] == ' ' || (cmd[i] >= 9 && cmd[i] <= 13))
+// 		{
+// 			lstadd_back(head, addnew_tkn_node(SPACE_, " "));
+// 			while (cmd[i] == ' ' || (cmd[i] >= 9 && cmd[i] <= 13))
+// 				i++;
+// 			i--;
+// 		}
+// 		else if (cmd[i] == '\'')
+// 		{
+// 			int j = i;
+// 			start = j;
+// 			j++;
+// 			while (cmd[j])
+// 			{
+// 				if (cmd[j] == '\'')
+// 					break;
+// 				j++;
+// 			}
+// 			end = j;
+// 			str = ft_substr(cmd, start, (end + 1) - start);
+// 			lstadd_back(head, addnew_tkn_node(SINGLE_Q, str));
+// 		}
+// 		else if (cmd[i] == '\"')
+// 		{
+// 			int j = i;
+// 			start = j;
+// 			j++;
+// 			while (cmd[j])
+// 			{
+// 				if (cmd[j] == '\"')
+// 					break;
+// 				j++;
+// 			}
 
-			end = j;
-			str = ft_substr(cmd, start, (end + 1) - start);
-			lstadd_back(head, addnew_tkn_node(DOUBLE_Q, str));
-		}
-		else if (cmd[i] == '>')
-			lstadd_back(head, addnew_tkn_node(REDIRECT_OUT, ">"));
-		else if (cmd[i] == '<')
-			lstadd_back(head, addnew_tkn_node(REDIRECT_IN, "<"));
-		else
-		{
-			int j = i;
-			start = j;
-			while (cmd[j] && !is_string(cmd[j]))
-				j++;
-			end = --j;
-			str = ft_substr(cmd, start, (end + 1) - start);
-			lstadd_back(head, addnew_tkn_node(STRING, str));
-		}
-		i += ft_strlen(ft_lstlast(*head)->value);
-	}
-	return (*head);
-}
+// 			end = j;
+// 			str = ft_substr(cmd, start, (end + 1) - start);
+// 			lstadd_back(head, addnew_tkn_node(DOUBLE_Q, str));
+// 		}
+// 		else if (cmd[i] == '>')
+// 			lstadd_back(head, addnew_tkn_node(REDIRECT_OUT, ">"));
+// 		else if (cmd[i] == '<')
+// 			lstadd_back(head, addnew_tkn_node(REDIRECT_IN, "<"));
+// 		else
+// 		{
+// 			int j = i;
+// 			start = j;
+// 			while (cmd[j] && !is_string(cmd[j]))
+// 				j++;
+// 			end = --j;
+// 			str = ft_substr(cmd, start, (end + 1) - start);
+// 			lstadd_back(head, addnew_tkn_node(STRING, str));
+// 		}
+// 		i += ft_strlen(ft_lstlast(*head)->value);
+// 	}
+// 	return (*head);
+// }
 int ft_strcmp(const char *str1, const char *str2)
 {
 	int i = 0;
@@ -236,19 +223,20 @@ int ft_strcmp(const char *str1, const char *str2)
 	return (str1[i] - str2[i]);
 }
 
-void quote_error_handling(const char *buffer, size_t *i, char c)
+int quote_error_handling(const char *buffer, size_t *i, char c)
 {
 	while (buffer[(*i)] && buffer[(*i)] != c)
 		(*i)++;
 	if (buffer[(*i)] && buffer[(*i)] == c)
-		return;
+		return (0);
 	else
 	{
 		ft_putendl_fd("close quote", 2);
-		return;
+		return (-1);
 	}
+	return (0);
 }
-void handle_errors_cmd(token_node *head, const char *cmd)
+int handle_errors_cmd(token_node *head, const char *cmd)
 {
 	size_t i = 0;
 	size_t len = ft_strlen(cmd);
@@ -257,7 +245,8 @@ void handle_errors_cmd(token_node *head, const char *cmd)
 		if (cmd[i] == '\"' || cmd[i] == '\'')
 		{
 			i++;
-			quote_error_handling(cmd, &i, cmd[i - 1]);
+			if (quote_error_handling(cmd, &i, cmd[i - 1]) == -1)
+				return (-1);
 		}
 		i++;
 	}
@@ -271,13 +260,13 @@ void handle_errors_cmd(token_node *head, const char *cmd)
 				tmp = tmp->next;
 			if (tmp && tmp->type != STRING && tmp->type != DOUBLE_Q && tmp->type != SINGLE_Q && tmp->type != VAR)
 			{
-				printf("ERROR1\n");
-				return;
+				ft_putendl_fd("syntax error near unexpected token", 2);
+				return (-1);
 			}
 			if (!tmp)
 			{
-				printf("ERROR2\n");
-				return;
+				ft_putendl_fd("syntax error near unexpected token", 2);
+				return (-1);
 			}
 		}
 		tmp = tmp->next;
@@ -287,8 +276,8 @@ void handle_errors_cmd(token_node *head, const char *cmd)
 		tmp = tmp->next;
 	if (tmp && tmp->type == PIPE)
 	{
-		printf("ERROR3\n");
-		return;
+		ft_putendl_fd("syntax error near unexpected token", 2);
+		return (-1);
 	}
 
 	tmp = head;
@@ -302,17 +291,18 @@ void handle_errors_cmd(token_node *head, const char *cmd)
 				tmp = tmp->next;
 			if (tmp && tmp->type == PIPE)
 			{
-				printf("ERROR4\n");
-				return;
+				ft_putendl_fd("syntax error near unexpected token", 2);
+				return (-1);
 			}
 			if (!tmp)
 			{
-				printf("ERROR4\n");
-				return;
+				ft_putendl_fd("syntax error near unexpected token", 2);
+				return (-1);
 			}
 		}
 		tmp = tmp->next;
 	}
+	return (0);
 }
 // void skip_whiteSPACE_(token_node **lst)
 // {
@@ -649,10 +639,7 @@ void remove_double_q(token_node *head)
 		head = head->next;
 	}
 }
-// bool is_str_quoted(token_node *dlmr)
-// {
-// 	return (dlmr->type == STRING || dlmr->type == DOUBLE_Q || dlmr->type == SINGLE_Q || dlmr->type == VAR);
-// }
+
 int is_string_type(int type)
 {
 	return (type == STRING || type == SINGLE_Q || type == DOUBLE_Q || type == VAR);
@@ -750,6 +737,17 @@ token_node *ft_concatenate(token_node *head)
 	}
 	return new;
 }
+void ft_free(token_node **head)
+{
+	token_node *tmp;
+	while (*head)
+	{
+		tmp = *head;
+		*head = (*head)->next;
+		free(tmp);
+	}
+}
+
 int main(int ac, char const *av[], char *env[])
 {
 	(void)ac;
@@ -759,21 +757,27 @@ int main(int ac, char const *av[], char *env[])
 	t_expand *env_expand = NULL;
 	(void)env_expand;
 	(void)env;
+
 	head = NULL;
 	while (1)
 	{
 		cmd = readline(COLOR_GREEN "➜  minishell " COLOR_RESET);
 		add_history(cmd);
 		head = tokenization(cmd, &head);
+		int error = handle_errors_cmd(head, cmd);
+		if (error == -1)
+		{
+			ft_free(&head);
+			continue;
+		}
 		init_env(&env_expand, env);
 		// expand_and_print_vars(head, env_expand);
 		remove_single_q(head);
 		remove_double_q(head);
-		ft_headoc(head, env_expand);
-		head = ft_concatenate(head);
+		// ft_headoc(head, env_expand);
+		// head = ft_concatenate(head);
 		// exit(0);
 		// display_expand_list(env_expand);
-		handle_errors_cmd(head, cmd);
 		displayLinkedList(head);
 		token_node *tmp;
 		while (head)

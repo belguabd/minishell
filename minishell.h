@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/21 00:17:17 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/23 09:56:23 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,30 +90,36 @@ char *ft_substr(char const *s, unsigned int start, size_t len);
 char *ft_strjoin(char const *s1, char const *s2);
 void ft_putendl_fd(char *s, int fd);
 int ft_lstsize(token_node *lst);
-int	ft_isalnum(int c);
-int	ft_isdigit(int c);
-char	*ft_itoa(int n);
+int ft_isalnum(int c);
+int ft_isdigit(int c);
+char *ft_itoa(int n);
+
+/*functions for tokenization */
+token_node *ft_lstlast(token_node *lst);
+token_node *tokenization(const char *cmd, token_node **head);
+token_node *addnew_tkn_node(int token, char *value);
+void lstadd_back(token_node **lst, token_node *new);
+bool is_var(char c);
+bool is_string(char c);
 
 
+// execution
 
+// builtin
+void ft_pwd();
+void ft_cd(char *path);
+void ft_echo(char **cmd);
+void ft_env(char **cmd, t_expand *envp);
+void ft_unset(char **cmd, t_expand **envp);
+void ft_export(char **cmd, t_expand **envp);
 
-//execution
-
-//builtin
-void	ft_pwd();
-void    ft_cd(char *path);
-void	ft_echo(char **cmd);
-void	ft_env(char **cmd, t_expand *envp);
-void	ft_unset(char **cmd, t_expand **envp);
-void	ft_export(char **cmd, t_expand **envp);
-
-//tools
+// tools
 
 // t_expand	*ft_lstlast(t_expand *lst);
-void		ft_lst_add_back(t_expand **lst, t_expand *new_node);
+void ft_lst_add_back(t_expand **lst, t_expand *new_node);
 // int			ft_strcmp(char *s1, char *s2);
-void		ft_del_node(t_expand **lst, char *key);
-t_expand	*ft_lst_new(char *key, char *val);
-void		ft_free_node(t_expand *node);
+void ft_del_node(t_expand **lst, char *key);
+t_expand *ft_lst_new(char *key, char *val);
+void ft_free_node(t_expand *node);
 
 #endif
