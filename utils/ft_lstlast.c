@@ -1,28 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_lstlast.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/15 21:44:34 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/21 05:43:25 by soel-bou         ###   ########.fr       */
+/*   Created: 2024/03/23 09:40:15 by belguabd          #+#    #+#             */
+/*   Updated: 2024/03/23 09:41:08 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-#include <fcntl.h>
 
-void    f()
+token_node *ft_lstlast(token_node *lst)
 {
-    system("leaks a.out");
-}
-
-int main(int argc, char const *argv[], char *envp[])
-{
-    int fd;
-
-    fd = open("test", O_WRONLY | O_CREAT, 0777);
-    dup2(fd, STDOUT_FILENO);
-    printf("hello");
+	if (!lst)
+		return (NULL);
+	while (lst->next)
+		lst = lst->next;
+	return (lst);
 }

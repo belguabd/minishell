@@ -1,28 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_pipe.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/15 21:44:34 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/21 05:43:25 by soel-bou         ###   ########.fr       */
+/*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
+/*   Updated: 2024/03/21 02:24:45 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-#include <fcntl.h>
 
-void    f()
+int main()
 {
-    system("leaks a.out");
-}
+    int fd[2];
+    int pid;
 
-int main(int argc, char const *argv[], char *envp[])
-{
-    int fd;
-
-    fd = open("test", O_WRONLY | O_CREAT, 0777);
-    dup2(fd, STDOUT_FILENO);
-    printf("hello");
+    pipe(fd);
+    pid = fork();
+    if(pid == 0)
+    {
+        close(fd[0]);
+        dup2(0, )
+    }
 }
