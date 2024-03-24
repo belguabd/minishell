@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/24 15:17:36 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/24 19:33:15 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -659,22 +659,25 @@ char *expand_heardoc(char *cmd, t_expand *env)
 	}
 	return (buffer);
 }
-void readline_hdc(char *dlmtr, t_expand *env, int flage)
+void readline_hdc(char *dlmtr, t_expand *env, int flag)
 {
 	static int i;
 	(void)dlmtr;
 	char *buffer = NULL;
-	char *file_tmp = ft_strdup("/tmp/file_tmp_");
+	// char *file_tmp = ft_strdup("/tmp/file_tmp_");
+	char *file_tmp = ft_strdup("file_tmp_");
 	file_tmp = ft_strjoin(file_tmp, ft_itoa(i++));
 	while (1)
 	{
 		char *cmd = readline("> ");
 		if (!ft_strcmp(cmd, dlmtr))
 			break;
-		if (flage != 1337)
+		if (flag != 1337)
 			cmd = expand_heardoc(cmd, env);
 		if (!buffer)
 			buffer = ft_strdup("");
+		if (!cmd)
+			cmd = ft_strdup("");
 		buffer = ft_strjoin(buffer, cmd);
 		buffer = ft_strjoin(buffer, "\n");
 	}
@@ -686,7 +689,7 @@ void readline_hdc(char *dlmtr, t_expand *env, int flage)
 void ft_headoc(token_node *head, t_expand *env)
 {
 	char *buffer = NULL;
-	int flage = 0;
+	int flag = 0;
 	while (head)
 	{
 		if (head->type == HEREDOC)
@@ -696,14 +699,14 @@ void ft_headoc(token_node *head, t_expand *env)
 				tmp = tmp->next;
 			while (tmp && is_string_type(tmp->type))
 			{
-				if (!flage && (tmp->type == SINGLE_Q || tmp->type == DOUBLE_Q))
-					flage = 1337;
+				if (!flag && (tmp->type == SINGLE_Q || tmp->type == DOUBLE_Q))
+					flag = 1337;
 				if (!buffer)
 					buffer = ft_strdup("");
 				buffer = ft_strjoin(buffer, tmp->value);
 				tmp = tmp->next;
 			}
-			readline_hdc(buffer, env, flage);
+			readline_hdc(buffer, env, flag);
 			buffer = NULL;
 		}
 		head = head->next;
@@ -775,7 +778,41 @@ token_node *ft_remove_redirect(token_node *head)
 	}
 	return (new_node);
 }
+token_node *ft_passing(token_node *head)
+{
+	int count = 0;
+	token_node *tmp = head;
+	t_cmd *cmd = (t_cmd *)malloc(sizeof(t_cmd));
+	if (!cmd)
+		return NULL;
 
+	while (tmp)
+	{
+		if (tmp->type == STRING)
+			count++;
+		tmp = tmp->next;
+	}
+	cmd->args = (char **)malloc(sizeof(char *) * (count + 1));
+	if (!cmd->args)
+		return (NULL);
+	int i = 0;
+	while (head)
+	{
+		if (head->type == STRING)
+		{
+			cmd->args[i] = ft_strdup(head->value);
+			i++;
+		}
+		head = head->next;
+	}
+	i = 0;
+	while (i < count)
+	{
+		printf("%s\n", cmd->args[i]);
+		i++;
+	}
+	return (head);
+}
 int main(int ac, char const *av[], char *env[])
 {
 	(void)ac;
@@ -802,11 +839,12 @@ int main(int ac, char const *av[], char *env[])
 		// expand_and_print_vars(head, env_expand);
 		remove_single_q(head);
 		remove_double_q(head);
-		// ft_headoc(head, env_expand);
+		ft_headoc(head, env_expand);
 		// head = ft_concatenate(head);
 		// exit(0);
 		// display_expand_list(env_expand);
 		head = ft_remove_redirect(head);
+		head = ft_passing(head);
 		displayLinkedList(head);
 		token_node *tmp;
 		while (head)
