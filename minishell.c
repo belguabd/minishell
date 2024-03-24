@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/23 12:09:06 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/24 15:17:36 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -748,6 +748,34 @@ void ft_free(token_node **head)
 	}
 }
 
+bool is_redirection(int type)
+{
+	return (type == REDIRECT_APPEND || type == REDIRECT_IN || type == REDIRECT_OUT || type == HEREDOC);
+}
+token_node *ft_remove_redirect(token_node *head)
+{
+	token_node *new_node = NULL;
+	while (head)
+	{
+		if (is_redirection(head->type))
+		{
+			int type = head->type;
+			token_node *tmp = head->next;
+			if (tmp && tmp->type == SPACE_)
+				head = head->next;
+			head = head->next; // skip the redirection token
+			lstadd_back(&new_node, addnew_tkn_node(type, head->value));
+			head = head->next; // Skip the value token
+		}
+		else
+		{
+			lstadd_back(&new_node, addnew_tkn_node(head->type, head->value));
+			head = head->next;
+		}
+	}
+	return (new_node);
+}
+
 int main(int ac, char const *av[], char *env[])
 {
 	(void)ac;
@@ -778,6 +806,7 @@ int main(int ac, char const *av[], char *env[])
 		// head = ft_concatenate(head);
 		// exit(0);
 		// display_expand_list(env_expand);
+		head = ft_remove_redirect(head);
 		displayLinkedList(head);
 		token_node *tmp;
 		while (head)
