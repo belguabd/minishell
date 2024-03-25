@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/25 05:31:11 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/25 11:41:38 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,20 @@
 #define COLOR_RESET "\x1b[0m"
 #define COLOR_GREEN "\x1b[32m"
 
+typedef struct token_node
+{
+	int type;
+	char *value;
+	struct token_node *next;
+} token_node;
+
 typedef struct command_node
 {
 	char **args;
-	int input;
-	int ouput;
-	int	ispiped;
+	// int input;
+	// int ouput;
+	// int	ispiped;
+	token_node *redir;
 	struct command_node *next;
 } t_cmd;
 
@@ -58,12 +66,6 @@ typedef struct command_node
 // 	VAR,			 // variable
 // 	EXIT_STATUS
 // } t_token;
-typedef struct token_node
-{
-	int type;
-	char *value;
-	struct token_node *next;
-} token_node;
 
 typedef struct s_vars
 {
