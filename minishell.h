@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/25 05:31:11 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/25 10:20:13 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ typedef struct command_node
 	char **args;
 	int input;
 	int ouput;
-	int	ispiped;
+	bool islast;
+	bool isfirst;
 	struct command_node *next;
 } t_cmd;
 
