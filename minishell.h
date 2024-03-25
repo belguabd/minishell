@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/24 15:15:45 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/25 05:31:11 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ typedef struct command_node
 	char **args;
 	int input;
 	int ouput;
+	int	ispiped;
 	struct command_node *next;
 } t_cmd;
 
@@ -122,5 +123,6 @@ int			ft_strcmp(const char *s1,const char *s2);
 void		ft_del_node(t_expand **lst, char *key);
 t_expand	*ft_lst_new(char *key, char *val);
 void		ft_free_node(t_expand *node);
+size_t		ft_lst_size(t_expand *lst);
 
 #endif
