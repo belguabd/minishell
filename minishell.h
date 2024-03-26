@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/25 10:20:13 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/26 06:56:15 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,23 @@
 #define COLOR_RESET "\x1b[0m"
 #define COLOR_GREEN "\x1b[32m"
 
+typedef struct token_node
+{
+	int type;
+	char *value;
+	struct token_node *next;
+} token_node;
+
 typedef struct command_node
 {
 	char **args;
-	int input;
-	int ouput;
-	bool islast;
+	//add this;
+	int infile;
+	int	outfile;
 	bool isfirst;
+	bool islast;
+	//END
+	token_node *redir;
 	struct command_node *next;
 } t_cmd;
 
@@ -59,12 +69,6 @@ typedef struct command_node
 // 	VAR,			 // variable
 // 	EXIT_STATUS
 // } t_token;
-typedef struct token_node
-{
-	int type;
-	char *value;
-	struct token_node *next;
-} token_node;
 
 typedef struct s_vars
 {
@@ -104,7 +108,6 @@ void lstadd_back(token_node **lst, token_node *new);
 bool is_var(char c);
 bool is_string(char c);
 
-
 // execution
 
 // builtin
@@ -117,13 +120,13 @@ void ft_export(char **cmd, t_expand **envp);
 
 // tools
 
-t_expand	*ft_lst_last(t_expand *lst);
-void		ft_lst_add_back(t_expand **lst, t_expand *new_node);
+t_expand *ft_lst_last(t_expand *lst);
+void ft_lst_add_back(t_expand **lst, t_expand *new_node);
 // int			ft_strcmp(char *s1, char *s2);
-int			ft_strcmp(const char *s1,const char *s2);
-void		ft_del_node(t_expand **lst, char *key);
-t_expand	*ft_lst_new(char *key, char *val);
-void		ft_free_node(t_expand *node);
-size_t		ft_lst_size(t_expand *lst);
+int ft_strcmp(const char *s1, const char *s2);
+void ft_del_node(t_expand **lst, char *key);
+t_expand *ft_lst_new(char *key, char *val);
+void ft_free_node(t_expand *node);
+size_t ft_lst_size(t_expand *lst);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/24 19:33:15 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/26 05:29:44 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -778,50 +778,106 @@ token_node *ft_remove_redirect(token_node *head)
 	}
 	return (new_node);
 }
-token_node *ft_passing(token_node *head)
+void lst_addback_cmd(t_cmd **lst_cmd, t_cmd *new_cmd)
 {
-	int count = 0;
-	token_node *tmp = head;
-	t_cmd *cmd = (t_cmd *)malloc(sizeof(t_cmd));
-	if (!cmd)
-		return NULL;
-
-	while (tmp)
+	t_cmd *tmp = *lst_cmd;
+	if (!tmp)
 	{
-		if (tmp->type == STRING)
-			count++;
-		tmp = tmp->next;
+		*lst_cmd = new_cmd;
+		return;
 	}
-	cmd->args = (char **)malloc(sizeof(char *) * (count + 1));
-	if (!cmd->args)
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = new_cmd;
+}
+t_cmd *addnew_cmd(char **args, token_node *head_cmd)
+{
+	t_cmd *new_cmd = (t_cmd *)malloc(sizeof(t_cmd));
+	if (!new_cmd)
 		return (NULL);
-	int i = 0;
+	new_cmd->args = args;
+	new_cmd->redir = head_cmd;
+	new_cmd->next = NULL;
+	return (new_cmd);
+}
+t_cmd *ft_passing(token_node *head)
+{
+	// t_cmd *tmp = NULL;
+	t_cmd *new_cmd = NULL;
+	token_node *head_cmd = NULL;
+	int count;
 	while (head)
 	{
-		if (head->type == STRING)
+		count = 0;
+		token_node *tmp = head;
+		while (tmp)
 		{
-			cmd->args[i] = ft_strdup(head->value);
-			i++;
+			if (tmp->type == PIPE)
+				break;
+			if (tmp->type == STRING)
+				count++;
+			tmp = tmp->next;
 		}
-		head = head->next;
+		char **args = (char **)malloc(sizeof(char *) * (count + 1));
+		if (!args)
+			return (NULL);
+		int i = 0;
+		while (head)
+		{
+			if (head->type == PIPE)
+				break;
+			if (head->type == STRING)
+				args[i++] = ft_strdup(head->value);
+			if (is_redirection(head->type))
+				lstadd_back(&head_cmd, addnew_tkn_node(head->type, head->value));
+			head = head->next;
+		}
+		args[i] = NULL;
+		if (head && (head->type == PIPE))
+		{
+			lst_addback_cmd(&new_cmd, addnew_cmd(args, head_cmd));
+			head_cmd = NULL;
+		}
+		if (!head)
+		{
+			lst_addback_cmd(&new_cmd, addnew_cmd(args, head_cmd));
+			break;
+		}
+		if (head)
+			head = head->next;
 	}
-	i = 0;
-	while (i < count)
-	{
-		printf("%s\n", cmd->args[i]);
-		i++;
-	}
-	return (head);
+	return (new_cmd);
 }
+// void f(t_cmd *head)
+// {
+// 	int input=2;
+// 	int output = 3;
+// 	while (head->redir)
+// 	{
+// 		if (head->redir->type == REDIRECT_OUT || head->redir->type == REDIRECT_APPEND) // >  FILE >> FILE2 > FILE2 < FILE4
+//  		{
+// 			fd = open();
+// 			close()
+// 			3
+// 		}
+// 		if(head->redir->type==REDIRECT_OUT){
+			
+// 		}
+// 		head->redir = head->redir->next;
+// 	}
+// }
 int main(int ac, char const *av[], char *env[])
 {
 	(void)ac;
 	(void)av;
 	const char *cmd = NULL;
-	token_node *head;
+	token_node *head = NULL;
 	t_expand *env_expand = NULL;
 	(void)env_expand;
+	t_cmd *cmd_list = NULL;
+
 	(void)env;
+	(void)cmd_list;
 
 	head = NULL;
 	while (1)
@@ -839,12 +895,29 @@ int main(int ac, char const *av[], char *env[])
 		// expand_and_print_vars(head, env_expand);
 		remove_single_q(head);
 		remove_double_q(head);
-		ft_headoc(head, env_expand);
+		// ft_headoc(head, env_expand);
 		// head = ft_concatenate(head);
 		// exit(0);
 		// display_expand_list(env_expand);
 		head = ft_remove_redirect(head);
-		head = ft_passing(head);
+		cmd_list = ft_passing(head);
+		while (cmd_list)
+		{
+			printf("args: ");
+			for (int i = 0; cmd_list->args[i]; i++)
+				printf("%s ", cmd_list->args[i]);
+			printf("\n");
+			printf("redir: ");
+			token_node *tmp = cmd_list->redir;
+			while (tmp)
+			{
+				printf("%s ", tmp->value);
+				tmp = tmp->next;
+			}
+			cmd_list = cmd_list->next;
+			printf("\n");
+		}
+
 		displayLinkedList(head);
 		token_node *tmp;
 		while (head)
