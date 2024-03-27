@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/26 06:56:15 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/27 02:59:24 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,11 @@ bool is_string(char c);
 
 // execution
 
+char	**get_envp(t_expand *lst_envp);
+void	ft_execute_node(char *cmd[], t_expand *envp, char **str_envp);
+char	**get_envp(t_expand *lst_envp);
+
+
 // builtin
 void ft_pwd();
 void ft_cd(char *path);
@@ -122,8 +127,8 @@ void ft_export(char **cmd, t_expand **envp);
 
 t_expand *ft_lst_last(t_expand *lst);
 void ft_lst_add_back(t_expand **lst, t_expand *new_node);
-// int			ft_strcmp(char *s1, char *s2);
-int ft_strcmp(const char *s1, const char *s2);
+int			ft_strcmp(char *s1, char *s2);
+//int ft_strcmp(const char *s1, const char *s2);
 void ft_del_node(t_expand **lst, char *key);
 t_expand *ft_lst_new(char *key, char *val);
 void ft_free_node(t_expand *node);
