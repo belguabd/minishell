@@ -3,14 +3,14 @@
 #include <unistd.h>
 #include <string.h>
 #include "minishell.h"
-int ft_strcmp(const char *str1, const char *str2)
-{
-	int i = 0;
+// int ft_strcmp(const char *str1, const char *str2)
+// {
+// 	int i = 0;
 
-	while (str1[i] && str2[i] && str1[i] == str2[i])
-		i++;
-	return (str1[i] - str2[i]);
-}
+// 	while (str1[i] && str2[i] && str1[i] == str2[i])
+// 		i++;
+// 	return (str1[i] - str2[i]);
+// }
 bool is_exp(char *dlmtr)
 {
 	int i = 0;
