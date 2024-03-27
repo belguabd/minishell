@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/27 08:41:13 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/27 08:43:01 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,8 +129,8 @@ void ft_export(char **cmd, t_expand **envp);
 
 t_expand *ft_lst_last(t_expand *lst);
 void ft_lst_add_back(t_expand **lst, t_expand *new_node);
-int			ft_strcmp(char *s1, char *s2);
-//int ft_strcmp(const char *s1, const char *s2);
+//int			ft_strcmp(char *s1, char *s2);
+int ft_strcmp(const char *s1, const char *s2);
 void ft_del_node(t_expand **lst, char *key);
 t_expand *ft_lst_new(char *key, char *val);
 void ft_free_node(t_expand *node);
