@@ -6,24 +6,11 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/25 21:23:58 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/27 01:53:43 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#define REDIRECT_APPEND 0 // >>
-#define REDIRECT_OUT 1	  // >
-#define REDIRECT_IN 2	  // <
-#define HEREDOC 3		  // <<
-#define SPACE_ 4
-#define STRING 5   //"belguabd"
-#define PIPE 6	   //"|"
-#define DOUBLE_Q 7 //""
-#define SINGLE_Q 8 //''
-#define VAR 9	   // variable
-#define EXIT_STATUS 10
-#include <string.h>
-
 void displayLinkedList(token_node *head)
 {
 	printf("\n+--------+---------------+\n");
@@ -38,182 +25,6 @@ void displayLinkedList(token_node *head)
 	}
 	printf("+--------+---------------+\n");
 }
-// bool is_string(char c)
-// {
-// 	return (c == '\"' || c == '\'' || c == '|' || c == '>' || c == '$' || c == '<' || c == ' ' || c == '\t');
-// }
-// token_node *addnew_tkn_node(t_token token, char *value)
-// {
-// 	token_node *new;
-// 	new = (token_node *)malloc(sizeof(token_node));
-// 	if (!new)
-// 		return (NULL);
-// 	new->type = token;
-// 	new->value = value;
-// 	new->next = NULL;
-// 	return (new);
-// }
-// token_node *addnew_tkn_node(int token, char *value)
-// {
-// 	token_node *new;
-// 	new = (token_node *)malloc(sizeof(token_node));
-// 	if (!new)
-// 		return (NULL);
-// 	new->type = token;
-// 	new->value = value;
-// 	new->next = NULL;
-// 	return (new);
-// }
-// void lstadd_back(token_node **lst, token_node *new)
-// {
-// 	if (!*lst)
-// 	{
-// 		*lst = new;
-// 		return;
-// 	}
-// 	token_node *cur = *lst;
-// 	while (cur->next)
-// 		cur = cur->next;
-// 	cur->next = new;
-// }
-
-// char *get_var(const char *cmd, int j)
-// {
-// 	int i = j;
-// 	if (cmd[i] >= '0' && cmd[i] <= '9')
-// 		return (ft_substr(cmd + i, i - 1, 1));
-// 	while (cmd[i] && ((cmd[i] >= 'a' && cmd[i] <= 'z') || (cmd[i] >= 'A' && cmd[i] <= 'Z') || (cmd[i] >= '0' && cmd[i] <= '9') || cmd[i] == '_'))
-// 		i++;
-// 	return (ft_substr(cmd, j, i - j));
-// }
-// token_node *tokenization(const char *cmd, token_node **head)
-// {
-// 	size_t i = 0;
-// 	size_t start = 0;
-// 	size_t end = 0;
-// 	char *str;
-// 	size_t len = ft_strlen(cmd);
-// 	while (cmd[i] == ' ' || (cmd[i] >= 9 && cmd[i] <= 13))
-// 		i++;
-// 	while (i < len) // use len of handle overflow
-// 	{
-// 		if (cmd[i] == '|')
-// 			lstadd_back(head, addnew_tkn_node(PIPE, "|"));
-// 		else if (cmd[i] == '$' && cmd[i + 1] == '?')
-// 			lstadd_back(head, addnew_tkn_node(EXIT_STATUS, "$?"));
-// 		else if (cmd[i] == '$')
-// 		{
-// 			int count = i;
-// 			int start = i;
-// 			while (cmd[count] && cmd[count] == '$')
-// 				count++;
-// 			count = count - i;
-// 			if (count % 2 != 0)
-// 			{
-// 				size_t j = i;
-// 				start = j;
-// 				while (cmd[j] && cmd[j] == '$')
-// 					j++;
-// 				end = j;
-// 				if (cmd[j] >= '0' && cmd[j] <= '9')
-// 				{
-// 					char *str = ft_substr(cmd, start, (end + 1) - start);
-// 					lstadd_back(head, addnew_tkn_node(VAR, str));
-// 				}
-// 				else
-// 				{
-// 					if (is_var(cmd[j]))
-// 					{
-// 						while (ft_isalnum(cmd[j]) || cmd[j] == '_')
-// 							j++;
-// 						end = j;
-
-// 						char *str = ft_substr(cmd, start, (end)-start);
-// 						lstadd_back(head, addnew_tkn_node(VAR, str));
-// 					}
-// 					else
-// 						lstadd_back(head, addnew_tkn_node(STRING, "$"));
-// 				}
-// 			}
-// 			else
-// 			{
-// 				start = i;
-// 				int j = i;
-// 				while (cmd[j] && cmd[j] == '$')
-// 					j++;
-// 				end = j;
-// 				if (cmd[j] >= '0' && cmd[j] <= '9')
-// 					str = ft_substr(cmd, start, (end + 1) - start);
-// 				else
-// 				{
-// 					while (cmd[j] && (ft_isalnum(cmd[j]) || cmd[j] == '_'))
-// 						j++;
-// 					end = j;
-// 					str = ft_substr(cmd, start, (end)-start);
-// 				}
-// 				lstadd_back(head, addnew_tkn_node(STRING, str));
-// 			}
-// 		}
-// 		else if (cmd[i] == '>' && cmd[i + 1] == '>')
-// 			lstadd_back(head, addnew_tkn_node(REDIRECT_APPEND, ">>"));
-// 		else if (cmd[i] == '<' && cmd[i + 1] == '<')
-// 			lstadd_back(head, addnew_tkn_node(HEREDOC, "<<"));
-// 		else if (cmd[i] == ' ' || (cmd[i] >= 9 && cmd[i] <= 13))
-// 		{
-// 			lstadd_back(head, addnew_tkn_node(SPACE_, " "));
-// 			while (cmd[i] == ' ' || (cmd[i] >= 9 && cmd[i] <= 13))
-// 				i++;
-// 			i--;
-// 		}
-// 		else if (cmd[i] == '\'')
-// 		{
-// 			int j = i;
-// 			start = j;
-// 			j++;
-// 			while (cmd[j])
-// 			{
-// 				if (cmd[j] == '\'')
-// 					break;
-// 				j++;
-// 			}
-// 			end = j;
-// 			str = ft_substr(cmd, start, (end + 1) - start);
-// 			lstadd_back(head, addnew_tkn_node(SINGLE_Q, str));
-// 		}
-// 		else if (cmd[i] == '\"')
-// 		{
-// 			int j = i;
-// 			start = j;
-// 			j++;
-// 			while (cmd[j])
-// 			{
-// 				if (cmd[j] == '\"')
-// 					break;
-// 				j++;
-// 			}
-
-// 			end = j;
-// 			str = ft_substr(cmd, start, (end + 1) - start);
-// 			lstadd_back(head, addnew_tkn_node(DOUBLE_Q, str));
-// 		}
-// 		else if (cmd[i] == '>')
-// 			lstadd_back(head, addnew_tkn_node(REDIRECT_OUT, ">"));
-// 		else if (cmd[i] == '<')
-// 			lstadd_back(head, addnew_tkn_node(REDIRECT_IN, "<"));
-// 		else
-// 		{
-// 			int j = i;
-// 			start = j;
-// 			while (cmd[j] && !is_string(cmd[j]))
-// 				j++;
-// 			end = --j;
-// 			str = ft_substr(cmd, start, (end + 1) - start);
-// 			lstadd_back(head, addnew_tkn_node(STRING, str));
-// 		}
-// 		i += ft_strlen(ft_lstlast(*head)->value);
-// 	}
-// 	return (*head);
-// }
 int ft_strcmp(const char *str1, const char *str2)
 {
 	int i = 0;
@@ -223,100 +34,6 @@ int ft_strcmp(const char *str1, const char *str2)
 	return (str1[i] - str2[i]);
 }
 
-int quote_error_handling(const char *buffer, size_t *i, char c)
-{
-	while (buffer[(*i)] && buffer[(*i)] != c)
-		(*i)++;
-	if (buffer[(*i)] && buffer[(*i)] == c)
-		return (0);
-	else
-	{
-		ft_putendl_fd("close quote", 2);
-		return (-1);
-	}
-	return (0);
-}
-int handle_errors_cmd(token_node *head, const char *cmd)
-{
-	size_t i = 0;
-	size_t len = ft_strlen(cmd);
-	while (i < len)
-	{
-		if (cmd[i] == '\"' || cmd[i] == '\'')
-		{
-			i++;
-			if (quote_error_handling(cmd, &i, cmd[i - 1]) == -1)
-				return (-1);
-		}
-		i++;
-	}
-	token_node *tmp = head;
-	while (tmp)
-	{
-		if (tmp->type >= REDIRECT_APPEND && tmp->type <= HEREDOC)
-		{
-			tmp = tmp->next;
-			if (tmp && tmp->type == SPACE_)
-				tmp = tmp->next;
-			if (tmp && tmp->type != STRING && tmp->type != DOUBLE_Q && tmp->type != SINGLE_Q && tmp->type != VAR)
-			{
-				ft_putendl_fd("syntax error near unexpected token", 2);
-				return (-1);
-			}
-			if (!tmp)
-			{
-				ft_putendl_fd("syntax error near unexpected token", 2);
-				return (-1);
-			}
-		}
-		tmp = tmp->next;
-	}
-	tmp = head; // check pipe in line start
-	if (tmp->type == SPACE_)
-		tmp = tmp->next;
-	if (tmp && tmp->type == PIPE)
-	{
-		ft_putendl_fd("syntax error near unexpected token", 2);
-		return (-1);
-	}
-
-	tmp = head;
-	// int size = ft_lstsize(tmp);
-	while (tmp) //||
-	{
-		if (tmp->type == PIPE)
-		{
-			tmp = tmp->next;
-			if (tmp && tmp->type == SPACE_)
-				tmp = tmp->next;
-			if (tmp && tmp->type == PIPE)
-			{
-				ft_putendl_fd("syntax error near unexpected token", 2);
-				return (-1);
-			}
-			if (!tmp)
-			{
-				ft_putendl_fd("syntax error near unexpected token", 2);
-				return (-1);
-			}
-		}
-		tmp = tmp->next;
-	}
-	return (0);
-}
-// void skip_whiteSPACE_(token_node **lst)
-// {
-// 	token_node *tmp = *lst;
-// 	while (tmp)
-// 	{
-
-// 		if (tmp->type == SPACE_)
-// 		{
-
-// 		}
-// 		tmp = tmp->next;
-// 	}
-// }
 t_expand *addnew_expand_node(char *key, char *value)
 {
 	t_expand *new_node = (t_expand *)malloc(sizeof(t_expand));
@@ -372,8 +89,6 @@ bool check_exist_env(char *str, t_expand *env)
 	(void)str;
 	while (env)
 	{
-		// if (!ft_strncmp(str, env->key, ft_strlen(env->key)))
-		// 	return (true);
 		t_expand *tmp = env;
 		env = env->next;
 		free(tmp);
@@ -403,199 +118,10 @@ char *get_str_env(t_expand *env, char *str_var)
 	}
 	return (ft_strdup(""));
 }
-char *ft_get_var(char *str_var)
-{
-	int i = 0;
-	int start = 0;
-	if (str_var[i] >= '0' && str_var[i] <= '9')
-		return (ft_substr(str_var, i, 1));
-	while (str_var[i] && (ft_isalnum(str_var[i]) || str_var[i] == '_'))
-		i++;
-	return (ft_substr(str_var, start, i));
-}
-// char *get_new_str(char *str, char *str_exp, char *str_var)
-// {
-// 	size_t len_totale = (ft_strlen(str) - (ft_strlen(str_var) + 1)) + ft_strlen(str_exp);
-// 	char *new = (char *)malloc(len_totale + 1);
-// 	if (!new)
-// 		return (NULL);
-// 	int i = 0;
-// 	while (str[i] && str[i] != '$')
-// 	{
-// 		new[i] = str[i];
-// 		i++;
-// 	}
-// }
-// char *remove_double_q(char *str)
-// {
-// 	int len = ft_strlen(str) - 2; // 2 for double quotes
-// 	char *new = (char *)malloc(len + 1);
-// 	if (!new)
-// 		return (NULL);
-// 	int j = 1;
-// 	int i = 0;
-// 	while (str[j] && str[j] != '\"')
-// 		new[i++] = str[j++];
-// 	new[i] = '\0';
-// 	return (new);
-// }
-char *get_until_var(char *str_var)
-{
-	int i = 0;
-	int start = 0;
-	while (str_var[i])
-	{
-		if (str_var[i] == '$')
-		{
-			while (str_var[i] && str_var[i] == '$')
-				i++;
-			while (str_var[i] && (ft_isalnum(str_var[i]) || str_var[i] == '_'))
-				i++;
-			break;
-		}
-		i++;
-	}
-	return (ft_substr(str_var, start, i));
-}
-char *get_string_exp(char *str, char *old_var, char *new_var)
-{
-	size_t len = (ft_strlen(str) - (ft_strlen(old_var))) + ft_strlen(new_var);
 
-	if (ft_strlen(old_var))
-		len++;
-	// printf("%zu\n", len);
-	// printf("%zu\n", ft_strlen(str));
-	// printf("%zu\n", ft_strlen(old_var));
-	// printf("%zu\n", ft_strlen(new_var));
-
-	char *new = (char *)malloc(len + 1);
-	if (!new)
-		return (NULL);
-	int i = 0;
-	while (str[i] && str[i] != '$')
-	{
-		new[i] = str[i];
-		i++;
-	}
-	while (str[i] && str[i] == '$') //$$$HOME
-	{
-		if (str[i + 1] != '$')
-			break;
-		new[i] = str[i];
-		i++;
-	}
-	int j = 0;
-	if (new_var)
-	{
-		while (new_var[j])
-		{
-			new[i++] = new_var[j++];
-		}
-	}
-	new[i] = '\0';
-	return (new);
-	// printf("%zu\n", len);
-	// printf("%zu\n", ft_strlen(str));
-	// printf("%zu\n", ft_strlen(old_var));
-	// printf("%zu\n", ft_strlen(new_var));
-	// printf("%s\n", str);
-	// printf("%s\n", old_var);
-	// printf("%s\n", new_var);
-
-	// exit(0);
-}
-char *ft_str_exp(char *str_var, t_expand *env)
-{
-	size_t i = 0;
-	char *get_var = NULL;
-	char *str_exp = NULL;
-	size_t len = ft_strlen(str_var);
-	while (i < len)
-	{
-		if (str_var[i] == '$')
-		{
-			size_t count = i;
-			while (str_var[i] && str_var[i] == '$')
-				i++;
-			count = i - count;
-			if (count % 2 != 0)
-			{
-				get_var = ft_get_var(str_var + i);
-				if (get_var[0])
-					str_exp = get_str_env(env, get_var);
-				else
-				{
-					str_exp = ft_strdup("$");
-					break;
-				}
-			}
-			else
-			{
-				get_var = ft_get_var(str_var + i);
-				get_var = ft_strjoin("$", get_var);
-				str_exp = get_var;
-			}
-		}
-		i++;
-	}
-
-	return (get_string_exp(str_var, get_var, str_exp));
-}
-
-void expand_and_print_vars(token_node *head, t_expand *env)
-{
-	char *buffer = NULL;
-	(void)buffer;
-	(void)env;
-	while (head)
-	{
-		// if (head->type == HEREDOC)
-		// {
-		// 	token_node *tmp = head->next;
-		// 	if (tmp && tmp->type == SPACE_)
-		// 		head = tmp;
-		// 	if (head->next->type == VAR)
-		// 		head = head->next;
-		// }
-		if (head->type == VAR)
-		{
-			int i = 0;
-			char *str = head->value;
-			int start = i;
-			int end = 0;
-			while (str[i] && str[i] == '$')
-				i++;
-			end = i - 1;
-			if (str[i] >= '0' && str[i] <= '9')
-				buffer = ft_strjoin(ft_substr(str, start, end), get_str_env(env, str + i));
-			else
-				buffer = ft_strjoin(ft_substr(str, start, end), get_str_env(env, str + i));
-			free(head->value);
-			head->value = buffer;
-		}
-		else if (head->type == DOUBLE_Q)
-		{
-			buffer = NULL;
-			size_t i = 0;
-			char *str = head->value;
-			// str = remove_double_q(str); // overflow in test (ls "-la )
-			while (str[i])
-			{
-				char *str_var = get_until_var(str + i);
-				char *str_exp = ft_str_exp(str_var, env);
-				if (!buffer)
-					buffer = ft_strdup("");
-				buffer = ft_strjoin(buffer, str_exp);
-				i += ft_strlen(str_var);
-			}
-			head->value = buffer;
-		}
-		head = head->next;
-	}
-}
 void remove_single_q(token_node *head)
 {
-	while (head) // overflow in test (ls '-la )
+	while (head)
 	{
 		if (head->type == SINGLE_Q)
 		{
@@ -618,7 +144,7 @@ void remove_single_q(token_node *head)
 }
 void remove_double_q(token_node *head)
 {
-	while (head) // overflow in test (ls '-la )
+	while (head)
 	{
 		if (head->type == DOUBLE_Q)
 		{
@@ -695,7 +221,7 @@ void ft_headoc(token_node *head, t_expand *env)
 		if (head->type == HEREDOC)
 		{
 			token_node *tmp = head->next;
-			if (tmp && tmp->type == SPACE_)
+			if (tmp && tmp->type == SPACE)
 				tmp = tmp->next;
 			while (tmp && is_string_type(tmp->type))
 			{
@@ -764,7 +290,7 @@ token_node *ft_remove_redirect(token_node *head)
 		{
 			int type = head->type;
 			token_node *tmp = head->next;
-			if (tmp && tmp->type == SPACE_)
+			if (tmp && tmp->type == SPACE)
 				head = head->next;
 			head = head->next; // skip the redirection token
 			lstadd_back(&new_node, addnew_tkn_node(type, head->value));
@@ -781,6 +307,7 @@ token_node *ft_remove_redirect(token_node *head)
 void lst_addback_cmd(t_cmd **lst_cmd, t_cmd *new_cmd)
 {
 	t_cmd *tmp = *lst_cmd;
+
 	if (!tmp)
 	{
 		*lst_cmd = new_cmd;
@@ -800,53 +327,111 @@ t_cmd *addnew_cmd(char **args, token_node *head_cmd)
 	new_cmd->next = NULL;
 	return (new_cmd);
 }
+t_cmd *ft_split_cmd(token_node *new_head)
+{
+	int count = 0;
+	token_node *tmp = new_head;
+	token_node *redir = NULL;
+
+	while (tmp)
+	{
+		if (tmp->type == STRING)
+			count++;
+		tmp = tmp->next;
+	}
+	char **args = (char **)malloc(sizeof(char *) * (count + 1));
+	if (!args)
+		return (NULL);
+	int i = 0;
+
+	while (new_head)
+	{
+		// puts("tbrgfdvfrgth5grfdvgrt");
+		if (new_head->type == STRING)
+			args[i++] = ft_strdup(new_head->value);
+		if (is_redirection(new_head->type))
+			lstadd_back(&redir, addnew_tkn_node(new_head->type, new_head->value));
+		// printf("args: [%s]\n", args[i]);
+		new_head = new_head->next;
+	}
+	args[i] = NULL;
+	i = 0;
+	// while (args[i])
+	// {
+	// 	printf("%s\n", args[i]);
+	// 	i++;
+	// }
+	// exit(0);
+
+	return (addnew_cmd(args, redir));
+}
 t_cmd *ft_passing(token_node *head)
 {
-	// t_cmd *tmp = NULL;
 	t_cmd *new_cmd = NULL;
-	token_node *head_cmd = NULL;
-	int count;
 	while (head)
 	{
-		count = 0;
-		token_node *tmp = head;
-		while (tmp)
-		{
-			if (tmp->type == PIPE)
-				break;
-			if (tmp->type == STRING)
-				count++;
-			tmp = tmp->next;
-		}
-		char **args = (char **)malloc(sizeof(char *) * (count + 1));
-		if (!args)
-			return (NULL);
-		int i = 0;
+		token_node *new_head = NULL;
 		while (head)
 		{
 			if (head->type == PIPE)
 				break;
-			if (head->type == STRING)
-				args[i++] = ft_strdup(head->value);
-			if (is_redirection(head->type))
-				lstadd_back(&head_cmd, addnew_tkn_node(head->type, head->value));
+			lstadd_back(&new_head, addnew_tkn_node(head->type, head->value));
 			head = head->next;
 		}
-		args[i] = NULL;
-		if (head && (head->type == PIPE))
-		{
-			lst_addback_cmd(&new_cmd, addnew_cmd(args, head_cmd));
-			head_cmd = NULL;
-		}
-		if (!head)
-		{
-			lst_addback_cmd(&new_cmd, addnew_cmd(args, head_cmd));
-			break;
-		}
+		lst_addback_cmd(&new_cmd, ft_split_cmd(new_head));
 		if (head)
 			head = head->next;
 	}
 	return (new_cmd);
+}
+void ft_free_all(t_free *head)
+{
+	t_free *current = head;
+	while (current)
+	{
+		t_free *next = current->next;
+		free(current->add);
+		free(current);
+		current = next;
+	}
+	head = NULL; 
+}
+
+t_free *addnew_free(void *add)
+{
+	t_free *new = malloc(sizeof(t_free));
+	if (!new)
+		return (NULL);
+	new->add = add;
+	new->next = NULL;
+	return (new);
+}
+void addback_free(t_free **head, t_free *new)
+{
+	t_free *tmp = *head;
+	if (!tmp)
+	{
+		*head = new;
+		return;
+	}
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = new;
+}
+void *ft_malloc(size_t size, int status)
+{
+	static t_free *head = NULL;
+	if (status == ALLOC)
+	{
+		void *rt = malloc(size);
+		if (!rt)
+			return (NULL);
+		addback_free(&head, addnew_free(rt));
+		return (rt);
+	}
+	else
+		ft_free_all(head);
+	return (NULL);
 }
 int main(int ac, char const *av[], char *env[])
 {
@@ -860,11 +445,15 @@ int main(int ac, char const *av[], char *env[])
 
 	(void)env;
 	(void)cmd_list;
-
 	head = NULL;
+	init_env(&env_expand, env);
 	while (1)
 	{
 		cmd = readline(COLOR_GREEN "➜  minishell " COLOR_RESET);
+		// if (!cmd)
+		// {
+		// 	exit(exit_status_of_your_program)
+		// }
 		add_history(cmd);
 		head = tokenization(cmd, &head);
 		int error = handle_errors_cmd(head, cmd);
@@ -873,12 +462,12 @@ int main(int ac, char const *av[], char *env[])
 			ft_free(&head);
 			continue;
 		}
-		init_env(&env_expand, env);
-		// expand_and_print_vars(head, env_expand);
+		expand_and_print_vars(head, env_expand);
 		remove_single_q(head);
 		remove_double_q(head);
 		// ft_headoc(head, env_expand);
-		// head = ft_concatenate(head);
+		head = ft_concatenate(head);
+
 		// exit(0);
 		// display_expand_list(env_expand);
 		head = ft_remove_redirect(head);
