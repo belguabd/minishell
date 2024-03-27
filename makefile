@@ -1,13 +1,18 @@
 NAME = minishell
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g
 #-------folder-------#
 UTILS = utils
 LEXER = lexer
+HANDLE_ERRORS=handle_errors
+EXPANDER=expander
+#-------files-------#
 SRC = minishell.c \
 	$(UTILS)/ft_split.c $(UTILS)/ft_strlen.c $(UTILS)/ft_strdup.c $(UTILS)/ft_substr.c $(UTILS)/ft_strjoin.c $(UTILS)/ft_putendl_fd.c \
 	$(UTILS)/ft_lstsize.c  $(UTILS)/ft_isalnum.c $(UTILS)/ft_itoa.c $(UTILS)/ft_lstlast.c \
-	$(LEXER)/ft_tonken.c  $(LEXER)/ft_tonken_utils.c
+	$(LEXER)/ft_tonken.c  $(LEXER)/ft_tonken_utils.c \
+	$(HANDLE_ERRORS)/handle_errors.c \
+	$(EXPANDER)/expander.c $(EXPANDER)/expander_utils.c
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)

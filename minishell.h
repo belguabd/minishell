@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/27 02:59:24 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/27 08:41:13 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,14 @@
 #define COLOR_RESET "\x1b[0m"
 #define COLOR_GREEN "\x1b[32m"
 
+#define FREE 0
+#define ALLOC 1
+
+typedef struct ft_free
+{
+	void *add;
+	struct ft_free *next;
+} t_free;
 typedef struct token_node
 {
 	int type;
@@ -43,32 +51,20 @@ typedef struct command_node
 	token_node *redir;
 	struct command_node *next;
 } t_cmd;
-
-// #define REDIRECT_APPEND 0 // >>
-// #define REDIRECT_OUT 1  // >
-// #define REDIRECT_IN 2	// <
-// #define HEREDOC 3	// <<
-// #define SPACE_ 4		//" "
-// #define STRING 5	//"belguabd"
-// #define PIPE 6		//"|"
-// #define DOUBLE_Q 7 	//""
-// #define SINGLE_Q 8	//''
-// #define VAR 9		// variable
-// #define EXIT_STATUS 10
-// typedef enum tokenize
-// {
-// 	REDIRECT_APPEND, // >>
-// 	REDIRECT_OUT,	 // >
-// 	REDIRECT_IN,	 // <
-// 	HEREDOC,		 // <<
-// 	SPACE_,			 //" "
-// 	STRING,			 //"belguabd"
-// 	PIPE,			 //"|"
-// 	DOUBLE_Q,		 //""
-// 	SINGLE_Q,		 //''
-// 	VAR,			 // variable
-// 	EXIT_STATUS
-// } t_token;
+typedef enum tokenize
+{
+	REDIRECT_APPEND, // >>
+	REDIRECT_OUT,	 // >
+	REDIRECT_IN,	 // <
+	HEREDOC,		 // <<
+	SPACE,			 //" "
+	STRING,			 //"belguabd"
+	PIPE,			 //"|"
+	DOUBLE_Q,		 //""
+	SINGLE_Q,		 //''
+	VAR,			 // variable
+	EXIT_STATUS
+} t_token;
 
 typedef struct s_vars
 {
@@ -107,7 +103,14 @@ token_node *addnew_tkn_node(int token, char *value);
 void lstadd_back(token_node **lst, token_node *new);
 bool is_var(char c);
 bool is_string(char c);
-
+int handle_errors_cmd(token_node *head, const char *cmd);
+char *ft_str_exp(char *str_var, t_expand *env);
+char *ft_get_var(char *str_var);
+char *get_until_var(char *str_var);
+void expand_and_print_vars(token_node *head, t_expand *env);
+char *get_str_env(t_expand *env, char *str_var);
+char *get_until_var(char *str_var);
+char *ft_get_var(char *str_var);
 // execution
 
 char	**get_envp(t_expand *lst_envp);
@@ -122,7 +125,6 @@ void ft_echo(char **cmd);
 void ft_env(char **cmd, t_expand *envp);
 void ft_unset(char **cmd, t_expand **envp);
 void ft_export(char **cmd, t_expand **envp);
-
 // tools
 
 t_expand *ft_lst_last(t_expand *lst);

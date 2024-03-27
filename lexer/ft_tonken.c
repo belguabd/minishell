@@ -6,23 +6,11 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 09:36:33 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/23 12:26:24 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/26 23:13:15 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-#define REDIRECT_APPEND 0 // >>
-#define REDIRECT_OUT 1    // >
-#define REDIRECT_IN 2     // <
-#define HEREDOC 3         // <<
-#define SPACE_ 4
-#define STRING 5   //"belguabd"
-#define PIPE 6     //"|"
-#define DOUBLE_Q 7 //""
-#define SINGLE_Q 8 //''
-#define VAR 9      // variable
-#define EXIT_STATUS 10
-
 void ft_process_odd(const char *cmd, token_node **head, int start)
 {
     size_t j = start;
@@ -138,7 +126,7 @@ token_node *tokenization(const char *cmd, token_node **head)
             lstadd_back(head, addnew_tkn_node(HEREDOC, "<<"));
         else if (cmd[i] == ' ' || (cmd[i] >= 9 && cmd[i] <= 13))
         {
-            lstadd_back(head, addnew_tkn_node(SPACE_, " "));
+            lstadd_back(head, addnew_tkn_node(SPACE, " "));
             while (cmd[i] == ' ' || (cmd[i] >= 9 && cmd[i] <= 13))
                 i++;
             i--;
