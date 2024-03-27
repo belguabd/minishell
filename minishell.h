@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/27 21:18:07 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/27 22:36:57 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,15 +44,14 @@ typedef struct token_node
 typedef struct command_node
 {
 	char **args;
-	// add this;
 	int infile;
 	int outfile;
 	bool isfirst;
 	bool islast;
-	// END
 	token_node *redir;
 	struct command_node *next;
 } t_cmd;
+
 typedef enum tokenize
 {
 	REDIRECT_APPEND, // >>
@@ -111,15 +110,17 @@ char *ft_get_var(char *str_var);
 char *get_until_var(char *str_var);
 void expand_and_print_vars(token_node *head, t_expand *env);
 char *get_str_env(t_expand *env, char *str_var);
-char *get_until_var(char *str_var);
-char *ft_get_var(char *str_var);
 /*garbage collector*/
 void *ft_malloc(size_t size, int status);
 // execution
+char	**get_envp(t_expand *lst_envp);
+void	ft_execute_node(char *cmd[], t_expand *envp, char **str_envp);
+char	**get_envp(t_expand *lst_envp);
 
-char **get_envp(t_expand *lst_envp);
-void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp);
-char **get_envp(t_expand *lst_envp);
+//pipe & fds
+void    init_fds(t_cmd **cmds);
+void    pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[]);
+
 
 // builtin
 void ft_pwd();
@@ -137,5 +138,6 @@ void ft_del_node(t_expand **lst, char *key);
 t_expand *ft_lst_new(char *key, char *val);
 void ft_free_node(t_expand *node);
 size_t ft_lst_size(t_expand *lst);
+char	*ft_itoa(int n);
 
 #endif
