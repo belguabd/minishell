@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/27 01:24:48 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/27 02:08:03 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,8 @@ void expand_and_print_vars(token_node *head, t_expand *env);
 char *get_str_env(t_expand *env, char *str_var);
 char *get_until_var(char *str_var);
 char *ft_get_var(char *str_var);
+/*garbage collector*/
+void *ft_malloc(size_t size, int status);
 // execution
 
 // builtin

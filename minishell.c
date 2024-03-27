@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/27 01:53:43 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/27 02:25:40 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -384,55 +384,7 @@ t_cmd *ft_passing(token_node *head)
 	}
 	return (new_cmd);
 }
-void ft_free_all(t_free *head)
-{
-	t_free *current = head;
-	while (current)
-	{
-		t_free *next = current->next;
-		free(current->add);
-		free(current);
-		current = next;
-	}
-	head = NULL; 
-}
 
-t_free *addnew_free(void *add)
-{
-	t_free *new = malloc(sizeof(t_free));
-	if (!new)
-		return (NULL);
-	new->add = add;
-	new->next = NULL;
-	return (new);
-}
-void addback_free(t_free **head, t_free *new)
-{
-	t_free *tmp = *head;
-	if (!tmp)
-	{
-		*head = new;
-		return;
-	}
-	while (tmp->next)
-		tmp = tmp->next;
-	tmp->next = new;
-}
-void *ft_malloc(size_t size, int status)
-{
-	static t_free *head = NULL;
-	if (status == ALLOC)
-	{
-		void *rt = malloc(size);
-		if (!rt)
-			return (NULL);
-		addback_free(&head, addnew_free(rt));
-		return (rt);
-	}
-	else
-		ft_free_all(head);
-	return (NULL);
-}
 int main(int ac, char const *av[], char *env[])
 {
 	(void)ac;
@@ -446,7 +398,7 @@ int main(int ac, char const *av[], char *env[])
 	(void)env;
 	(void)cmd_list;
 	head = NULL;
-	init_env(&env_expand, env);
+	// init_env(&env_expand, env);
 	while (1)
 	{
 		cmd = readline(COLOR_GREEN "➜  minishell " COLOR_RESET);
@@ -462,41 +414,37 @@ int main(int ac, char const *av[], char *env[])
 			ft_free(&head);
 			continue;
 		}
-		expand_and_print_vars(head, env_expand);
-		remove_single_q(head);
-		remove_double_q(head);
+		// remove_single_q(head);
+		// remove_double_q(head);
 		// ft_headoc(head, env_expand);
-		head = ft_concatenate(head);
+		// expand_and_print_vars(head, env_expand);
+		// head = ft_concatenate(head);
 
-		// exit(0);
-		// display_expand_list(env_expand);
-		head = ft_remove_redirect(head);
-		cmd_list = ft_passing(head);
-		while (cmd_list)
-		{
-			printf("args: ");
-			for (int i = 0; cmd_list->args[i]; i++)
-				printf("%s ", cmd_list->args[i]);
-			printf("\n");
-			printf("redir: ");
-			token_node *tmp = cmd_list->redir;
-			while (tmp)
-			{
-				printf("%s ", tmp->value);
-				tmp = tmp->next;
-			}
-			cmd_list = cmd_list->next;
-			printf("\n");
-		}
+		// // exit(0);
+		// // display_expand_list(env_expand);
+		// head = ft_remove_redirect(head);
+		// cmd_list = ft_passing(head);
+		// while (cmd_list)
+		// {
+		// 	printf("args: ");
+		// 	for (int i = 0; cmd_list->args[i]; i++)
+		// 		printf("%s ", cmd_list->args[i]);
+		// 	printf("\n");
+		// 	printf("redir: ");
+		// 	token_node *tmp = cmd_list->redir;
+		// 	while (tmp)
+		// 	{
+		// 		printf("%s ", tmp->value);
+		// 		tmp = tmp->next;
+		// 	}
+		// 	cmd_list = cmd_list->next;
+		// 	printf("\n");
+		// }
 
-		displayLinkedList(head);
-		token_node *tmp;
-		while (head)
-		{
-			tmp = head;
-			head = head->next;
-			free(tmp);
-		}
+		// displayLinkedList(head);
+		// ft_free(&head);
+		// free((char *)cmd);
+		
 	}
 	return 0;
 }
