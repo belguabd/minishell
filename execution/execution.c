@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/27 13:11:32 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/27 22:30:42 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,34 +36,40 @@ char **get_envp(t_expand *lst_envp)
 	return (envp);
 }
 
-// void	ft_execution(t_cmd *cmd, t_expand **envp)
-// {
+void	ft_execution(t_cmd *cmd, t_expand **envp)
+{
+	char **env;
+
+	env = get_envp(*envp);
+	init_fds(&cmd);
+	pipe_line(cmd, *envp, env);
+}
 
 // }
 
 void ft_execute_bultin(char *cmd[], t_expand **envp)
 {
-	if (ft_strcmp(cmd[0], "echo") == 0)
+	if(ft_strcmp(cmd[0], "echo") == 0 || ft_strcmp(cmd[0], "/bin/echo") == 0)
 	{
 		ft_echo(cmd);
 		return;
 	}
-	if (ft_strcmp(cmd[0], "export") == 0)
+	if(ft_strcmp(cmd[0], "export") == 0 || ft_strcmp(cmd[0], "export"))
 	{
 		ft_export(cmd, envp);
 		return;
 	}
-	if (ft_strcmp(cmd[0], "env") == 0)
+	if(ft_strcmp(cmd[0], "env") == 0 || ft_strcmp(cmd[0], "/usr/bin/env") == 0)
 	{
 		ft_env(cmd, *envp);
 		return;
 	}
-	if (ft_strcmp(cmd[0], "cd") == 0)
+	if(ft_strcmp(cmd[0], "cd") == 0 || ft_strcmp(cmd[0], "/usr/bin/cd") == 0)
 	{
 		ft_cd(cmd[0]);
 		return;
 	}
-	if (ft_strcmp(cmd[0], "pwd") == 0)
+	if(ft_strcmp(cmd[0], "pwd") == 0 || ft_strcmp(cmd[0], "/bin/pwd") == 0)
 	{
 		ft_pwd();
 		return;
@@ -81,25 +87,28 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp)
 	(void)paths;
 
 	ft_execute_bultin(cmd, &envp);
-	// while (envp)
-	// {
-	// 	if (ft_strcmp(envp->key, "PATH") == 0)
-	// 		break ;
-	// 	envp = envp->next;
-	// }
-	// if (envp)
-	// 	paths = ft_split(envp->value, ":");
-	// cmd[0] = ft_strjoin("/", cmd[0]);
-	// if (!cmd[0])
-	// 	perror("malloc");
-	// while (*paths)
-	// {
-	// 	cmd[0] = ft_strjoin(*paths, cmd[0]);
-	// 	if (cmd[0])
-	// 		perror("malloc");
-	// 	if (!access(cmd[0], X_OK))
-	// 		break ;
-	// }
+	while (envp)
+	{
+		if (ft_strcmp(envp->key, "PATH") == 0)
+			break ;
+		envp = envp->next;
+	}
+	if (envp)
+		paths = ft_split(envp->value, ":");
+	if(cmd[0][0] != '/')
+	{
+		cmd[0] = ft_strjoin("/", cmd[0]);
+		if (!cmd[0])
+			perror("malloc");
+		while (*paths)
+		{
+			cmd[0] = ft_strjoin(*paths, cmd[0]);
+			if (cmd[0])
+				perror("malloc");
+			if (!access(cmd[0], X_OK))
+				break ;
+		}
+	}
 	execve(cmd[0], cmd, str_envp);
 	perror(cmd[0]);
 }
