@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/27 08:16:28 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/27 08:46:09 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -434,6 +434,24 @@ void *ft_malloc(size_t size, int status)
 		ft_free_all(head);
 	return (NULL);
 }
+// void f(t_cmd *head)
+// {
+// 	int input=2;
+// 	int output = 3;
+// 	while (head->redir)
+// 	{
+// 		if (head->redir->type == REDIRECT_OUT || head->redir->type == REDIRECT_APPEND) // >  FILE >> FILE2 > FILE2 < FILE4
+//  		{
+// 			fd = open();
+// 			close()
+// 			3
+// 		}
+// 		if(head->redir->type==REDIRECT_OUT){
+			
+// 		}
+// 		head->redir = head->redir->next;
+// 	}
+// }
 int main(int ac, char const *av[], char *env[])
 {
 	(void)ac;

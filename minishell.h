@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/27 08:13:31 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/27 08:46:35 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,9 @@ void expand_and_print_vars(token_node *head, t_expand *env);
 char *get_str_env(t_expand *env, char *str_var);
 char *get_until_var(char *str_var);
 char *ft_get_var(char *str_var);
+=========
 
+>>>>>>>>> Temporary merge branch 2
 // execution
 
 char	**get_envp(t_expand *lst_envp);
@@ -130,8 +132,8 @@ void ft_export(char **cmd, t_expand **envp);
 
 t_expand *ft_lst_last(t_expand *lst);
 void ft_lst_add_back(t_expand **lst, t_expand *new_node);
-int			ft_strcmp(char *s1, char *s2);
-//int ft_strcmp(const char *s1, const char *s2);
+//int			ft_strcmp(char *s1, char *s2);
+int ft_strcmp(const char *s1, const char *s2);
 void ft_del_node(t_expand **lst, char *key);
 t_expand *ft_lst_new(char *key, char *val);
 void ft_free_node(t_expand *node);
