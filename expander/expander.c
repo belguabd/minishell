@@ -6,19 +6,18 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 21:20:05 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/26 22:32:14 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/27 18:18:51 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
 
 char *get_string_exp(char *str, char *old_var, char *new_var)
 {
 	size_t len = (ft_strlen(str) - (ft_strlen(old_var))) + ft_strlen(new_var);
 	if (ft_strlen(old_var))
 		len++;
-	char *new = (char *)malloc(len + 1);
+	char *new = (char *)ft_malloc(len + 1, ALLOC);
 	if (!new)
 		return (NULL);
 	int i = 0;
@@ -41,7 +40,7 @@ char *get_string_exp(char *str, char *old_var, char *new_var)
 	new[i] = '\0';
 	return (new);
 }
-char *get_var_odd(char *str_var ,t_expand *env)
+char *get_var_odd(char *str_var, t_expand *env)
 {
 	char *get_var = NULL;
 	char *str_exp = NULL;
@@ -67,7 +66,7 @@ char *ft_str_exp(char *str_var, t_expand *env)
 				i++;
 			count = i - count;
 			if (count % 2 != 0)
-				str_exp = get_var_odd(str_var + i ,env);
+				str_exp = get_var_odd(str_var + i, env);
 			else
 			{
 				get_var = ft_get_var(str_var + i);
@@ -92,8 +91,10 @@ void ft_expand_var(token_node *head, t_expand *env)
 	if (str[i] >= '0' && str[i] <= '9')
 		buffer = ft_strjoin(ft_substr(str, start, end), get_str_env(env, str + i));
 	else
-		buffer = ft_strjoin(ft_substr(str, start, end), get_str_env(env, str + i));
-	free(head->value);
+	{
+		char *dlr = ft_substr(str, start, end);
+		buffer = ft_strjoin(dlr, get_str_env(env, str + i));
+	}
 	head->value = buffer;
 }
 void expand_and_print_vars(token_node *head, t_expand *env)

@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 02:07:02 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/27 02:07:18 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/27 21:21:21 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,9 @@ void *ft_malloc(size_t size, int status)
 		return (rt);
 	}
 	else
+	{
 		ft_free_all(head);
-	return (NULL);
+		head = NULL;
+		return (NULL);
+	}
 }

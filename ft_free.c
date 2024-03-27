@@ -15,11 +15,14 @@ void ft_free_all(t_free *head)
 	while (current)
 	{
 		t_free *next = current->next;
+
 		free(current->add);
+		current->add = NULL;
 		free(current);
+		current = NULL;
 		current = next;
 	}
-	head = NULL; // Reset the head pointer after freeing all memory
+	head = NULL;
 }
 
 t_free *addnew_free(void *add)

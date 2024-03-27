@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 01:53:18 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/21 00:25:09 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/27 13:08:43 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,19 +91,19 @@ void	ft_export(char **cmd, t_expand **envp)
 	}
 }
 
-int main()
-{
-	t_expand *envp = NULL;
+// int main()
+// {
+// 	t_expand *envp = NULL;
 	
-	ft_lst_add_back(&envp, ft_lst_new(ft_strdup("var1"), ft_strdup("jkanf")));
-	ft_lst_add_back(&envp, ft_lst_new("var2", "jkanf"));
-	ft_lst_add_back(&envp, ft_lst_new("var3", "jkanf"));
-	ft_lst_add_back(&envp, ft_lst_new("var5", "jkanf"));
+// 	ft_lst_add_back(&envp, ft_lst_new(ft_strdup("var1"), ft_strdup("jkanf")));
+// 	ft_lst_add_back(&envp, ft_lst_new("var2", "jkanf"));
+// 	ft_lst_add_back(&envp, ft_lst_new("var3", "jkanf"));
+// 	ft_lst_add_back(&envp, ft_lst_new("var5", "jkanf"));
 
-	char *cmd[] = {"export","bdjs=","aafsa", "saafsa=hjdbv", NULL};
-	ft_export(cmd, &envp);
-	ft_env(cmd, envp);
-	// char *cmd2[] = {"export","var1", NULL};
-	// //ft_unset(cmd2, &envp);
-	// ft_env(cmd, envp);
-}
+// 	char *cmd[] = {"export","bdjs=","aafsa", "saafsa=hjdbv", NULL};
+// 	ft_export(cmd, &envp);
+// 	ft_env(cmd, envp);
+// 	// char *cmd2[] = {"export","var1", NULL};
+// 	// //ft_unset(cmd2, &envp);
+// 	// ft_env(cmd, envp);
+// }

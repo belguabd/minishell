@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 01:12:43 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/20 04:23:34 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/27 12:59:38 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void	ft_env(char **cmd, t_expand *envp)
 {
+	(void)cmd;
 	t_expand	*head;
 	
 	head = envp;

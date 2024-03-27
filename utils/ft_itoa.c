@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 23:19:52 by belguabd          #+#    #+#             */
-/*   Updated: 2023/11/10 20:26:28 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/27 14:37:58 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ char	*ft_itoa(int n)
 
 	i = 0;
 	len = get_len(n);
-	res = (char *)malloc(len + 1);
+	res = (char *)ft_malloc(len + 1,ALLOC);
 	if (!res)
 		return (NULL);
 	res[len] = '\0';

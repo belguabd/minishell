@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 01:13:58 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/04 04:59:21 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/27 14:14:50 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ char *ft_strdup(const char *s1)
 	char *string;
 
 	len = ft_strlen(s1);
-	string = (char *)malloc((len + 1) * sizeof(char));
+	string = (char *)ft_malloc((len + 1) * sizeof(char),ALLOC);
 	if (!string)
 		return (NULL);
 	i = 0;
