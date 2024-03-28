@@ -65,12 +65,12 @@ void f()
 {
 	system("leaks a.out");
 }
-int main()
-{
-	char *str = ft_malloc(10, ALLOC);
-	strcpy(str, "Hello");
-	printf("%s\n", str);
-	ft_malloc(10, FREE);
-	atexit(f);
-	return (0);
-}
+// int main()
+// {
+// 	char *str = ft_malloc(10, ALLOC);
+// 	strcpy(str, "Hello");
+// 	printf("%s\n", str);
+// 	ft_malloc(10, FREE);
+// 	atexit(f);
+// 	return (0);
+// }

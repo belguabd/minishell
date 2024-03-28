@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/27 10:57:09 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/28 08:14:59 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,18 @@
 //     waitpid(pid3, NULL, 0);
 //         printf("done");
 // }
+void    set_fds(t_cmd **cmds)
+{
+    t_cmd *head;
 
+    head = *cmds;
+    while(head)
+    {
+        head->infile = 0;
+        head->outfile = 1;
+        head = head->next;
+    }
+}
 void    init_fds(t_cmd **cmds)
 {
     t_cmd *head;
@@ -82,46 +93,53 @@ void    init_fds(t_cmd **cmds)
     while (head)
     {
         tmp = head->redir;
-        while(tmp)
+        if(tmp)
         {
-            old_fd_out = head->outfile;
-            old_fd_in = head->infile;
-            if(tmp->type == REDIRECT_OUT)
+            while(tmp)
             {
-                head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_TRUNC, 0777);
-                if(old_fd_out != head->outfile)
+                old_fd_out = head->outfile;
+                old_fd_in = head->infile;
+                if(tmp->type == REDIRECT_OUT)
                 {
-                    close(old_fd_out);
-                    old_fd_out = head->outfile;
+                    head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_TRUNC, 0777);
+                    if(old_fd_out != head->outfile)
+                    {
+                        close(old_fd_out);
+                        old_fd_out = head->outfile;
+                    }
+                    if(head->outfile < 0)
+                        perror("fd_out");
                 }
-                if(head->outfile < 0)
-                    perror("fd_out");
-            }
-            else if(tmp->type == REDIRECT_APPEND)
-            {
-                head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_APPEND, 0777);
-                if(old_fd_out != head->outfile)
+                else if(tmp->type == REDIRECT_APPEND)
                 {
-                    close(old_fd_out);
-                    old_fd_out = head->outfile;
+                    head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_APPEND, 0777);
+                    if(old_fd_out != head->outfile)
+                    {
+                        close(old_fd_out);
+                        old_fd_out = head->outfile;
+                    }
+                    if(head->outfile < 0)
+                        perror("fd_app");
                 }
-                if(head->outfile < 0)
-                    perror("fd_app");
-            }
-            else if(tmp->type == REDIRECT_IN)
-            {
-                head->infile = open(tmp->value, O_RDWR, 0777);
-                if(old_fd_in != head->infile)
+                else if(tmp->type == REDIRECT_IN)
                 {
-                    close(old_fd_in);
-                    old_fd_in = head->infile;
+                    head->infile = open(tmp->value, O_RDONLY, 0777);
+                    if(old_fd_in != head->infile)
+                    {
+                        close(old_fd_in);
+                        old_fd_in = head->infile;
+                    }
+                    if(head->infile < 0)
+                        perror("fd_in");
                 }
-                if(head->infile < 0)
-                    perror("fd_in");
+                tmp = tmp->next;
             }
-            tmp = tmp->next;
         }
-            
+    else
+    {
+        head->infile = 0;
+        head->outfile = 1;
+    }
         head = head->next;
     }
 }
@@ -163,9 +181,8 @@ void    pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[])
                 close(fd[1]);
                 close(fd[0]);
             }
-            //execve(cmd->args[0], cmd->args, env);
-            ft_execute_node(cmd->args, NULL, env);
-            //perror(cmd->args[0]);
+            ft_execute_node(cmd->args, env_lst, env);
+            break ;
         }
         if(!cmd->isfirst)
             close(tmp_fd_in);
@@ -183,43 +200,43 @@ void    pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[])
         i++;
     }
 }
-#include <signal.h>
-int main(int argc, char *argv[], char **env)
-{
-    char *cmd[] = {"/bin/echo","-la", NULL};
-    token_node *token = (token_node*)malloc(sizeof(token_node));
-    token_node *token2 = (token_node*)malloc(sizeof(token_node));
-    token_node *token3 = (token_node*)malloc(sizeof(token_node));
-    token->type = REDIRECT_APPEND;
-    token->value = "file";
-    token->next = token2;
-    token2->type = REDIRECT_OUT;
-    token2->value = "file3";
-    token2->next = token3;
-    token3->type = REDIRECT_OUT;
-    token3->value = "file4";
-    token3->next = NULL;
-    t_cmd *head = (t_cmd *)malloc(sizeof(t_cmd));
-    head->args = cmd;
-    head->isfirst = true;
-    head->islast = true;
-    head->next = NULL;
-    head->redir = token;
-    init_fds(&head);
-    printf("%d\n", head->outfile);
-    printf("%d", head->infile);
-    pid_t pid = getpid();
+// #include <signal.h>
+// int main(int argc, char *argv[], char **env)
+// {
+//     char *cmd[] = {"/bin/echo","-la", NULL};
+//     token_node *token = (token_node*)malloc(sizeof(token_node));
+//     token_node *token2 = (token_node*)malloc(sizeof(token_node));
+//     token_node *token3 = (token_node*)malloc(sizeof(token_node));
+//     token->type = REDIRECT_APPEND;
+//     token->value = "file";
+//     token->next = token2;
+//     token2->type = REDIRECT_OUT;
+//     token2->value = "file3";
+//     token2->next = token3;
+//     token3->type = REDIRECT_OUT;
+//     token3->value = "file4";
+//     token3->next = NULL;
+//     t_cmd *head = (t_cmd *)malloc(sizeof(t_cmd));
+//     head->args = cmd;
+//     head->isfirst = true;
+//     head->islast = true;
+//     head->next = NULL;
+//     head->redir = token;
+//     init_fds(&head);
+//     printf("%d\n", head->outfile);
+//     printf("%d", head->infile);
+//     pid_t pid = getpid();
 
-    // Create a buffer to hold the command
-    char command[100];
+//     // Create a buffer to hold the command
+//     char command[100];
     
-    // Construct the command with the PID
-    snprintf(command, sizeof(command), "lsof -p %d", (int)pid);
+//     // Construct the command with the PID
+//     snprintf(command, sizeof(command), "lsof -p %d", (int)pid);
 
-    // Execute the command
-    system(command);
+//     // Execute the command
+//     system(command);
     
-}
+// }
 // int main(int argc, char *argv[], char *env[])
 // {
 //     char *cmd[] = {"/bin/echo","-la", NULL};
