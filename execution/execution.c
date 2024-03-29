@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/28 08:28:23 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/29 13:51:20 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	ft_execution(t_cmd *cmd, t_expand **envp)
 	char **env;
 
 	env = get_envp(*envp);
-	init_fds(&cmd);
+	//init_fds(&cmd);
 	pipe_line(cmd, *envp, env);
 }
 
@@ -112,7 +112,7 @@ char	*check_path(char **path, char *cmd)
 
 void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp)
 {
-	char **paths;
+	char **paths = NULL;
 	char *new_cmd;
 	
 
@@ -138,18 +138,28 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp)
 int main()
 {
 	t_expand *envp = NULL;
-	char *cmd1[] = {"ls", "-la", NULL};
-	char *cmd2[] = {"echo", "fiojdf", NULL};
-	char *cmd3[] = {"cat", "file", NULL};
+	char *cmd1[] = {"cat", NULL};
+	char *cmd2[] = {"cat", NULL};
+	char *cmd3[] = {"wc","-l" , NULL};
 	
 	ft_lst_add_back(&envp, ft_lst_new(ft_strdup("var1"), ft_strdup("jkanf")));
 	ft_lst_add_back(&envp, ft_lst_new(ft_strdup("PATH"), ft_strdup("/Users/soel-bou/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki:/Library/Apple/usr/bin:/Users/soel-bou/.brew/bin")));
 	ft_lst_add_back(&envp, ft_lst_new(ft_strdup("var3"), ft_strdup("jkanf")));
 
 	token_node *token = (token_node*)malloc(sizeof(token_node));
-    token->type = REDIRECT_OUT;
+	token_node *token2 = (token_node*)malloc(sizeof(token_node));
+	token_node *token3 = (token_node*)malloc(sizeof(token_node));
+    token->type = REDIRECT_IN;
     token->value = "file";
-    token->next = NULL;
+    token->next = token3;
+
+	token2->type = REDIRECT_IN;
+    token2->value = "file2";
+    token2->next = token3;
+	
+	token3->type = REDIRECT_APPEND;
+    token3->value = "file3";
+    token3->next = NULL;
 	
     t_cmd *head = (t_cmd *)malloc(sizeof(t_cmd));
 	t_cmd *head2 = (t_cmd *)malloc(sizeof(t_cmd));
@@ -158,28 +168,27 @@ int main()
     head->args = cmd1;
     head->isfirst = true;
     head->islast = false;
-	head->redir = NULL;
-    head->next = head2;
-	
+	head->redir = token;
+    head->next =head3;
+
 	head2->args = cmd2;
+	head2->outfile = 1;
+	head2->infile = 0;
     head2->isfirst = false;
-    head2->islast = true;
-	head2->redir = token;
-    head2->next = NULL;
-	// head3->args = cmd3;
-    // head3->isfirst = false;
-    // head3->islast = true;
-	// head3->redir = token2;
-    // head3->next = NULL;
+    head2->islast = false;
+	head2->redir = NULL;
+    head2->next = head3;
+
+	head3->args = cmd3;
+	head3->outfile = 1;
+	head3->infile = 0;
+    head3->isfirst = false;
+    head3->islast = true;
+    head3->next = NULL;
+	head3->redir = NULL;
 	
-	// char **env = get_envp(envp);
-	// while(*env)
-	// {
-	// 	printf("%s", *env);
-	// 	env++;
-	// }
+
 	ft_execution(head, &envp);
-	printf("%d %d", head2->infile, head2->outfile);
 	// pid_t pid = getpid();
 
     // // Create a buffer to hold the command
