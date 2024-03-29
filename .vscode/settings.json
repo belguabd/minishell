@@ -55,6 +55,7 @@
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "files.associations": {
     "minishell.h": "c",
-    "history.h": "c"
+    "history.h": "c",
+    "algorithm": "c"
   }
 }

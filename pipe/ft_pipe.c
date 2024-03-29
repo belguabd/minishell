@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/28 08:14:59 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/29 13:43:46 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,45 +90,46 @@ void    init_fds(t_cmd **cmds)
     int old_fd_out;
 
     head = *cmds;
-    while (head)
-    {
+    // while (head)
+    // {
         tmp = head->redir;
+        old_fd_in = -2;
+        old_fd_out = -2;
         if(tmp)
         {
             while(tmp)
             {
-                old_fd_out = head->outfile;
-                old_fd_in = head->infile;
+
                 if(tmp->type == REDIRECT_OUT)
                 {
                     head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_TRUNC, 0777);
-                    if(old_fd_out != head->outfile)
-                    {
-                        close(old_fd_out);
-                        old_fd_out = head->outfile;
-                    }
+                    // if(old_fd_out != head->outfile)
+                    // {
+                    //     close(old_fd_out);
+                    //     old_fd_out = head->outfile;
+                    // }
                     if(head->outfile < 0)
                         perror("fd_out");
                 }
                 else if(tmp->type == REDIRECT_APPEND)
                 {
                     head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_APPEND, 0777);
-                    if(old_fd_out != head->outfile)
-                    {
-                        close(old_fd_out);
-                        old_fd_out = head->outfile;
-                    }
+                    // if(old_fd_out != head->outfile)
+                    // {
+                    //     close(old_fd_out);
+                    //     old_fd_out = head->outfile;
+                    // }
                     if(head->outfile < 0)
                         perror("fd_app");
                 }
                 else if(tmp->type == REDIRECT_IN)
                 {
-                    head->infile = open(tmp->value, O_RDONLY, 0777);
-                    if(old_fd_in != head->infile)
-                    {
-                        close(old_fd_in);
-                        old_fd_in = head->infile;
-                    }
+                    head->infile = open(tmp->value, O_RDWR, 0777);
+                    // if(old_fd_in != head->infile)
+                    // {
+                    //     close(old_fd_in);
+                    //     old_fd_in = head->infile;
+                    // }
                     if(head->infile < 0)
                         perror("fd_in");
                 }
@@ -140,8 +141,8 @@ void    init_fds(t_cmd **cmds)
         head->infile = 0;
         head->outfile = 1;
     }
-        head = head->next;
-    }
+        //head = head->next;
+    //}
 }
 
 
@@ -151,10 +152,12 @@ void    pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[])
     int tmp_fd_in;
     int pid;
 
-    tmp_fd_in = 0;
+    tmp_fd_in = -1;
     while (cmd)
     {
-        pipe(fd);
+        init_fds(&cmd);
+        if(!cmd->islast)
+            pipe(fd);
         pid = fork();
         if(pid < 0)
             perror("fork");
@@ -172,12 +175,12 @@ void    pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[])
             }
             if (!cmd->isfirst)
             {
-                dup2(tmp_fd_in, 0);
+                dup2(tmp_fd_in, cmd->infile);
                 close(tmp_fd_in);
             }
             if (!cmd->islast)
             {
-                dup2(fd[1], 1);
+                dup2(fd[1], cmd->outfile);
                 close(fd[1]);
                 close(fd[0]);
             }
@@ -189,10 +192,14 @@ void    pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[])
         if(!cmd->islast)
         {
             close(fd[1]);
-            tmp_fd_in = fd[0];
+            tmp_fd_in = dup(fd[0]);
+            if(tmp_fd_in < 0)
+                perror("tmp_fd_in");
         }
         cmd = cmd->next;
     }
+    close(fd[0]);
+    close(fd[1]);
     int i = 0;
     while(i < 3)
     {
