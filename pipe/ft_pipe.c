@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/29 13:43:46 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/30 05:31:46 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ void    init_fds(t_cmd **cmds)
                 else if(tmp->type == REDIRECT_IN)
                 {
                     head->infile = open(tmp->value, O_RDWR, 0777);
+                    // head->outfile = 1;
                     // if(old_fd_in != head->infile)
                     // {
                     //     close(old_fd_in);
