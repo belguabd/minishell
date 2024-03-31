@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/27 22:36:57 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/31 20:58:59 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,8 @@ typedef enum tokenize
 	DOUBLE_Q,		 //""
 	SINGLE_Q,		 //''
 	VAR,			 // variable
-	EXIT_STATUS
+	EXIT_STATUS,
+	DOUBLE_DLR
 } t_token;
 
 typedef struct s_vars

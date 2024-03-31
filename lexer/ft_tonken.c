@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 09:36:33 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/27 18:26:55 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/31 00:36:28 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,29 +38,19 @@ void ft_process_odd(const char *cmd, token_node **head, int start)
 }
 void ft_process_vars(const char *cmd, token_node **head, int i)
 {
-	size_t start;
-	char *str;
 
-	start = i;
-	while (cmd[start] && cmd[start] == '$')
-		start++;
-	if ((start - i) % 2 != 0)
-		ft_process_odd(cmd, head, i);
+	int start = i;
+	char *str = NULL;
+	i++;
+	if (cmd[i] >= '0' && cmd[i] <= '9')
+		str = ft_substr(cmd, start, (i + 1) - start);
 	else
 	{
-		start = i;
-		while (cmd[i] && cmd[i] == '$')
+		while (cmd[i] && (ft_isalnum(cmd[i]) || cmd[i] == '_'))
 			i++;
-		if (cmd[i] >= '0' && cmd[i] <= '9')
-			str = ft_substr(cmd, start, (i + 1) - start);
-		else
-		{
-			while (cmd[i] && (ft_isalnum(cmd[i]) || cmd[i] == '_'))
-				i++;
-			str = ft_substr(cmd, start, i - start);
-		}
-		lstadd_back(head, addnew_tkn_node(STRING, str));
+		str = ft_substr(cmd, start, i - start);
 	}
+	lstadd_back(head, addnew_tkn_node(VAR, str));
 }
 
 void handle_single_quotes(int start, const char *cmd, token_node **head)
@@ -118,6 +108,13 @@ token_node *tokenization(const char *cmd, token_node **head)
 			lstadd_back(head, addnew_tkn_node(PIPE, "|"));
 		else if (cmd[i] == '$' && cmd[i + 1] == '?')
 			lstadd_back(head, addnew_tkn_node(EXIT_STATUS, "$?"));
+		else if (cmd[i] == '$' && cmd[i + 1] == '$')
+			lstadd_back(head, addnew_tkn_node(DOUBLE_DLR, "$$"));
+		else if ((cmd[i] == '$' && cmd[i + 1] == '\"') || (cmd[i] == '$' && cmd[i + 1] == '\''))
+		{
+			lstadd_back(head, addnew_tkn_node(STRING, ""));
+			i++;
+		}
 		else if (cmd[i] == '$')
 			ft_process_vars(cmd, head, i);
 		else if (cmd[i] == '>' && cmd[i + 1] == '>')
@@ -134,7 +131,9 @@ token_node *tokenization(const char *cmd, token_node **head)
 		else if (cmd[i] == '\'')
 			handle_single_quotes(i, cmd, head);
 		else if (cmd[i] == '\"')
+		{
 			handle_double_quotes(i, cmd, head);
+		}
 		else if (cmd[i] == '>')
 			lstadd_back(head, addnew_tkn_node(REDIRECT_OUT, ">"));
 		else if (cmd[i] == '<')
