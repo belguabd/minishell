@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/27 22:25:34 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/31 05:09:05 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -336,6 +336,8 @@ t_cmd *addnew_cmd(char **args, token_node *head_cmd)
 		return (NULL);
 	new_cmd->args = args;
 	new_cmd->redir = head_cmd;
+	new_cmd->infile = 0;
+	new_cmd->outfile = 1;
 	new_cmd->next = NULL;
 	return (new_cmd);
 }
@@ -398,9 +400,11 @@ int main(int ac, char const *av[], char *env[])
 	(void)env;
 	(void)cmd_list;
 	head = NULL;
+	t_expand *env_expand = NULL;
+	init_env(&env_expand, env);
 	while (1)
 	{
-		t_expand *env_expand = NULL;
+		head = NULL;
 		cmd = readline(COLOR_GREEN "➜  minishell " COLOR_RESET);
 		// if (!cmd)
 		// {
@@ -408,7 +412,6 @@ int main(int ac, char const *av[], char *env[])
 		// }
 		add_history(cmd);
 		head = tokenization(cmd, &head);
-		init_env(&env_expand, env);
 		int error = handle_errors_cmd(head, cmd);
 		if (error == -1)
 		{
@@ -426,27 +429,27 @@ int main(int ac, char const *av[], char *env[])
 		// display_expand_list(env_expand);
 		head = ft_remove_redirect(head);
 		cmd_list = ft_passing(head);
-		
+		ft_execution(cmd_list, &env_expand);
+
 		(void)cmd_list;
-		while (cmd_list)
-		{
-			printf("args: ");
-			for (int i = 0; cmd_list->args[i]; i++)
-				printf("%s ", cmd_list->args[i]);
-			printf("\n");
-			printf("redir: ");
-			token_node *tmp = cmd_list->redir;
-			while (tmp)
-			{
-				printf("%s ", tmp->value);
-				tmp = tmp->next;
-			}
-			cmd_list = cmd_list->next;
-			printf("\n");
-		}
-		ft_malloc(FREE, FREE);
-		free((void *)cmd);
-		head = NULL;
+		// while (cmd_list)
+		// {
+		// 	printf("args: ");
+		// 	for (int i = 0; cmd_list->args[i]; i++)
+		// 		printf("%s ", cmd_list->args[i]);
+		// 	printf("\n");
+		// 	printf("redir: ");
+		// 	token_node *tmp = cmd_list->redir;
+		// 	while (tmp)
+		// 	{
+		// 		printf("%s ", tmp->value);
+		// 		tmp = tmp->next;
+		// 	}
+		// 	cmd_list = cmd_list->next;
+		// 	printf("\n");
+		// }
 	}
+	ft_malloc(FREE, FREE);
+	free((void *)cmd);
 	return 0;
 }

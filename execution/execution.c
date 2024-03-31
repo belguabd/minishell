@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/30 05:31:59 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/31 06:51:48 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,6 @@ void	ft_execution(t_cmd *cmd, t_expand **envp)
 
 	env = get_envp(*envp);
 	set_cmd_false_true(&cmd);
-	// while(tmp)
-	// {
-	// 	printf("%d\n", tmp->isfirst);
-	// 	printf("%d\n", tmp->islast);
-	// 	tmp = tmp->next;
-	// }
-	//init_fds(&cmd);
 	pipe_line(cmd, *envp, env);
 }
 
@@ -61,32 +54,32 @@ void ft_execute_bultin(char *cmd[], t_expand **envp)
 	if(ft_strcmp(cmd[0], "echo") == 0 || ft_strcmp(cmd[0], "/bin/echo") == 0)
 	{
 		ft_echo(cmd);
-		return;
+		exit(0);
 	}
 	if(ft_strcmp(cmd[0], "export") == 0)
 	{
 		ft_export(cmd, envp);
-		return;
+		exit(0) ;
 	}
 	if(ft_strcmp(cmd[0], "env") == 0 || ft_strcmp(cmd[0], "/usr/bin/env") == 0)
 	{
 		ft_env(cmd, *envp);
-		return;
+		exit(0);
 	}
 	if(ft_strcmp(cmd[0], "cd") == 0 || ft_strcmp(cmd[0], "/usr/bin/cd") == 0)
 	{
-		ft_cd(cmd[0]);
-		return;
+		ft_cd(cmd[1]);
+		exit(0);
 	}
 	if(ft_strcmp(cmd[0], "pwd") == 0 || ft_strcmp(cmd[0], "/bin/pwd") == 0)
 	{
 		ft_pwd();
-		return;
+		exit(0);
 	}
 	if (ft_strcmp(cmd[0], "unset") == 0)
 	{
 		ft_unset(cmd, envp);
-		return;
+		exit(0);
 	}
 }
 
@@ -111,7 +104,7 @@ char	*check_path(char **path, char *cmd)
 		if(access(cmd_path, X_OK) == 0)
 			return (cmd_path);
 		i++;
-		free(cmd_path);
+		//free(cmd_path);
 		cmd_path = NULL;
 	}
 	return (cmd);
@@ -121,7 +114,6 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp)
 {
 	char **paths = NULL;
 	char *new_cmd;
-	
 
 	ft_execute_bultin(cmd, &envp);
 	while (envp)
@@ -136,7 +128,7 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp)
 	if(!new_cmd)
 	{
 		perror(cmd[0]);
-		return ;
+		exit(0);
 	}
 	execve(new_cmd, cmd, str_envp);
 	perror(cmd[0]);

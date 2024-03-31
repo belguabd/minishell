@@ -8,6 +8,7 @@ HANDLE_ERRORS=handle_errors
 EXPANDER=expander
 EXECUTION=execution
 BUILT_IN=built_in
+PIPE=pipe
 GC=gc
 #-------files-------#
 SRC =minishell.c \
@@ -17,8 +18,9 @@ SRC =minishell.c \
 	$(HANDLE_ERRORS)/handle_errors.c \
 	$(EXPANDER)/expander.c $(EXPANDER)/expander_utils.c \
 	$(GC)/ft_free.c \
-#$(EXECUTION)/execution.c $(EXECUTION)/execution_tools.c \
-#$(BUILT_IN)/built_in_tools.c $(BUILT_IN)/cd.c $(BUILT_IN)/env.c $(BUILT_IN)/export.c $(BUILT_IN)/pwd.c $(BUILT_IN)/unset.c $(BUILT_IN)/echo.c
+	$(EXECUTION)/execution.c $(EXECUTION)/execution_tools.c \
+	$(BUILT_IN)/built_in_tools.c $(BUILT_IN)/cd.c $(BUILT_IN)/env.c $(BUILT_IN)/export.c $(BUILT_IN)/pwd.c $(BUILT_IN)/unset.c $(BUILT_IN)/echo.c \
+	$(PIPE)/ft_pipe.c
 
 OBJ = $(SRC:.c=.o)
 

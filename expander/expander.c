@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 21:20:05 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/27 18:18:51 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/30 06:58:36 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,8 @@ void expand_and_print_vars(token_node *head, t_expand *env)
 				buffer = ft_strjoin(buffer, str_exp);
 				i += ft_strlen(str_var);
 			}
+			if (!buffer)
+				buffer = ft_strdup("");
 			head->value = buffer;
 		}
 		head = head->next;

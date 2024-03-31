@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 01:11:06 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/30 03:27:54 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/30 06:53:49 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,24 +24,21 @@ size_t	ft_lst_size(t_expand *lst)
 	}
 	return (i);
 }
-int ft_strcmp(char *str1, char *str2)
-{
-	int i = 0;
+// int ft_strcmp(char *str1, char *str2)
+// {
+// 	int i = 0;
 
-	while (str1[i] && str2[i] && str1[i] == str2[i])
-		i++;
-	return (str1[i] - str2[i]);
-}
+// 	while (str1[i] && str2[i] && str1[i] == str2[i])
+// 		i++;
+// 	return (str1[i] - str2[i]);
+// }
 
 void	set_cmd_false_true(t_cmd **cmds)
 {
 	t_cmd *cmd = *cmds;
 
 	if(!cmds || !*cmds)
-	{
-		perror("t_cmd is NULL");
 		return ;
-	}
 	cmd->isfirst = true;
 	cmd->islast = false;
 	if(cmd->next)
