@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 21:20:05 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/27 18:18:51 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/30 23:31:47 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,22 +80,17 @@ char *ft_str_exp(char *str_var, t_expand *env)
 }
 void ft_expand_var(token_node *head, t_expand *env)
 {
-	char *buffer = NULL;
-	int i = 0;
+
 	char *str = head->value;
-	int start = i;
-	int end = 0;
-	while (str[i] && str[i] == '$')
-		i++;
-	end = i - 1;
-	if (str[i] >= '0' && str[i] <= '9')
-		buffer = ft_strjoin(ft_substr(str, start, end), get_str_env(env, str + i));
+	int i = 1;
+	char len = ft_strlen(str);
+	if (len == 1)
+		head->value = ft_strdup("$");
 	else
 	{
-		char *dlr = ft_substr(str, start, end);
-		buffer = ft_strjoin(dlr, get_str_env(env, str + i));
+		char *var = get_str_env(env, str + i);
+		head->value = var;
 	}
-	head->value = buffer;
 }
 void expand_and_print_vars(token_node *head, t_expand *env)
 {
@@ -118,6 +113,8 @@ void expand_and_print_vars(token_node *head, t_expand *env)
 				buffer = ft_strjoin(buffer, str_exp);
 				i += ft_strlen(str_var);
 			}
+			if (!buffer)
+				buffer = ft_strdup("");
 			head->value = buffer;
 		}
 		head = head->next;

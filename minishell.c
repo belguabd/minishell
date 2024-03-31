@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/27 22:25:34 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/03/31 00:37:03 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,7 @@ void remove_double_q(token_node *head)
 
 int is_string_type(int type)
 {
-	return (type == STRING || type == SINGLE_Q || type == DOUBLE_Q || type == VAR);
+	return (type == STRING || type == SINGLE_Q || type == DOUBLE_Q || type == VAR || type == DOUBLE_DLR);
 }
 char *expand_heardoc(char *cmd, t_expand *env)
 {
@@ -386,6 +386,7 @@ t_cmd *ft_passing(token_node *head)
 	}
 	return (new_cmd);
 }
+
 int main(int ac, char const *av[], char *env[])
 {
 	(void)ac;
@@ -400,14 +401,19 @@ int main(int ac, char const *av[], char *env[])
 	head = NULL;
 	while (1)
 	{
+		head = NULL;
 		t_expand *env_expand = NULL;
 		cmd = readline(COLOR_GREEN "➜  minishell " COLOR_RESET);
 		// if (!cmd)
 		// {
 		// 	exit(exit_status_of_your_program)
 		// }
+		if (!cmd)
+			printf("%s\n", "OK");
+
 		add_history(cmd);
 		head = tokenization(cmd, &head);
+		displayLinkedList(head);
 		init_env(&env_expand, env);
 		int error = handle_errors_cmd(head, cmd);
 		if (error == -1)
@@ -426,7 +432,7 @@ int main(int ac, char const *av[], char *env[])
 		// display_expand_list(env_expand);
 		head = ft_remove_redirect(head);
 		cmd_list = ft_passing(head);
-		
+
 		(void)cmd_list;
 		while (cmd_list)
 		{

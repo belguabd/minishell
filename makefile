@@ -1,6 +1,6 @@
 NAME = minishell
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror #-g -fsanitize=address 
+CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address 
 #-------folder-------#
 UTILS = utils
 LEXER = lexer
