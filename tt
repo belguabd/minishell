@@ -1,0 +1,17 @@
+built_in
+draw.tldr
+execution
+expander
+ft_free.c
+gc
+handle_errors
+headoc.c
+lexer
+makefile
+minishell
+minishell.c
+minishell.h
+minishell.o
+pipe
+tt
+utils

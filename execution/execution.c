@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/31 23:07:19 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/01 20:36:29 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ char **get_envp(t_expand *lst_envp)
 void	ft_execution(t_cmd *cmd, t_expand **envp)
 {
 	char **env;
+	// if(!cmd || !cmd->args || !*cmd->args)
+	// 	return ;
 
 	env = get_envp(*envp);
 	set_cmd_false_true(&cmd);

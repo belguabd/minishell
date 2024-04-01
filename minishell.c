@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/31 23:12:47 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/01 20:36:01 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -407,10 +407,10 @@ int main(int ac, char const *av[], char *env[])
 	{
 		head = NULL;
 		cmd = readline(COLOR_GREEN "➜  minishell " COLOR_RESET);
-		// if (!cmd)
-		// {
-		// 	exit(exit_status_of_your_program)
-		// }
+		if (!cmd)
+		{
+			exit(0) ;
+		}
 		if (!cmd)
 			printf("%s\n", "OK");
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_errors.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 20:43:47 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/26 23:13:44 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/04/01 01:28:20 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,8 @@ int print_error_double_pipe(token_node *head)
 }
 int handle_errors_cmd(token_node *head, const char *cmd)
 {
+	if(!head)
+		return (-1);
 	if (print_error_quote(cmd) == -1)
 		return (-1);
 	if (print_error_redirection(head) == -1)

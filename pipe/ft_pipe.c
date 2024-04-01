@@ -6,70 +6,34 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/31 08:38:48 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/01 23:42:36 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-// int main(int argc, char *argv[], char *envp[])
-// {
-//     int fd[2];
-//     int fd_in;
-//     int pid;
-//     char *str = malloc(6);
-//     char *cmd[] = {"/bin/echoooo",">>", "f1", NULL};
-//     char *cmd2[] = {"/bin/pwd", NULL};
-//     char *cmd3[] = {"/usr/bin/grep","o", NULL};
+int *allocat_pids(t_cmd *cmd)
+{
+    t_cmd   *tmp;
+    int     i;
+    int     *pids;
 
-//     pipe(fd);
-//     pid = fork();
-//     if (pid < 0)
-//         exit(1);
-//     if (pid == 0)
-//     {
-//         close(fd[0]);
-//         dup2(fd[1], 1);
-//         close(fd[1]);
-//         execve("/bin/echoooo", cmd, envp);
-//         perror(cmd[0]);
-//     }
-//     close(fd[1]);
-//     fd_in = fd[0];
-//     pipe(fd);
-
-//     int pid2 = fork();
-//     if (pid2 < 0)
-//         exit(1);
-//     if (pid2 == 0)
-//     {
-//         dup2(fd_in, 0);
-//         close(fd_in);
-//         dup2(fd[1], 1);
-//         close(fd[0]);
-//         close(fd[1]);
-//         execve(cmd2[0], cmd2, envp);
-//         perror("execve2");
-//     }
-//     close(fd_in);
-//     close(fd[1]);
-//     fd_in = fd[0];
-//     int pid3 = fork();
-//     if (pid3 < 0)
-//         exit(1);
-//     if (pid3 == 0)
-//     {
-//         dup2(fd_in, 0);
-//         close(fd_in);
-//         execve(cmd3[0], cmd3, envp);
-//         perror("execve3");
-//     }
-//     close(fd_in);
-//     waitpid(pid, NULL, 0);
-//     waitpid(pid2, NULL, 0);
-//     waitpid(pid3, NULL, 0);
-//         printf("done");
-// }
+    tmp = cmd;
+    i = 0;
+    while(tmp)
+    {
+        tmp = tmp->next;
+        i++;
+    }
+    pids = (int *)malloc(i * sizeof(int));
+    if(!pids)
+    {
+        perror("faild to allocat memory for pids");
+        exit(1);
+    }
+    return (pids);
+    
+}
 
 void    init_fds(t_cmd **cmds)
 {
@@ -123,10 +87,12 @@ void    pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[])
     if(!cmd)
         return ;
     int fd[2];
+    int *pid;
     int tmp_fd_in;
-    int pid;
+    int i = 0;
 
     tmp_fd_in = -1;
+    pid = allocat_pids(cmd);
     init_fds(&cmd);
     if(exe_one_cmd_only(cmd, env_lst))
             return ;
@@ -135,10 +101,10 @@ void    pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[])
         init_fds(&cmd);
         if(!cmd->islast)
             pipe(fd);
-        pid = fork();
-        if(pid < 0)
+        pid[i] = fork();
+        if(pid[i] < 0)
             perror("fork");
-        if(pid == 0)
+        if(pid[i] == 0)
         {
             if(cmd->infile != 0)
             {
@@ -176,13 +142,16 @@ void    pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[])
         if(!cmd->islast)
         {
             close(fd[1]);
-            tmp_fd_in = dup(fd[0]);
+            tmp_fd_in = fd[0];
             if(tmp_fd_in < 0)
                 perror("tmp_fd_in");
         }
-        waitpid(pid, NULL, 0);
         cmd = cmd->next;
+        i++;
     }
+    while(i--)
+        waitpid(pid[i], NULL, 0);
+    free(pid);
     close(fd[0]);
     close(fd[1]);
 }
