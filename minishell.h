@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/31 20:58:59 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/31 21:05:12 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,22 +114,29 @@ char *get_str_env(t_expand *env, char *str_var);
 /*garbage collector*/
 void *ft_malloc(size_t size, int status);
 // execution
+void	ft_execution(t_cmd *cmd, t_expand **envp);
+void ft_execute_bultin(char *cmd[], t_expand **envp);
+int    exe_bultin_in_parent(char *cmd[], t_expand *env);
+int    exe_one_cmd_only(t_cmd *cmd, t_expand *env);
 char	**get_envp(t_expand *lst_envp);
 void	ft_execute_node(char *cmd[], t_expand *envp, char **str_envp);
 char	**get_envp(t_expand *lst_envp);
 
 //pipe & fds
+void	set_cmd_false_true(t_cmd **cmds);
+void    set_fds(t_cmd **cmds);
 void    init_fds(t_cmd **cmds);
 void    pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[]);
 
 
 // builtin
-void ft_pwd();
-void ft_cd(char *path);
-void ft_echo(char **cmd);
-void ft_env(char **cmd, t_expand *envp);
-void ft_unset(char **cmd, t_expand **envp);
-void ft_export(char **cmd, t_expand **envp);
+void 	ft_pwd();
+void 	ft_cd(char *path);
+void 	ft_echo(char **cmd);
+void 	ft_env(char **cmd, t_expand *envp);
+void 	ft_unset(char **cmd, t_expand **envp);
+void 	ft_export(char **cmd, t_expand **envp);
+int		is_builtin(t_cmd *cmd);
 // tools
 
 t_expand *ft_lst_last(t_expand *lst);

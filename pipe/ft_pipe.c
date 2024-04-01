@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/27 10:57:09 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/31 08:38:48 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,64 +79,62 @@ void    init_fds(t_cmd **cmds)
     int old_fd_out;
 
     head = *cmds;
-    while (head)
-    {
         tmp = head->redir;
-        while(tmp)
+        old_fd_in = -2;
+        old_fd_out = -2;
+        if(tmp)
         {
-            old_fd_out = head->outfile;
-            old_fd_in = head->infile;
-            if(tmp->type == REDIRECT_OUT)
+            while(tmp)
             {
-                head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_TRUNC, 0777);
-                if(old_fd_out != head->outfile)
+                if(tmp->type == REDIRECT_OUT)
                 {
-                    close(old_fd_out);
-                    old_fd_out = head->outfile;
+                    head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_TRUNC, 0777);
+                    if(head->outfile < 0)
+                        perror("fd_out");
                 }
-                if(head->outfile < 0)
-                    perror("fd_out");
-            }
-            else if(tmp->type == REDIRECT_APPEND)
-            {
-                head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_APPEND, 0777);
-                if(old_fd_out != head->outfile)
+                else if(tmp->type == REDIRECT_APPEND)
                 {
-                    close(old_fd_out);
-                    old_fd_out = head->outfile;
+                    head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_APPEND, 0777);
+                    if(head->outfile < 0)
+                        perror("fd_app");
                 }
-                if(head->outfile < 0)
-                    perror("fd_app");
-            }
-            else if(tmp->type == REDIRECT_IN)
-            {
-                head->infile = open(tmp->value, O_RDWR, 0777);
-                if(old_fd_in != head->infile)
+                else if(tmp->type == REDIRECT_IN)
                 {
-                    close(old_fd_in);
-                    old_fd_in = head->infile;
+                    head->infile = open(tmp->value, O_RDWR, 0777);
+                    if(head->infile < 0)
+                    {
+                        perror("fd_in");
+                        return ;
+                    }
                 }
-                if(head->infile < 0)
-                    perror("fd_in");
+                tmp = tmp->next;
             }
-            tmp = tmp->next;
         }
-            
-        head = head->next;
+    else
+    {
+        head->infile = 0;
+        head->outfile = 1;
     }
 }
 
 
 void    pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[])
 {
+    if(!cmd)
+        return ;
     int fd[2];
     int tmp_fd_in;
     int pid;
 
-    tmp_fd_in = 0;
+    tmp_fd_in = -1;
+    init_fds(&cmd);
+    if(exe_one_cmd_only(cmd, env_lst))
+            return ;
     while (cmd)
     {
-        pipe(fd);
+        init_fds(&cmd);
+        if(!cmd->islast)
+            pipe(fd);
         pid = fork();
         if(pid < 0)
             perror("fork");
@@ -144,121 +142,111 @@ void    pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[])
         {
             if(cmd->infile != 0)
             {
-                dup2(cmd->infile, 0);
+                if(cmd->infile == -1)
+                    exit(0);
+                if((dup2(cmd->infile, 0) < 0))
+                    exit(0);
                 close(cmd->infile);
             }
             if(cmd->outfile != 1)
             {
-                dup2(cmd->outfile, 1);
+                if(cmd->outfile == -1)
+                    exit(0);
+                if((dup2(cmd->outfile, 1) < 0))
+                    close(1);
                 close(cmd->outfile);
             }
             if (!cmd->isfirst)
             {
-                dup2(tmp_fd_in, 0);
+                dup2(tmp_fd_in, cmd->infile);
                 close(tmp_fd_in);
             }
             if (!cmd->islast)
             {
-                dup2(fd[1], 1);
+                if(dup2(fd[1], cmd->outfile) < 0)
+                    close(cmd->outfile);
                 close(fd[1]);
                 close(fd[0]);
             }
-            //execve(cmd->args[0], cmd->args, env);
-            ft_execute_node(cmd->args, NULL, env);
-            //perror(cmd->args[0]);
+            ft_execute_node(cmd->args, env_lst, env);
+            exit(EXIT_SUCCESS);
         }
         if(!cmd->isfirst)
             close(tmp_fd_in);
         if(!cmd->islast)
         {
             close(fd[1]);
-            tmp_fd_in = fd[0];
+            tmp_fd_in = dup(fd[0]);
+            if(tmp_fd_in < 0)
+                perror("tmp_fd_in");
         }
+        waitpid(pid, NULL, 0);
         cmd = cmd->next;
     }
-    int i = 0;
-    while(i < 3)
-    {
-        wait(NULL);
-        i++;
-    }
+    close(fd[0]);
+    close(fd[1]);
 }
-#include <signal.h>
-int main(int argc, char *argv[], char **env)
+
+int    exe_one_cmd_only(t_cmd *cmd, t_expand *env)
 {
-    char *cmd[] = {"/bin/echo","-la", NULL};
-    token_node *token = (token_node*)malloc(sizeof(token_node));
-    token_node *token2 = (token_node*)malloc(sizeof(token_node));
-    token_node *token3 = (token_node*)malloc(sizeof(token_node));
-    token->type = REDIRECT_APPEND;
-    token->value = "file";
-    token->next = token2;
-    token2->type = REDIRECT_OUT;
-    token2->value = "file3";
-    token2->next = token3;
-    token3->type = REDIRECT_OUT;
-    token3->value = "file4";
-    token3->next = NULL;
-    t_cmd *head = (t_cmd *)malloc(sizeof(t_cmd));
-    head->args = cmd;
-    head->isfirst = true;
-    head->islast = true;
-    head->next = NULL;
-    head->redir = token;
-    init_fds(&head);
-    printf("%d\n", head->outfile);
-    printf("%d", head->infile);
-    pid_t pid = getpid();
+    int save_in;
+    int save_out;
 
-    // Create a buffer to hold the command
-    char command[100];
-    
-    // Construct the command with the PID
-    snprintf(command, sizeof(command), "lsof -p %d", (int)pid);
-
-    // Execute the command
-    system(command);
-    
+    if (cmd->isfirst && cmd->islast && is_builtin(cmd))
+    {
+        save_in = dup(0);
+        save_out = dup(1);
+        if(cmd->infile != 0)
+        {
+            if((dup2(cmd->infile, 0) < 0))
+                return (1);
+            close(cmd->infile);
+        }
+        if(cmd->outfile != 1)
+        {
+            if((dup2(cmd->outfile, 1) < 0))
+                return (1);
+            close(cmd->outfile);
+        }
+        if(!exe_bultin_in_parent(cmd->args, env))
+            return (0);
+        if((dup2(save_in, 0) < 0))
+            close(0);
+        close(save_in);
+        if((dup2(save_out, 1) < 0))
+            close(1);
+        close(save_out);
+        return(1);
+    }
+    return (0);
 }
-// int main(int argc, char *argv[], char *env[])
-// {
-//     char *cmd[] = {"/bin/echo","-la", NULL};
-//     char *cmd2[] = {"/bin/cat", NULL};
-//     char *cmd3[] = {"/bin/ls","-lah", NULL};
-//     char *cmd4[] = {"/bin/cat", NULL};
-//     int fd = open("test", O_RDWR | O_CREAT | O_TRUNC, 0777);
-//     t_cmd head;
-//     t_cmd head2;
-//     t_cmd head3;
-//     t_cmd head4;
-//     head.args = cmd;
-//     head.infile = 0;
-//     head.outfile = fd;
-//     head.islast = false;
-//     head.isfirst = true;
-//     head.next = &head4;
-    
-//     // head2.args = cmd2;
-//     // head2.infile = 0;
-//     // head2.outfile = 1;
-//     // head2.islast = false;
-//     // head2.isfirst = false;
-//     // head2.next = &head3;
-    
-    
-//     // head3.args = cmd3;
-//     // head3.infile = 0;
-//     // head3.outfile = 1;
-//     // head3.islast = false;
-//     // head3.isfirst = false;
-//     // head3.next = &head4;
 
-//     head4.args = cmd4;
-//     head4.infile = fd;
-//     head4.outfile = 1;
-//     head4.islast = true;
-//     head4.isfirst = false;
-//     head4.next = NULL;
-//     pipe_line(&head, NULL, env);
-    
-// }
+int is_builtin(t_cmd *cmd)
+{
+    if(!cmd->args || !cmd->args[0])
+        return (0);
+    if ((ft_strcmp(cmd->args[0], "echo") == 0)|| (ft_strcmp(cmd->args[0], "export") == 0)
+        ||(ft_strcmp(cmd->args[0], "env") == 0)|| (ft_strcmp(cmd->args[0], "cd") == 0)
+        ||(ft_strcmp(cmd->args[0], "pwd") == 0) || (ft_strcmp(cmd->args[0], "unset") == 0)
+        ||(ft_strcmp(cmd->args[0], "/bin/echo") == 0)|| (ft_strcmp(cmd->args[0], "/usr/bin/cd") == 0)
+        ||(ft_strcmp(cmd->args[0], "/usr/bin/env") == 0)|| (ft_strcmp(cmd->args[0], "/bin/pwd") == 0))
+            return (1);
+    return (0);
+}
+
+int exe_bultin_in_parent(char *cmd[], t_expand *env)
+{
+    if(ft_strcmp(cmd[0], "echo") == 0 || ft_strcmp(cmd[0], "/bin/echo") == 0)
+		return (ft_echo(cmd), 1);
+	else if(ft_strcmp(cmd[0], "export") == 0)
+		return (ft_export(cmd, &env), 1);
+	else if(ft_strcmp(cmd[0], "env") == 0 || ft_strcmp(cmd[0], "/usr/bin/env") == 0)
+		return (ft_env(cmd, env), 1);
+	else if(ft_strcmp(cmd[0], "cd") == 0 || ft_strcmp(cmd[0], "/usr/bin/cd") == 0)
+		return (ft_cd(cmd[1]), 1);
+	else if(ft_strcmp(cmd[0], "pwd") == 0 || ft_strcmp(cmd[0], "/bin/pwd") == 0)
+		return (ft_pwd(), 1);
+	else if(ft_strcmp(cmd[0], "unset") == 0)
+		return (ft_unset(cmd, &env), 1);
+    return (0);
+}

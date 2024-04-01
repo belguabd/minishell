@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/31 21:02:54 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/03/31 23:12:47 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -336,6 +336,8 @@ t_cmd *addnew_cmd(char **args, token_node *head_cmd)
 		return (NULL);
 	new_cmd->args = args;
 	new_cmd->redir = head_cmd;
+	new_cmd->infile = 0;
+	new_cmd->outfile = 1;
 	new_cmd->next = NULL;
 	return (new_cmd);
 }
@@ -414,12 +416,12 @@ int main(int ac, char const *av[], char *env[])
 
 		add_history(cmd);
 		head = tokenization(cmd, &head);
-		// displayLinkedList(head);
 		int error = handle_errors_cmd(head, cmd);
+		(void)error;
 		if (error == -1)
 		{
-			ft_malloc(FREE, FREE);
-			free((void *)cmd);
+			// ft_malloc(FREE, FREE);
+			// free((void *)cmd);
 			continue;
 		}
 		remove_single_q(head);
@@ -432,7 +434,9 @@ int main(int ac, char const *av[], char *env[])
 		// display_expand_list(env_expand);
 		head = ft_remove_redirect(head);
 		cmd_list = ft_passing(head);
+		ft_execution(cmd_list, &env_expand);
 
+		(void)cmd_list;
 		// while (cmd_list)
 		// {
 		// 	printf("args: ");
@@ -449,9 +453,8 @@ int main(int ac, char const *av[], char *env[])
 		// 	cmd_list = cmd_list->next;
 		// 	printf("\n");
 		// }
-		// ft_malloc(FREE, FREE);
-		// free((void *)cmd);
-		// head = NULL;
 	}
+	// ft_malloc(FREE, FREE);
+	// free((void *)cmd);
 	return 0;
 }
