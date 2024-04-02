@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/31 21:05:12 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/02 07:52:43 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ typedef enum tokenize
 	REDIRECT_OUT,	 // >
 	REDIRECT_IN,	 // <
 	HEREDOC,		 // <<
-	SPACE,			 //" "
+	//SPACE,			 //" "
 	STRING,			 //"belguabd"
 	PIPE,			 //"|"
 	DOUBLE_Q,		 //""
@@ -113,6 +113,7 @@ void expand_and_print_vars(token_node *head, t_expand *env);
 char *get_str_env(t_expand *env, char *str_var);
 /*garbage collector*/
 void *ft_malloc(size_t size, int status);
+
 // execution
 void	ft_execution(t_cmd *cmd, t_expand **envp);
 void ft_execute_bultin(char *cmd[], t_expand **envp);
@@ -121,6 +122,9 @@ int    exe_one_cmd_only(t_cmd *cmd, t_expand *env);
 char	**get_envp(t_expand *lst_envp);
 void	ft_execute_node(char *cmd[], t_expand *envp, char **str_envp);
 char	**get_envp(t_expand *lst_envp);
+
+//signals
+void    handler(int sig);
 
 //pipe & fds
 void	set_cmd_false_true(t_cmd **cmds);

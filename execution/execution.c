@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/01 20:36:29 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/02 09:07:47 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char **get_envp(t_expand *lst_envp)
 		return (NULL);
 	envp = (char **)malloc((size + 1) * sizeof(char *));
 	if (!envp)
-		perror("malloc");
+		return (perror("malloc"), NULL);
 	while (head)
 	{
 		// TO_DO:ft_strjoin fail case
@@ -41,10 +41,15 @@ char **get_envp(t_expand *lst_envp)
 void	ft_execution(t_cmd *cmd, t_expand **envp)
 {
 	char **env;
-	// if(!cmd || !cmd->args || !*cmd->args)
-	// 	return ;
 
+	if(!envp || !*envp)
+	{
+		perror("no env");
+		exit(1);
+	}
 	env = get_envp(*envp);
+	if (!env)
+		exit(1);
 	set_cmd_false_true(&cmd);
 	pipe_line(cmd, *envp, env);
 }
@@ -93,9 +98,11 @@ char	*check_path(char **path, char *cmd)
 	int		i;
 
 	i = 0;
+	if (!path || !*path)
+		return (NULL);
 	if (access(cmd, X_OK) == 0)
 		return (cmd);
-	if(cmd[0]== '/')
+	if(cmd[0] == '/')
 	{
 		if (access(cmd, X_OK) == 0)
 			return (cmd);
@@ -119,6 +126,8 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp)
 	char **paths = NULL;
 	char *new_cmd;
 
+	if(!cmd || !*cmd)
+		return ;
 	ft_execute_bultin(cmd, &envp);
 	while (envp)
 	{

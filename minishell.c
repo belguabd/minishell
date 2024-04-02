@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/01 20:36:01 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/02 09:02:52 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -403,13 +403,17 @@ int main(int ac, char const *av[], char *env[])
 	head = NULL;
 	t_expand *env_expand = NULL;
 	init_env(&env_expand, env);
+	signal(SIGINT,handler);
+	signal(SIGQUIT,handler);
+	rl_catch_signals = 0;
 	while (1)
 	{
 		head = NULL;
 		cmd = readline(COLOR_GREEN "➜  minishell " COLOR_RESET);
 		if (!cmd)
 		{
-			exit(0) ;
+			write(1, "exit\n", 5);
+			exit(0);
 		}
 		if (!cmd)
 			printf("%s\n", "OK");

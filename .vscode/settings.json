@@ -57,5 +57,6 @@
     "minishell.h": "c",
     "history.h": "c",
     "algorithm": "c"
-  }
+  },
+  "C_Cpp.errorSquiggles": "disabled"
 }

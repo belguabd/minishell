@@ -1,5 +1,5 @@
 NAME = minishell
-CC = gcc
+CC = cc
 CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address 
 #-------folder-------#
 UTILS = utils
@@ -10,6 +10,8 @@ EXECUTION=execution
 BUILT_IN=built_in
 PIPE=pipe
 GC=gc
+READLINE=$(shell brew --prefix readline)/lib
+READLINE1=$(shell brew --prefix readline)/include
 #-------files-------#
 SRC =minishell.c \
 	$(UTILS)/ft_split.c $(UTILS)/ft_strlen.c $(UTILS)/ft_strdup.c $(UTILS)/ft_substr.c $(UTILS)/ft_strjoin.c $(UTILS)/ft_putendl_fd.c \
@@ -20,19 +22,19 @@ SRC =minishell.c \
 	$(GC)/ft_free.c \
 	$(EXECUTION)/execution.c $(EXECUTION)/execution_tools.c \
 	$(BUILT_IN)/built_in_tools.c $(BUILT_IN)/cd.c $(BUILT_IN)/env.c $(BUILT_IN)/export.c $(BUILT_IN)/pwd.c $(BUILT_IN)/unset.c $(BUILT_IN)/echo.c \
-	$(PIPE)/ft_pipe.c
+	$(PIPE)/ft_pipe.c sigs/signals.c
 
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@$(CC) $(CFLAGS) $(OBJ) -lreadline -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJ) -lreadline -L $(READLINE) -o $(NAME)
 	@echo "\033[0;32m Minishell compiled\033[0m"
 
 %.o: %.c minishell.h
 	@printf "\033[0;32m Compiling minishell: \033[0;33m$<\033[0m\r"
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -I $(READLINE1) -c $< -o $@
 
 clean:
 	@rm -rf $(OBJ)

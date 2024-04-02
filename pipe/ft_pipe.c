@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/01 23:42:36 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/02 09:05:52 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void    init_fds(t_cmd **cmds)
                     head->infile = open(tmp->value, O_RDWR, 0777);
                     if(head->infile < 0)
                     {
-                        perror("fd_in");
+                        perror(tmp->value);
                         return ;
                     }
                 }
@@ -84,7 +84,7 @@ void    init_fds(t_cmd **cmds)
 
 void    pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[])
 {
-    if(!cmd)
+    if (!cmd)
         return ;
     int fd[2];
     int *pid;
