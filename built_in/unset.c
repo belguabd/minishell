@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 08:44:40 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/27 20:40:25 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/04/02 09:48:21 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ void	ft_unset(char **cmd, t_expand **envp)
 	int	i;
 
 	i = 1;
+	if(!envp || !*envp)
+		return ;
 	while (cmd[i])
 	{
 		ft_del_node(envp, cmd[i]);

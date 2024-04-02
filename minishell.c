@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/02 09:02:52 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/02 10:32:03 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,12 @@ void display_expand_list(t_expand *head)
 
 void init_env(t_expand **head, char *env[])
 {
-	int i = 0;
+	int i;
+	
+
+	char *cmd[] = {"unset", "OLDPWD", NULL};
+	
+	i = 0;
 	while (env[i])
 	{
 		int j = 0;
@@ -83,6 +88,9 @@ void init_env(t_expand **head, char *env[])
 		lstadd_back_expand(head, addnew_expand_node(key, value));
 		i++;
 	}
+	ft_unset(cmd, head);
+	char *cmd2[] = {"export", "OLDPWD", NULL};
+	ft_export(cmd2, head);
 }
 // bool check_exist_env(char *str, t_expand *env)
 // {
