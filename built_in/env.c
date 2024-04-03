@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 01:12:43 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/27 12:59:38 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/04/03 05:28:29 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,28 @@ void	ft_env(char **cmd, t_expand *envp)
 	head = envp;
 	while (head)
 	{
-		printf("%s", head->key);
+		if(*head->value)
+		{
+			printf("%s", head->key);
+			if(ft_strcmp(head->value, "\"\"") == 0)
+				printf("=\n");
+			else if(*(head->value))
+				printf("=%s\n", head->value);
+			else
+				printf("\n");
+		}
+		head = head->next;
+	}
+}
+
+void	get_env_export(t_expand *envp)
+{
+	t_expand	*head;
+	
+	head = envp;
+	while (head)
+	{
+		printf("declare -x %s", head->key);
 		if(ft_strcmp(head->value, "\"\"") == 0)
 			printf("=%s\n", head->value);
 		else if(*(head->value))
@@ -30,4 +51,3 @@ void	ft_env(char **cmd, t_expand *envp)
 		head = head->next;
 	}
 }
-

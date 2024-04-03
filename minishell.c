@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/02 10:32:03 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/03 07:00:23 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,9 @@ void display_expand_list(t_expand *head)
 void init_env(t_expand **head, char *env[])
 {
 	int i;
-	
 
 	char *cmd[] = {"unset", "OLDPWD", NULL};
-	
+
 	i = 0;
 	while (env[i])
 	{
@@ -206,6 +205,15 @@ void readline_hdc(char *dlmtr, t_expand *env, int flag)
 	while (1)
 	{
 		char *cmd = readline("> ");
+		if (!cmd)
+		{
+
+			int fd = open(file_tmp, O_CREAT | O_RDWR | O_TRUNC, 0777);
+			if (fd < 0)
+				write(2, "Error\n", 6);
+			write(fd, buffer, ft_strlen(buffer));
+			return;
+		}
 		if (!ft_strcmp(cmd, dlmtr))
 		{
 			dlm = cmd;
@@ -237,7 +245,7 @@ void ft_headoc(token_node *head, t_expand *env)
 		if (head->type == HEREDOC)
 		{
 			token_node *tmp = head->next;
-			if (tmp && tmp->type == SPACE)
+			if (tmp && tmp->type == SPC)
 				tmp = tmp->next;
 			while (tmp && is_string_type(tmp->type))
 			{
@@ -310,7 +318,7 @@ token_node *ft_remove_redirect(token_node *head)
 		{
 			int type = head->type;
 			token_node *tmp = head->next;
-			if (tmp && tmp->type == SPACE)
+			if (tmp && tmp->type == SPC)
 				head = head->next;
 			head = head->next; // skip the redirection token
 			lstadd_back(&new_node, addnew_tkn_node(type, head->value));
@@ -411,10 +419,10 @@ int main(int ac, char const *av[], char *env[])
 	head = NULL;
 	t_expand *env_expand = NULL;
 	init_env(&env_expand, env);
-	signal(SIGINT,handler);
-	signal(SIGQUIT,handler);
+	signal(SIGINT, handler);
+	signal(SIGQUIT, handler);
 	rl_catch_signals = 0;
-	while (1)
+	while (1 && isatty(STDIN_FILENO))
 	{
 		head = NULL;
 		cmd = readline(COLOR_GREEN "➜  minishell " COLOR_RESET);

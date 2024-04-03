@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/02 07:52:43 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/03 08:02:14 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ typedef enum tokenize
 	REDIRECT_OUT,	 // >
 	REDIRECT_IN,	 // <
 	HEREDOC,		 // <<
-	//SPACE,			 //" "
+	SPC,			 //" "
 	STRING,			 //"belguabd"
 	PIPE,			 //"|"
 	DOUBLE_Q,		 //""
@@ -135,12 +135,13 @@ void    pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[]);
 
 // builtin
 void 	ft_pwd();
-void 	ft_cd(char *path);
+void	ft_cd(char *path, t_expand *env);
 void 	ft_echo(char **cmd);
 void 	ft_env(char **cmd, t_expand *envp);
 void 	ft_unset(char **cmd, t_expand **envp);
 void 	ft_export(char **cmd, t_expand **envp);
 int		is_builtin(t_cmd *cmd);
+void	get_env_export(t_expand *envp);
 // tools
 
 t_expand *ft_lst_last(t_expand *lst);

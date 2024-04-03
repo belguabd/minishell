@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 20:43:47 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/01 01:28:20 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/03 00:35:35 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int print_error_redirection(token_node *head)
 		if (tmp->type >= REDIRECT_APPEND && tmp->type <= HEREDOC)
 		{
 			tmp = tmp->next;
-			if (tmp && tmp->type == SPACE)
+			if (tmp && tmp->type == SPC)
 				tmp = tmp->next;
 			if (tmp && tmp->type != STRING && tmp->type != DOUBLE_Q && tmp->type != SINGLE_Q && tmp->type != VAR)
 			{
@@ -70,7 +70,7 @@ int print_check_pip_start_line(token_node *head)
 {
 	token_node *tmp = head;
 	tmp = head; // check pipe in line start
-	if (tmp && tmp->type == SPACE)
+	if (tmp && tmp->type == SPC)
 		tmp = tmp->next;
 	if (tmp && tmp->type == PIPE)
 	{
@@ -87,7 +87,7 @@ int print_error_double_pipe(token_node *head)
 		if (tmp->type == PIPE)
 		{
 			tmp = tmp->next;
-			if (tmp && tmp->type == SPACE)
+			if (tmp && tmp->type == SPC)
 				tmp = tmp->next;
 			if (tmp && tmp->type == PIPE)
 			{

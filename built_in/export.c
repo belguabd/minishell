@@ -6,13 +6,13 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 01:53:18 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/02 02:26:08 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/03 05:11:52 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	pars_key(char *cmd)
+int pars_key(char *cmd)
 {
 	int i;
 	int len;
@@ -34,7 +34,7 @@ int	pars_key(char *cmd)
 	return (0);
 }
 
-void	ft_export_exicted(t_expand *node, t_expand **envp)
+void ft_export_exicted(t_expand *node, t_expand **envp)
 {
 	t_expand *head;
 
@@ -46,37 +46,37 @@ void	ft_export_exicted(t_expand *node, t_expand **envp)
 			if (node->value && *(node->value))
 				head->value = ft_strdup(node->value);
 			ft_free_node(node);
-			return ;
+			return;
 		}
 		head = head->next;
 	}
-	ft_lst_add_back(envp , node);
+	ft_lst_add_back(envp, node);
 }
 
-void	ft_export(char **cmd, t_expand **envp)
+void ft_export(char **cmd, t_expand **envp)
 {
-	t_expand	*new;
-	char		*key;
-	char		*value;
-	int			i;
-	int			j;
+	t_expand *new;
+	char *key;
+	char *value;
+	int i;
+	int j;
 
 	i = 0;
 	j = 0;
 	value = NULL;
 	if (!cmd[1])
 	{
-		ft_env(cmd, *envp);
-		return ;
+		get_env_export(*envp);
+		return;
 	}
-	while(cmd[++j])
+	while (cmd[++j])
 	{
 		i = 0;
-		while(cmd[j][i] && cmd[j][i] != '=')
+		while (cmd[j][i] && cmd[j][i] != '=')
 			i++;
 		key = ft_substr(cmd[j], 0, i);
-		if(pars_key(key))
-			return ;
+		if (pars_key(key))
+			return;
 		if (cmd[j][i])
 		{
 			if (cmd[j][i] == '=' && !cmd[j][i + 1])
@@ -88,8 +88,7 @@ void	ft_export(char **cmd, t_expand **envp)
 			value = ft_strdup("");
 		new = ft_lst_new(key, value);
 		if (!new)
-			return ;
+			return;
 		ft_export_exicted(new, envp);
 	}
 }
-

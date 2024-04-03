@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/02 09:07:47 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/03 06:56:10 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void ft_execute_bultin(char *cmd[], t_expand **envp)
 	}
 	if(ft_strcmp(cmd[0], "cd") == 0 || ft_strcmp(cmd[0], "/usr/bin/cd") == 0)
 	{
-		ft_cd(cmd[1]);
+		ft_cd(cmd[1], *envp);
 		exit(0);
 	}
 	if(ft_strcmp(cmd[0], "pwd") == 0 || ft_strcmp(cmd[0], "/bin/pwd") == 0)

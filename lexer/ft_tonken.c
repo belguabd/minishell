@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 09:36:33 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/01 01:28:04 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/03 00:35:35 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ token_node *tokenization(const char *cmd, token_node **head)
 			lstadd_back(head, addnew_tkn_node(HEREDOC, "<<"));
 		else if (cmd[i] == ' ' || (cmd[i] >= 9 && cmd[i] <= 13))
 		{
-			lstadd_back(head, addnew_tkn_node(SPACE, " "));
+			lstadd_back(head, addnew_tkn_node(SPC, " "));
 			while (cmd[i] == ' ' || (cmd[i] >= 9 && cmd[i] <= 13))
 				i++;
 			i--;

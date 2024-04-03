@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/02 09:05:52 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/03 06:55:42 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,7 +212,7 @@ int exe_bultin_in_parent(char *cmd[], t_expand *env)
 	else if(ft_strcmp(cmd[0], "env") == 0 || ft_strcmp(cmd[0], "/usr/bin/env") == 0)
 		return (ft_env(cmd, env), 1);
 	else if(ft_strcmp(cmd[0], "cd") == 0 || ft_strcmp(cmd[0], "/usr/bin/cd") == 0)
-		return (ft_cd(cmd[1]), 1);
+		return (ft_cd(cmd[1], env), 1);
 	else if(ft_strcmp(cmd[0], "pwd") == 0 || ft_strcmp(cmd[0], "/bin/pwd") == 0)
 		return (ft_pwd(), 1);
 	else if(ft_strcmp(cmd[0], "unset") == 0)
