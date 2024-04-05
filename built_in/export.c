@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 01:53:18 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/04 05:05:33 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/05 03:21:35 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,15 +44,15 @@ int	ft_join_value(t_expand *node, t_expand **envp)
 		if(ft_strcmp(node->key, head->key) == 0)
 		{
 			if(head->value && *head->value && ft_strcmp(head->value, "\"\""))
-				head->value = ft_strjoin(head->value, &node->value[1]);
-			else if(!head->value[0] || (ft_strcmp(head->value, "\"\"") == 0))
-				head->value = ft_strdup(&node->value[1]);
+				head->value = ft_strjoin(head->value, &node->value[2]);
+			else if(!head->value[1] || (ft_strcmp(head->value, "\"\"") == 0))
+				head->value = ft_strdup(&node->value[2]);
 			ft_free_node(node);
 			return (1);
 		}
 		head = head->next;
 	}
-	node->value = ft_strdup(&node->value[1]);
+	node->value = ft_substr(node->value, 2, ft_strlen(node->value) - 1);
 	ft_lst_add_back(envp, node);
 	return (1);
 }
@@ -62,22 +62,23 @@ void ft_export_exicted(t_expand *node, t_expand **envp)
 	t_expand *head;
 
 	head = *envp;
-	if(node->value[0] == '=')
+	if(node->value[0] == '+')
 	{
 		if((ft_join_value(node, envp)) == 1)
-			return ;		
+			return ;
 	}
 	while (head)
 	{
 		if (ft_strcmp(node->key, head->key) == 0)
 		{
-			if (node->value && *(node->value))
-				head->value = ft_strdup(node->value);
+			if (node->value && node->value[1])
+				head->value = ft_strdup(&node->value[1]);
 			ft_free_node(node);
 			return;
 		}
 		head = head->next;
 	}
+	node->value = ft_substr(node->value, 1, ft_strlen(node->value) - 1);
 	ft_lst_add_back(envp, node);
 }
 
@@ -114,7 +115,7 @@ void ft_export(char **cmd, t_expand **envp)
 			if (cmd[j][i] == '=' && !cmd[j][i + 1])
 				value = ft_strdup("\"\"");
 			else
-				value = ft_strdup(&cmd[j][i + 1]);
+				value = ft_strdup(&cmd[j][i]);
 		}
 		else
 			value = ft_strdup("");
