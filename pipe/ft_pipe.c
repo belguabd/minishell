@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/03 06:55:42 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/05 07:12:06 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,15 @@ void    init_fds(t_cmd **cmds)
                 else if(tmp->type == REDIRECT_IN)
                 {
                     head->infile = open(tmp->value, O_RDWR, 0777);
+                    if(head->infile < 0)
+                    {
+                        perror(tmp->value);
+                        return ;
+                    }
+                }
+                else if(tmp->type == HEREDOC)
+                {
+                    head->infile = open("file_tmp_0", O_RDWR | O_CREAT, 0777);
                     if(head->infile < 0)
                     {
                         perror(tmp->value);

@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 01:53:18 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/05 03:21:35 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/06 02:34:32 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,14 +71,19 @@ void ft_export_exicted(t_expand *node, t_expand **envp)
 	{
 		if (ft_strcmp(node->key, head->key) == 0)
 		{
-			if (node->value && node->value[1])
+			if(ft_strcmp(node->value, "\"\"") == 0)
+				head->value = ft_strdup("\"\"");
+			else if (node->value && node->value[1])
 				head->value = ft_strdup(&node->value[1]);
 			ft_free_node(node);
 			return;
 		}
 		head = head->next;
 	}
-	node->value = ft_substr(node->value, 1, ft_strlen(node->value) - 1);
+	if(ft_strcmp(node->value, "\"\"") == 0)
+		node->value = ft_strdup("\"\"");
+	else
+		node->value = ft_substr(node->value, 1, ft_strlen(node->value));
 	ft_lst_add_back(envp, node);
 }
 
