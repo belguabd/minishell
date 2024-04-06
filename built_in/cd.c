@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 02:14:56 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/03 08:08:04 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/06 05:53:42 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,20 @@ t_expand *get_pwd(t_expand *env)
 	return (NULL);
 }
 
+char *get_home(t_expand *env)
+{
+	t_expand *pwd;
+
+	pwd = env;
+	while(pwd)
+	{
+		if((ft_strcmp(pwd->key, "HOME") == 0))
+			return (pwd->value);
+		pwd = pwd->next;
+	}
+	return (NULL);
+}
+
 void	ft_cd(char *path, t_expand *env)
 {
 	t_expand 	*oldpwd;
@@ -48,6 +62,8 @@ void	ft_cd(char *path, t_expand *env)
 	char	np[PATH_MAX];
 
 	getcwd(op, PATH_MAX);
+	if(!path || ft_strcmp(path, "~") == 0)
+		path = ft_strdup(get_home(env));
 	if (chdir(path) < 0)
 		return (perror("cd "));
 	getcwd(np, PATH_MAX);
