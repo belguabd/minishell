@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/03 07:00:23 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/15 17:17:58 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,26 +193,25 @@ char *expand_heardoc(char *cmd, t_expand *env)
 	free((void *)cmd);
 	return (buffer);
 }
-void readline_hdc(char *dlmtr, t_expand *env, int flag)
+char *readline_hdc(char *dlmtr, t_expand *env, int flag)
 {
-	static int i;
 	(void)dlmtr;
 	char *buffer = NULL;
-	// char *file_tmp = ft_strdup("/tmp/file_tmp_");
-	char *file_tmp = ft_strdup("file_tmp_");
-	file_tmp = ft_strjoin(file_tmp, ft_itoa(i++));
+	char *file_tmp = ft_strdup(".heardoc");
+	int i = 0;
+	while (access(file_tmp, F_OK) != -1)
+		file_tmp = ft_strjoin(".heardoc", ft_itoa(i++));
 	char *dlm;
 	while (1)
 	{
 		char *cmd = readline("> ");
 		if (!cmd)
 		{
-
 			int fd = open(file_tmp, O_CREAT | O_RDWR | O_TRUNC, 0777);
 			if (fd < 0)
 				write(2, "Error\n", 6);
 			write(fd, buffer, ft_strlen(buffer));
-			return;
+			return (file_tmp);
 		}
 		if (!ft_strcmp(cmd, dlmtr))
 		{
@@ -235,6 +234,7 @@ void readline_hdc(char *dlmtr, t_expand *env, int flag)
 		write(2, "Error\n", 6);
 	write(fd, buffer, ft_strlen(buffer));
 	close(fd);
+	return (file_tmp);
 }
 void ft_headoc(token_node *head, t_expand *env)
 {
@@ -256,7 +256,7 @@ void ft_headoc(token_node *head, t_expand *env)
 				buffer = ft_strjoin(buffer, tmp->value);
 				tmp = tmp->next;
 			}
-			readline_hdc(buffer, env, flag);
+			head->value = readline_hdc(buffer, env, flag);
 			buffer = NULL;
 		}
 		head = head->next;
@@ -316,13 +316,27 @@ token_node *ft_remove_redirect(token_node *head)
 	{
 		if (is_redirection(head->type))
 		{
-			int type = head->type;
-			token_node *tmp = head->next;
-			if (tmp && tmp->type == SPC)
-				head = head->next;
-			head = head->next; // skip the redirection token
-			lstadd_back(&new_node, addnew_tkn_node(type, head->value));
-			head = head->next; // Skip the value token
+			if (head->type == HEREDOC)
+			{
+				int type = head->type;
+				char *value = head->value;
+				token_node *tmp = head->next;
+				if (tmp && tmp->type == SPC)
+					head = head->next;
+				head = head->next; // skip the redirection token
+				lstadd_back(&new_node, addnew_tkn_node(type, value));
+				head = head->next; // Skip the value token
+			}
+			else
+			{
+				int type = head->type;
+				token_node *tmp = head->next;
+				if (tmp && tmp->type == SPC)
+					head = head->next;
+				head = head->next; // skip the redirection token
+				lstadd_back(&new_node, addnew_tkn_node(type, head->value));
+				head = head->next; // Skip the value token
+			}
 		}
 		else
 		{
@@ -409,6 +423,7 @@ int main(int ac, char const *av[], char *env[])
 {
 	(void)ac;
 	(void)av;
+	(void)env;
 	const char *cmd = NULL;
 	token_node *head = NULL;
 	// (void)env_expand;
@@ -453,6 +468,7 @@ int main(int ac, char const *av[], char *env[])
 		// exit(0);
 		// display_expand_list(env_expand);
 		head = ft_remove_redirect(head);
+		// displayLinkedList(head);
 		cmd_list = ft_passing(head);
 		ft_execution(cmd_list, &env_expand);
 

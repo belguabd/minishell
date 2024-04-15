@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 09:49:47 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/27 15:00:56 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/04/14 21:39:10 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,20 @@ bool is_var(char c)
 		return (true);
 	return (false);
 }
+bool is_spaces(char c)
+{
+	if (c == ' ' || (c >= 9 && c <= 13))
+		return true;
+	return false;
+}
 bool is_string(char c)
 {
-	return (c == '\"' || c == '\'' || c == '|' || c == '>' || c == '$' || c == '<' || c == ' ' || c == '\t');
+	return (c == '\"' || c == '\'' || c == '|' || c == '>' || c == '$' || c == '<' || is_spaces(c));
 }
 token_node *addnew_tkn_node(int token, char *value)
 {
 	token_node *new;
-	new = (token_node *)ft_malloc(sizeof(token_node) ,ALLOC);
+	new = (token_node *)ft_malloc(sizeof(token_node), ALLOC);
 	if (!new)
 		return (NULL);
 	new->type = token;
