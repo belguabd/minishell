@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/17 18:50:33 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/04/19 05:47:53 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,29 +131,6 @@ int ft_count_word(char **output)
 }
 void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp)
 {
-
-	// int i = 0;
-	// int wc = 0;
-	// while (cmd[i])
-	// {
-	// 	char **output = ft_split_last_cmd(cmd[i]);
-	// 	wc += ft_count_word(output);
-	// 	i++;
-	// }
-	// char **new_cmd_last = (char **)ft_malloc((sizeof(char *) * (wc + 1)), ALLOC);
-	// if (!new_cmd_last)
-	// 	return;
-	// i = 0;
-	// int k = 0;
-	// while (cmd[i])
-	// {
-	// 	char **output = ft_split_last_cmd(cmd[i]);
-	// 	int j = 0;
-	// 	while (output[j])
-	// 		new_cmd_last[k++] = output[j++];
-	// 	i++;
-	// }
-	// new_cmd_last[k] = NULL;
 	char **paths = NULL;
 	char *new_cmd;
 

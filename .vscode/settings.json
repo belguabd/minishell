@@ -10,6 +10,17 @@
 		"string_view": "c",
 		"unordered_map": "c",
 		"utility": "c",
-		"vector": "c"
+		"vector": "c",
+		"__functional_base": "c",
+		"__functional_base_03": "c",
+		"__tuple": "c",
+		"algorithm": "c",
+		"chrono": "c",
+		"type_traits": "c",
+		"functional": "c",
+		"limits": "c",
+		"memory": "c",
+		"ratio": "c",
+		"tuple": "c"
 	}
 }

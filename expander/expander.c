@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 21:20:05 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/19 01:51:25 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/04/19 06:04:54 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,17 +51,24 @@ char *get_var_odd(char *str_var, t_expand *env)
 		str_exp = ft_strdup("$");
 	return (str_exp);
 }
+
 char *ft_str_exp(char *str_var, t_expand *env)
 {
-	size_t i = 0;
-	char *get_var = NULL;
-	char *str_exp = NULL;
-	size_t len = ft_strlen(str_var);
+	size_t i;
+	char *str_exp;
+	char *get_var;
+	size_t len;
+	size_t count;
+
+	str_exp = NULL;
+	get_var = NULL;
+	len = ft_strlen(str_var);
+	i = 0;
 	while (i < len)
 	{
 		if (str_var[i] == '$')
 		{
-			size_t count = i;
+			count = i;
 			while (str_var[i] && str_var[i] == '$')
 				i++;
 			count = i - count;
@@ -81,9 +88,13 @@ char *ft_str_exp(char *str_var, t_expand *env)
 void ft_expand_var(token_node *head, t_expand *env)
 {
 
-	char *str = head->value;
-	int i = 1;
-	char len = ft_strlen(str);
+	char *str;
+	int i;
+	size_t len;
+
+	i = 1;
+	str = head->value;
+	len = ft_strlen(str);
 	if (len == 1)
 		head->value = ft_strdup("$");
 	else
@@ -92,44 +103,63 @@ void ft_expand_var(token_node *head, t_expand *env)
 		head->value = var;
 	}
 }
+void expand_var_and_split(token_node **new_head, token_node *head, t_expand *env)
+{
+	ft_expand_var(head, env);
+	char **output;
+	int i;
+
+	output = ft_split_last_cmd(head->value);
+	i = 0;
+	while (output[i])
+	{
+		lstadd_back(new_head, addnew_tkn_node(VAR, output[i]));
+		if (output[i + 1])
+			lstadd_back(new_head, addnew_tkn_node(SPC, " "));
+		i++;
+	}
+}
+char *expand_str_vars(token_node *head, t_expand *env)
+{
+	size_t i;
+	char *buffer;
+	char *str_var;
+	char *str_exp;
+	char *str;
+
+	buffer = NULL;
+	i = 0;
+	str = head->value;
+	while (str[i])
+	{
+		str_var = get_until_var(str + i);
+		str_exp = ft_str_exp(str_var, env);
+		if (!buffer)
+			buffer = ft_strdup("");
+		buffer = ft_strjoin(buffer, str_exp);
+		i += ft_strlen(str_var);
+	}
+	if (!buffer)
+		buffer = ft_strdup("");
+	return (buffer);
+}
 token_node *expand_and_print_vars(token_node *head, t_expand *env)
 {
 	char *buffer;
+	token_node *new_head;
 
-	token_node *new_head = NULL;
+	buffer = NULL;
+	new_head = NULL;
 	while (head)
 	{
-
 		if (head->type == VAR)
 		{
-			ft_expand_var(head, env);
-			char **output = ft_split_last_cmd(head->value);
-			int i = 0;
-			while (output[i])
-			{
-				lstadd_back(&new_head, addnew_tkn_node(VAR, output[i]));
-				if (output[i + 1])
-					lstadd_back(&new_head, addnew_tkn_node(SPC, " "));
-				i++;
-			}
+			expand_var_and_split(&new_head, head, env);
 			head = head->next;
 		}
 		else if (head->type == DOUBLE_Q)
 		{
-			buffer = NULL;
-			size_t i = 0;
-			char *str = head->value;
-			while (str[i])
-			{
-				char *str_var = get_until_var(str + i);
-				char *str_exp = ft_str_exp(str_var, env);
-				if (!buffer)
-					buffer = ft_strdup("");
-				buffer = ft_strjoin(buffer, str_exp);
-				i += ft_strlen(str_var);
-			}
-			if (!buffer)
-				buffer = ft_strdup("");
+			buffer = expand_str_vars(head, env);
 			head->value = buffer;
 		}
 		if (head && head->type != VAR)

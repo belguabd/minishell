@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/19 02:14:31 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/04/19 04:26:45 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,6 +251,34 @@ char *readline_hdc(char *dlmtr, t_expand *env, int flag)
 	while (access(file_tmp, F_OK) != -1)
 		file_tmp = ft_strjoin(".heardoc", ft_itoa(i++));
 	return (ft_readline(file_tmp, flag, dlmtr, env));
+
+	// while (1)
+	// {
+	// 	char *cmd = readline("> ");
+	// 	if (!cmd)
+	// 	{
+	// 		free(cmd);
+	// 		write_to_file(file_tmp, buffer);
+	// 		return (file_tmp);
+	// 	}
+	// 	if (!ft_strcmp(cmd, dlmtr))
+	// 	{
+	// 		dlm = cmd;
+	// 		break;
+	// 	}
+	// 	if (flag != 1337)
+	// 		cmd = expand_heardoc(cmd, env);
+	// 	if (!buffer)
+	// 		buffer = ft_strdup("");
+	// 	if (!cmd)
+	// 		cmd = ft_strdup("");
+	// 	buffer = ft_strjoin(buffer, cmd);
+	// 	buffer = ft_strjoin(buffer, ft_strdup("\n"));
+	// 	free(cmd);
+	// }
+	// free(dlm);
+	// write_to_file(file_tmp, buffer);
+	// return (file_tmp);
 }
 void ft_headoc(token_node *head, t_expand *env)
 {
@@ -325,35 +353,39 @@ bool is_redirection(int type)
 {
 	return (type == REDIRECT_APPEND || type == REDIRECT_IN || type == REDIRECT_OUT || type == HEREDOC);
 }
+void parse_redirection_token(token_node **head, token_node **new_node)
+{
+	int type;
+	char *value_hrd;
+	char *value;
+	token_node *tmp = NULL;
+	
+	type = (*head)->type;
+	value_hrd = (*head)->value;
+	tmp = (*head)->next;
+	value = NULL;
+	if (tmp && tmp->type == SPC)
+	{
+		(*head) = tmp;
+		tmp = (*head)->next;
+	}
+	(*head) = tmp;
+	if (type == HEREDOC)
+		value = value_hrd;
+	else
+		value = (*head)->value;
+	(*head) = (*head)->next;
+	lstadd_back(new_node, addnew_tkn_node(type, value));
+}
+
 token_node *ft_remove_redirect(token_node *head)
 {
 	token_node *new_node = NULL;
+
 	while (head)
 	{
 		if (is_redirection(head->type))
-		{
-			if (head->type == HEREDOC)
-			{
-				int type = head->type;
-				char *value = head->value;
-				token_node *tmp = head->next;
-				if (tmp && tmp->type == SPC)
-					head = head->next;
-				head = head->next; // skip the redirection token
-				lstadd_back(&new_node, addnew_tkn_node(type, value));
-				head = head->next; // Skip the value token
-			}
-			else
-			{
-				int type = head->type;
-				token_node *tmp = head->next;
-				if (tmp && tmp->type == SPC)
-					head = head->next;
-				head = head->next; // skip the redirection token
-				lstadd_back(&new_node, addnew_tkn_node(type, head->value));
-				head = head->next; // Skip the value token
-			}
-		}
+			parse_redirection_token(&head, &new_node);
 		else
 		{
 			lstadd_back(&new_node, addnew_tkn_node(head->type, head->value));
@@ -466,6 +498,7 @@ int main(int ac, char const *av[], char *env[])
 		int error = handle_errors_cmd(head, cmd);
 		if (error == -1)
 		{
+
 			free((void *)cmd);
 			continue;
 		}
