@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:50:21 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/06 05:37:09 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/19 01:41:47 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@
 #include <sys/param.h>
 #define COLOR_RESET "\x1b[0m"
 #define COLOR_GREEN "\x1b[32m"
-
 enum
 {
 	FREE,
@@ -109,7 +108,7 @@ int handle_errors_cmd(token_node *head, const char *cmd);
 char *ft_str_exp(char *str_var, t_expand *env);
 char *ft_get_var(char *str_var);
 char *get_until_var(char *str_var);
-void expand_and_print_vars(token_node *head, t_expand *env);
+token_node *expand_and_print_vars(token_node *head, t_expand *env);
 char *get_str_env(t_expand *env, char *str_var);
 /*garbage collector*/
 void *ft_malloc(size_t size, int status);
@@ -122,7 +121,7 @@ int    exe_one_cmd_only(t_cmd *cmd, t_expand *env);
 char	**get_envp(t_expand *lst_envp);
 void	ft_execute_node(char *cmd[], t_expand *envp, char **str_envp);
 char	**get_envp(t_expand *lst_envp);
-
+char	**ft_split_last_cmd(char *cmd);
 //signals
 void    handler(int sig);
 
@@ -152,5 +151,26 @@ t_expand *ft_lst_new(char *key, char *val);
 void ft_free_node(t_expand *node);
 size_t ft_lst_size(t_expand *lst);
 char	*ft_itoa(int n);
+
+// static int allocationCount = 0;
+
+// static inline void* __malloc(size_t size, char *file, int line)
+// {
+// 	void* ptr = NULL;
+// 	if (!ft_strcmp(file, "gc/ft_free.c") && line == 30)
+// 	{
+// 		if (allocationCount >= 3)
+// 			return NULL;
+// 		allocationCount++;
+// 		ptr = malloc(size);
+// 	}
+// 	else
+// 		ptr = malloc(size);
+// 	return ptr;
+// }
+
+// #ifndef malloc
+// #define malloc(size) __malloc(size, __FILE__, __LINE__)
+// #endif
 
 #endif

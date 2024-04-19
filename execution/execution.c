@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/06 05:37:15 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/17 18:50:33 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ char **get_envp(t_expand *lst_envp)
 	size = ft_lst_size(lst_envp);
 	if (size == 0)
 		return (NULL);
-	envp = (char **)malloc((size + 1) * sizeof(char *));
+	envp = (char **)ft_malloc((size + 1) * sizeof(char *), ALLOC);
 	if (!envp)
 		return (perror("malloc"), NULL);
 	while (head)
@@ -38,11 +38,11 @@ char **get_envp(t_expand *lst_envp)
 	return (envp);
 }
 
-void	ft_execution(t_cmd *cmd, t_expand **envp)
+void ft_execution(t_cmd *cmd, t_expand **envp)
 {
 	char **env;
 
-	if(!envp || !*envp)
+	if (!envp || !*envp)
 	{
 		perror("no env");
 		exit(1);
@@ -58,29 +58,29 @@ void	ft_execution(t_cmd *cmd, t_expand **envp)
 
 void ft_execute_bultin(char *cmd[], t_expand **envp)
 {
-	if(!cmd || !*cmd)
-		return ;
-	if(ft_strcmp(cmd[0], "echo") == 0 || ft_strcmp(cmd[0], "/bin/echo") == 0)
+	if (!cmd || !*cmd)
+		return;
+	if (ft_strcmp(cmd[0], "echo") == 0 || ft_strcmp(cmd[0], "/bin/echo") == 0)
 	{
 		ft_echo(cmd);
 		exit(0);
 	}
-	if(ft_strcmp(cmd[0], "export") == 0)
+	if (ft_strcmp(cmd[0], "export") == 0)
 	{
 		ft_export(cmd, envp);
-		exit(0) ;
+		exit(0);
 	}
-	if(ft_strcmp(cmd[0], "env") == 0 || ft_strcmp(cmd[0], "/usr/bin/env") == 0)
+	if (ft_strcmp(cmd[0], "env") == 0 || ft_strcmp(cmd[0], "/usr/bin/env") == 0)
 	{
 		ft_env(cmd, *envp);
 		exit(0);
 	}
-	if(ft_strcmp(cmd[0], "cd") == 0 || ft_strcmp(cmd[0], "/usr/bin/cd") == 0)
+	if (ft_strcmp(cmd[0], "cd") == 0 || ft_strcmp(cmd[0], "/usr/bin/cd") == 0)
 	{
 		ft_cd(cmd[1], *envp);
 		exit(0);
 	}
-	if(ft_strcmp(cmd[0], "pwd") == 0 || ft_strcmp(cmd[0], "/bin/pwd") == 0)
+	if (ft_strcmp(cmd[0], "pwd") == 0 || ft_strcmp(cmd[0], "/bin/pwd") == 0)
 	{
 		ft_pwd();
 		exit(0);
@@ -92,17 +92,17 @@ void ft_execute_bultin(char *cmd[], t_expand **envp)
 	}
 }
 
-char	*check_path(char **path, char *cmd)
+char *check_path(char **path, char *cmd)
 {
-	char	*cmd_path;
-	int		i;
+	char *cmd_path;
+	int i;
 
 	i = 0;
 	if (!path || !*path)
 		return (NULL);
 	if (access(cmd, X_OK) == 0)
 		return (cmd);
-	if(cmd[0] == '/')
+	if (cmd[0] == '/')
 	{
 		if (access(cmd, X_OK) == 0)
 			return (cmd);
@@ -112,33 +112,64 @@ char	*check_path(char **path, char *cmd)
 	{
 		cmd_path = ft_strjoin("/", cmd);
 		cmd_path = ft_strjoin(path[i], cmd_path);
-		if(access(cmd_path, X_OK) == 0)
+		if (access(cmd_path, X_OK) == 0)
 			return (cmd_path);
 		i++;
-		//free(cmd_path);
+		// free(cmd_path);
 		cmd_path = NULL;
 	}
 	return (cmd);
 }
-
+int ft_count_word(char **output)
+{
+	int i = 0;
+	if (!output)
+		return (0);
+	while (output[i])
+		i++;
+	return (i);
+}
 void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp)
 {
+
+	// int i = 0;
+	// int wc = 0;
+	// while (cmd[i])
+	// {
+	// 	char **output = ft_split_last_cmd(cmd[i]);
+	// 	wc += ft_count_word(output);
+	// 	i++;
+	// }
+	// char **new_cmd_last = (char **)ft_malloc((sizeof(char *) * (wc + 1)), ALLOC);
+	// if (!new_cmd_last)
+	// 	return;
+	// i = 0;
+	// int k = 0;
+	// while (cmd[i])
+	// {
+	// 	char **output = ft_split_last_cmd(cmd[i]);
+	// 	int j = 0;
+	// 	while (output[j])
+	// 		new_cmd_last[k++] = output[j++];
+	// 	i++;
+	// }
+	// new_cmd_last[k] = NULL;
 	char **paths = NULL;
 	char *new_cmd;
 
-	if(!cmd || !*cmd)
-		return ;
+	if (!cmd || !*cmd)
+		return;
 	ft_execute_bultin(cmd, &envp);
 	while (envp)
 	{
 		if (ft_strcmp(envp->key, "PATH") == 0)
-			break ;
+			break;
 		envp = envp->next;
 	}
 	if (envp)
 		paths = ft_split(envp->value, ':');
 	new_cmd = check_path(paths, cmd[0]);
-	if(!new_cmd)
+	if (!new_cmd)
 	{
 		perror(cmd[0]);
 		exit(0);
@@ -153,7 +184,7 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp)
 // 	char *cmd1[] = {"cat", NULL};
 // 	char *cmd2[] = {"cat", NULL};
 // 	char *cmd3[] = {"wc","-l" , NULL};
-	
+
 // 	ft_lst_add_back(&envp, ft_lst_new(ft_strdup("var1"), ft_strdup("jkanf")));
 // 	ft_lst_add_back(&envp, ft_lst_new(ft_strdup("PATH"), ft_strdup("/Users/soel-bou/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki:/Library/Apple/usr/bin:/Users/soel-bou/.brew/bin")));
 // 	ft_lst_add_back(&envp, ft_lst_new(ft_strdup("var3"), ft_strdup("jkanf")));
@@ -168,15 +199,15 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp)
 // 	token2->type = REDIRECT_IN;
 //     token2->value = "file2";
 //     token2->next = token3;
-	
+
 // 	token3->type = REDIRECT_APPEND;
 //     token3->value = "file3";
 //     token3->next = NULL;
-	
+
 //     t_cmd *head = (t_cmd *)malloc(sizeof(t_cmd));
 // 	t_cmd *head2 = (t_cmd *)malloc(sizeof(t_cmd));
 // 	t_cmd *head3 = (t_cmd *)malloc(sizeof(t_cmd));
-	
+
 //     head->args = cmd1;
 // 	head->redir = token;
 //     head->next =head3;
@@ -190,14 +221,13 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp)
 // 	head3->args = cmd3;
 //     head3->next = NULL;
 // 	head3->redir = NULL;
-	
 
 // 	ft_execution(head, &envp);
 // 	// pid_t pid = getpid();
 
 //     // // Create a buffer to hold the command
 //     // char command[100];
-    
+
 //     // // Construct the command with the PID
 //     // snprintf(command, sizeof(command), "lsof -p %d", (int)pid);
 

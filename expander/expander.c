@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 21:20:05 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/31 21:05:04 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/19 01:51:25 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,13 +92,28 @@ void ft_expand_var(token_node *head, t_expand *env)
 		head->value = var;
 	}
 }
-void expand_and_print_vars(token_node *head, t_expand *env)
+token_node *expand_and_print_vars(token_node *head, t_expand *env)
 {
 	char *buffer;
+
+	token_node *new_head = NULL;
 	while (head)
 	{
+
 		if (head->type == VAR)
+		{
 			ft_expand_var(head, env);
+			char **output = ft_split_last_cmd(head->value);
+			int i = 0;
+			while (output[i])
+			{
+				lstadd_back(&new_head, addnew_tkn_node(VAR, output[i]));
+				if (output[i + 1])
+					lstadd_back(&new_head, addnew_tkn_node(SPC, " "));
+				i++;
+			}
+			head = head->next;
+		}
 		else if (head->type == DOUBLE_Q)
 		{
 			buffer = NULL;
@@ -117,6 +132,11 @@ void expand_and_print_vars(token_node *head, t_expand *env)
 				buffer = ft_strdup("");
 			head->value = buffer;
 		}
-		head = head->next;
+		if (head && head->type != VAR)
+		{
+			lstadd_back(&new_head, addnew_tkn_node(head->type, head->value));
+			head = head->next;
+		}
 	}
+	return (new_head);
 }

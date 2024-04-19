@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ft_tonken.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 09:36:33 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/03 00:35:35 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/17 10:20:56 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
 void ft_process_odd(const char *cmd, token_node **head, int start)
 {
 	size_t j = start;
@@ -94,50 +95,98 @@ void handle_string(int start, const char *cmd, token_node **head)
 	str = ft_substr(cmd, start, j - start);
 	lstadd_back(head, addnew_tkn_node(STRING, str));
 }
+int ft_redirection(token_node **head, const char *cmd, int i)
+{
+	if (cmd[i] == '>' && cmd[i + 1] == '>')
+	{
+		lstadd_back(head, addnew_tkn_node(REDIRECT_APPEND, ">>"));
+		return (0);
+	}
+	else if (cmd[i] == '<' && cmd[i + 1] == '<')
+	{
+		lstadd_back(head, addnew_tkn_node(HEREDOC, "<<"));
+		return (0);
+	}
+	else if (cmd[i] == '>')
+	{
+		lstadd_back(head, addnew_tkn_node(REDIRECT_OUT, ">"));
+		return (0);
+	}
+	else if (cmd[i] == '<')
+	{
+		lstadd_back(head, addnew_tkn_node(REDIRECT_IN, "<"));
+		return (0);
+	}
+	return (-1);
+}
+int ft_dollar(token_node **head, const char *cmd, int *i)
+{
+	if (cmd[(*i)] == '$' && cmd[(*i) + 1] == '?')
+	{
+		lstadd_back(head, addnew_tkn_node(EXIT_STATUS, "$?"));
+		return (0);
+	}
+	else if (cmd[(*i)] == '$' && cmd[(*i) + 1] == '$')
+	{
+		lstadd_back(head, addnew_tkn_node(DOUBLE_DLR, "$$"));
+		return (0);
+	}
+	else if ((cmd[(*i)] == '$' && cmd[(*i) + 1] == '\"') || (cmd[(*i)] == '$' && cmd[(*i) + 1] == '\''))
+	{
+		lstadd_back(head, addnew_tkn_node(STRING, ""));
+		(*i)++;
+		return (0);
+	}
+	else if (cmd[(*i)] == '$')
+	{
+		ft_process_vars(cmd, head, (*i));
+		return (0);
+	}
+	return (-1);
+}
+int ft_spaces(token_node **head, const char *cmd, int *i)
+{
+	if (cmd[(*i)] && (cmd[(*i)] == ' ' || (cmd[(*i)] >= 9 && cmd[(*i)] <= 13)))
+	{
+		lstadd_back(head, addnew_tkn_node(SPC, " "));
+		while (cmd[(*i)] && (cmd[(*i)] == ' ' || (cmd[(*i)] >= 9 && cmd[(*i)] <= 13)))
+			(*i)++;
+		(*i)--;
+		return (0);
+	}
+	return (-1);
+}
+int ft_single_double(token_node **head, const char *cmd, int i)
+{
+	if (cmd[i] == '\'')
+	{
+		handle_single_quotes(i, cmd, head);
+		return (0);
+	}
+	else if (cmd[i] == '\"')
+	{
+		handle_double_quotes(i, cmd, head);
+		return (0);
+	}
+	return (-1);
+}
 token_node *tokenization(const char *cmd, token_node **head)
 {
-	size_t i = 0;
+	int i;
 	size_t len;
 
 	len = ft_strlen(cmd);
-	while (cmd[i] == ' ' || (cmd[i] >= 9 && cmd[i] <= 13))
+	i = 0;
+	while (cmd[i] && (cmd[i] == ' ' || (cmd[i] >= 9 && cmd[i] <= 13)))
 		i++;
-	while (i < len)
+	while ((size_t)i < len)
 	{
 		if (cmd[i] == '|')
 			lstadd_back(head, addnew_tkn_node(PIPE, "|"));
-		else if (cmd[i] == '$' && cmd[i + 1] == '?')
-			lstadd_back(head, addnew_tkn_node(EXIT_STATUS, "$?"));
-		else if (cmd[i] == '$' && cmd[i + 1] == '$')
-			lstadd_back(head, addnew_tkn_node(DOUBLE_DLR, "$$"));
-		else if ((cmd[i] == '$' && cmd[i + 1] == '\"') || (cmd[i] == '$' && cmd[i + 1] == '\''))
-		{
-			lstadd_back(head, addnew_tkn_node(STRING, ""));
-			i++;
-		}
-		else if (cmd[i] == '$')
-			ft_process_vars(cmd, head, i);
-		else if (cmd[i] == '>' && cmd[i + 1] == '>')
-			lstadd_back(head, addnew_tkn_node(REDIRECT_APPEND, ">>"));
-		else if (cmd[i] == '<' && cmd[i + 1] == '<')
-			lstadd_back(head, addnew_tkn_node(HEREDOC, "<<"));
-		else if (cmd[i] == ' ' || (cmd[i] >= 9 && cmd[i] <= 13))
-		{
-			lstadd_back(head, addnew_tkn_node(SPC, " "));
-			while (cmd[i] == ' ' || (cmd[i] >= 9 && cmd[i] <= 13))
-				i++;
-			i--;
-		}
-		else if (cmd[i] == '\'')
-			handle_single_quotes(i, cmd, head);
-		else if (cmd[i] == '\"')
-		{
-			handle_double_quotes(i, cmd, head);
-		}
-		else if (cmd[i] == '>')
-			lstadd_back(head, addnew_tkn_node(REDIRECT_OUT, ">"));
-		else if (cmd[i] == '<')
-			lstadd_back(head, addnew_tkn_node(REDIRECT_IN, "<"));
+		else if (!ft_dollar(head, cmd, &i));
+		else if (!ft_spaces(head, cmd, &i));
+		else if (!ft_single_double(head, cmd, i));
+		else if (!ft_redirection(head, cmd, i));
 		else
 			handle_string(i, cmd, head);
 		i += ft_strlen(ft_lstlast(*head)->value);

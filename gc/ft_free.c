@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 02:07:02 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/27 21:21:21 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/04/19 01:40:34 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,18 +49,22 @@ void addback_free(t_free **head, t_free *new)
 void *ft_malloc(size_t size, int status)
 {
 	static t_free *head = NULL;
+	t_free	*tmp;
 	if (status == ALLOC)
 	{
+		(void)size;
 		void *rt = malloc(size);
 		if (!rt)
-			return (NULL);
-		addback_free(&head, addnew_free(rt));
+			exit(0);
+		tmp = addnew_free(rt);
+		if (!tmp)
+		{
+			ft_free_all(head);
+			exit(0);
+		}
+		addback_free(&head, tmp);
 		return (rt);
 	}
 	else
-	{
-		ft_free_all(head);
-		head = NULL;
-		return (NULL);
-	}
+		return (ft_free_all(head), head = NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/15 17:17:58 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/04/19 02:14:31 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,24 +193,39 @@ char *expand_heardoc(char *cmd, t_expand *env)
 	free((void *)cmd);
 	return (buffer);
 }
-char *readline_hdc(char *dlmtr, t_expand *env, int flag)
+void write_to_file(char *file_tmp, char *buffer)
 {
-	(void)dlmtr;
-	char *buffer = NULL;
-	char *file_tmp = ft_strdup(".heardoc");
-	int i = 0;
-	while (access(file_tmp, F_OK) != -1)
-		file_tmp = ft_strjoin(".heardoc", ft_itoa(i++));
+	int fd = open(file_tmp, O_CREAT | O_RDWR | O_TRUNC, 0777);
+	if (fd < 0)
+		write(2, "Error\n", 6);
+	write(fd, buffer, ft_strlen(buffer));
+	close(fd);
+}
+char *append_cmd_to_buffer(char *cmd, char *buffer)
+{
+	if (!buffer)
+		buffer = ft_strdup("");
+	if (!cmd)
+		cmd = ft_strdup("");
+	buffer = ft_strjoin(buffer, cmd);
+	buffer = ft_strjoin(buffer, ft_strdup("\n"));
+	free(cmd);
+	return (buffer);
+}
+char *ft_readline(char *file_tmp, int flag, char *dlmtr, t_expand *env)
+{
 	char *dlm;
+	char *buffer;
+	char *cmd;
+
+	buffer = NULL;
 	while (1)
 	{
-		char *cmd = readline("> ");
+		cmd = readline("> ");
 		if (!cmd)
 		{
-			int fd = open(file_tmp, O_CREAT | O_RDWR | O_TRUNC, 0777);
-			if (fd < 0)
-				write(2, "Error\n", 6);
-			write(fd, buffer, ft_strlen(buffer));
+			free(cmd);
+			write_to_file(file_tmp, buffer);
 			return (file_tmp);
 		}
 		if (!ft_strcmp(cmd, dlmtr))
@@ -220,21 +235,22 @@ char *readline_hdc(char *dlmtr, t_expand *env, int flag)
 		}
 		if (flag != 1337)
 			cmd = expand_heardoc(cmd, env);
-		if (!buffer)
-			buffer = ft_strdup("");
-		if (!cmd)
-			cmd = ft_strdup("");
-		// char *tmp = cmd;
-		buffer = ft_strjoin(buffer, cmd);
-		buffer = ft_strjoin(buffer, ft_strdup("\n"));
+		buffer = append_cmd_to_buffer(cmd, buffer);
 	}
-	free(dlm);
-	int fd = open(file_tmp, O_CREAT | O_RDWR | O_TRUNC, 0777);
-	if (fd < 0)
-		write(2, "Error\n", 6);
-	write(fd, buffer, ft_strlen(buffer));
-	close(fd);
-	return (file_tmp);
+	write_to_file(file_tmp, buffer);
+	return (free(dlm), file_tmp);
+}
+char *readline_hdc(char *dlmtr, t_expand *env, int flag)
+{
+	char *buffer;
+	int i;
+	char *file_tmp;
+	file_tmp = ft_strdup(".heardoc");
+	i = 0;
+	buffer = NULL;
+	while (access(file_tmp, F_OK) != -1)
+		file_tmp = ft_strjoin(".heardoc", ft_itoa(i++));
+	return (ft_readline(file_tmp, flag, dlmtr, env));
 }
 void ft_headoc(token_node *head, t_expand *env)
 {
@@ -426,7 +442,6 @@ int main(int ac, char const *av[], char *env[])
 	(void)env;
 	const char *cmd = NULL;
 	token_node *head = NULL;
-	// (void)env_expand;
 	t_cmd *cmd_list = NULL;
 
 	(void)env;
@@ -446,38 +461,28 @@ int main(int ac, char const *av[], char *env[])
 			write(1, "exit\n", 5);
 			exit(0);
 		}
-		if (!cmd)
-			printf("%s\n", "OK");
-
 		add_history(cmd);
 		head = tokenization(cmd, &head);
 		int error = handle_errors_cmd(head, cmd);
-		(void)error;
 		if (error == -1)
 		{
-			// ft_malloc(FREE, FREE);
-			// free((void *)cmd);
+			free((void *)cmd);
 			continue;
 		}
 		remove_single_q(head);
 		remove_double_q(head);
 		ft_headoc(head, env_expand);
-		expand_and_print_vars(head, env_expand);
+		head = expand_and_print_vars(head, env_expand);
 		head = ft_concatenate(head);
-
-		// exit(0);
-		// display_expand_list(env_expand);
 		head = ft_remove_redirect(head);
-		// displayLinkedList(head);
 		cmd_list = ft_passing(head);
 		ft_execution(cmd_list, &env_expand);
-
-		(void)cmd_list;
+		// (void)cmd_list;
 		// while (cmd_list)
 		// {
 		// 	printf("args: ");
 		// 	for (int i = 0; cmd_list->args[i]; i++)
-		// 		printf("%s ", cmd_list->args[i]);
+		// 		printf("(%s) ", cmd_list->args[i]);
 		// 	printf("\n");
 		// 	printf("redir: ");
 		// 	token_node *tmp = cmd_list->redir;
@@ -489,8 +494,9 @@ int main(int ac, char const *av[], char *env[])
 		// 	cmd_list = cmd_list->next;
 		// 	printf("\n");
 		// }
+		free((void *)cmd);
+		// unlink(".heardoc");
+		// ft_malloc(FREE, FREE);
 	}
-	// ft_malloc(FREE, FREE);
-	// free((void *)cmd);
 	return 0;
 }
