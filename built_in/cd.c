@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 02:14:56 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/06 05:53:42 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/21 23:49:18 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,20 @@ void	ft_cd(char *path, t_expand *env)
 	t_expand 	*new_pwd;
 	char	op[PATH_MAX];
 	char	np[PATH_MAX];
+	char 	*home;
 
 	getcwd(op, PATH_MAX);
 	if(!path || ft_strcmp(path, "~") == 0)
-		path = ft_strdup(get_home(env));
+	{
+		home = get_home(env);
+		if(home)
+			path = ft_strdup(home);
+		else
+		{
+			printf("cd: HOME not set\n");
+			return ;
+		}
+	}
 	if (chdir(path) < 0)
 		return (perror("cd "));
 	getcwd(np, PATH_MAX);
