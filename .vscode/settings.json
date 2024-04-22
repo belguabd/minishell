@@ -21,6 +21,8 @@
 		"limits": "c",
 		"memory": "c",
 		"ratio": "c",
-		"tuple": "c"
+		"tuple": "c",
+		"istream": "c",
+		"locale": "c"
 	}
 }

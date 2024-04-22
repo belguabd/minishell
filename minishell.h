@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/22 15:22:06 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/04/22 15:45:38 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ typedef struct ft_free
 	void *add;
 	struct ft_free *next;
 } t_free;
+
 typedef struct token_node
 {
 	int type;
