@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/22 15:15:24 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/04/22 17:54:50 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,13 +193,19 @@ char *expand_heardoc(char *cmd, t_expand *env)
 	free((void *)cmd);
 	return (buffer);
 }
-void write_to_file(char *file_tmp, char *buffer)
+char *write_to_file(char *buffer)
 {
+	int i;
+	char *file_tmp = ft_strdup(".heardoc");
+	i = 0;
+	while (access(file_tmp, F_OK) != -1)
+		file_tmp = ft_strjoin(".heardoc", ft_itoa(i++));
 	int fd = open(file_tmp, O_CREAT | O_RDWR | O_TRUNC, 0777);
 	if (fd < 0)
 		write(2, "Error\n", 6);
 	write(fd, buffer, ft_strlen(buffer));
 	close(fd);
+	return (file_tmp);
 }
 char *append_cmd_to_buffer(char *cmd, char *buffer)
 {
@@ -212,7 +218,7 @@ char *append_cmd_to_buffer(char *cmd, char *buffer)
 	free(cmd);
 	return (buffer);
 }
-char *ft_readline(char *file_tmp, int flag, char *dlmtr, t_expand *env)
+char *ft_readline(int flag, char *dlmtr, t_expand *env)
 {
 	char *dlm;
 	char *buffer;
@@ -225,8 +231,7 @@ char *ft_readline(char *file_tmp, int flag, char *dlmtr, t_expand *env)
 		if (!cmd)
 		{
 			free(cmd);
-			write_to_file(file_tmp, buffer);
-			return (file_tmp);
+			return (write_to_file(buffer));
 		}
 		if (!ft_strcmp(cmd, dlmtr))
 		{
@@ -237,20 +242,20 @@ char *ft_readline(char *file_tmp, int flag, char *dlmtr, t_expand *env)
 			cmd = expand_heardoc(cmd, env);
 		buffer = append_cmd_to_buffer(cmd, buffer);
 	}
-	write_to_file(file_tmp, buffer);
-	return (free(dlm), file_tmp);
+	// write_to_file(buffer);
+	return (free(dlm), write_to_file(buffer));
 }
 char *readline_hdc(char *dlmtr, t_expand *env, int flag)
 {
 	char *buffer;
-	int i;
-	char *file_tmp;
-	file_tmp = ft_strdup(".heardoc");
-	i = 0;
+	// char *file_tmp;
 	buffer = NULL;
-	while (access(file_tmp, F_OK) != -1)
-		file_tmp = ft_strjoin(".heardoc", ft_itoa(i++));
-	return (ft_readline(file_tmp, flag, dlmtr, env));
+	// int i;
+	// file_tmp = ft_strdup(".heardoc");
+	// i = 0;
+	// while (access(file_tmp, F_OK) != -1)
+	// 	file_tmp = ft_strjoin(".heardoc", ft_itoa(i++));
+	return (ft_readline(flag, dlmtr, env));
 
 	// while (1)
 	// {
@@ -359,7 +364,7 @@ void parse_redirection_token(token_node **head, token_node **new_node)
 	char *value_hrd;
 	char *value;
 	token_node *tmp = NULL;
-	
+
 	type = (*head)->type;
 	value_hrd = (*head)->value;
 	tmp = (*head)->next;
@@ -528,6 +533,13 @@ int main(int ac, char const *av[], char *env[])
 		// 	printf("\n");
 		// }
 		free((void *)cmd);
+		while (cmd_list->redir)
+		{
+			if (cmd_list->redir->type == HEREDOC)
+				unlink(cmd_list->redir->value);
+			cmd_list->redir = cmd_list->redir->next;
+		}
+
 		// unlink(".heardoc");
 		// ft_malloc(FREE, FREE);
 	}

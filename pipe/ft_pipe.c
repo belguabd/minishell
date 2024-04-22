@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/22 15:18:38 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/04/22 17:52:20 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int *allocat_pids(t_cmd *cmd)
 		tmp = tmp->next;
 		i++;
 	}
-	pids = (int *)ft_malloc(i * sizeof(int),ALLOC);
+	pids = (int *)ft_malloc(i * sizeof(int), ALLOC);
 	if (!pids)
 	{
 		perror("faild to allocat memory for pids");
