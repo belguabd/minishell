@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/19 05:47:53 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/04/22 15:19:54 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,11 @@ void ft_execute_bultin(char *cmd[], t_expand **envp)
 	if (ft_strcmp(cmd[0], "unset") == 0)
 	{
 		ft_unset(cmd, envp);
+		exit(0);
+	}
+	if (ft_strcmp(cmd[0], "exit") == 0)
+	{
+		ft_exit(cmd);
 		exit(0);
 	}
 }

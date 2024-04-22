@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/19 04:26:45 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/04/22 15:15:24 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -487,7 +487,7 @@ int main(int ac, char const *av[], char *env[])
 	while (1 && isatty(STDIN_FILENO))
 	{
 		head = NULL;
-		cmd = readline(COLOR_GREEN "➜  minishell " COLOR_RESET);
+		cmd = readline("➜  minishell ");
 		if (!cmd)
 		{
 			write(1, "exit\n", 5);

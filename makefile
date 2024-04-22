@@ -21,7 +21,7 @@ SRC =minishell.c \
 	$(EXPANDER)/expander.c $(EXPANDER)/expander_utils.c \
 	$(GC)/ft_free.c \
 	$(EXECUTION)/execution.c $(EXECUTION)/execution_tools.c \
-	$(BUILT_IN)/built_in_tools.c $(BUILT_IN)/cd.c $(BUILT_IN)/env.c $(BUILT_IN)/export.c $(BUILT_IN)/pwd.c $(BUILT_IN)/unset.c $(BUILT_IN)/echo.c \
+	$(BUILT_IN)/built_in_tools.c $(BUILT_IN)/cd.c $(BUILT_IN)/env.c $(BUILT_IN)/export.c $(BUILT_IN)/pwd.c $(BUILT_IN)/unset.c $(BUILT_IN)/echo.c $(BUILT_IN)/exit.c \
 	$(PIPE)/ft_pipe.c sigs/signals.c
 
 OBJ = $(SRC:.c=.o)

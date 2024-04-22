@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/19 04:28:29 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/04/22 15:22:06 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,7 @@ void 	ft_unset(char **cmd, t_expand **envp);
 void 	ft_export(char **cmd, t_expand **envp);
 int		is_builtin(t_cmd *cmd);
 void	get_env_export(t_expand *envp);
+void ft_exit(char **cmd);
 // tools
 
 t_expand *ft_lst_last(t_expand *lst);

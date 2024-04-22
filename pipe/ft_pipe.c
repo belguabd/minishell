@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/17 13:22:21 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/04/22 15:18:38 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,7 +201,7 @@ int is_builtin(t_cmd *cmd)
 {
 	if (!cmd->args || !cmd->args[0])
 		return (0);
-	if ((ft_strcmp(cmd->args[0], "echo") == 0) || (ft_strcmp(cmd->args[0], "export") == 0) || (ft_strcmp(cmd->args[0], "env") == 0) || (ft_strcmp(cmd->args[0], "cd") == 0) || (ft_strcmp(cmd->args[0], "pwd") == 0) || (ft_strcmp(cmd->args[0], "unset") == 0) || (ft_strcmp(cmd->args[0], "/bin/echo") == 0) || (ft_strcmp(cmd->args[0], "/usr/bin/cd") == 0) || (ft_strcmp(cmd->args[0], "/usr/bin/env") == 0) || (ft_strcmp(cmd->args[0], "/bin/pwd") == 0))
+	if ((ft_strcmp(cmd->args[0], "echo") == 0) || (ft_strcmp(cmd->args[0], "export") == 0) || (ft_strcmp(cmd->args[0], "env") == 0) || (ft_strcmp(cmd->args[0], "cd") == 0) || (ft_strcmp(cmd->args[0], "pwd") == 0) || (ft_strcmp(cmd->args[0], "unset") == 0) || (ft_strcmp(cmd->args[0], "/bin/echo") == 0) || (ft_strcmp(cmd->args[0], "/usr/bin/cd") == 0) || (ft_strcmp(cmd->args[0], "/usr/bin/env") == 0) || (ft_strcmp(cmd->args[0], "/bin/pwd") == 0) || (ft_strcmp(cmd->args[0], "exit") == 0))
 		return (1);
 	return (0);
 }
@@ -210,6 +210,8 @@ int exe_bultin_in_parent(char *cmd[], t_expand *env)
 {
 	if (ft_strcmp(cmd[0], "echo") == 0 || ft_strcmp(cmd[0], "/bin/echo") == 0)
 		return (ft_echo(cmd), 1);
+	else if (ft_strcmp(cmd[0], "exit") == 0)
+		return (ft_exit(cmd), 1);
 	else if (ft_strcmp(cmd[0], "export") == 0)
 		return (ft_export(cmd, &env), 1);
 	else if (ft_strcmp(cmd[0], "env") == 0 || ft_strcmp(cmd[0], "/usr/bin/env") == 0)
