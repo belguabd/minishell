@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/22 17:54:50 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/04/24 00:00:58 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -480,6 +480,7 @@ int main(int ac, char const *av[], char *env[])
 	const char *cmd = NULL;
 	token_node *head = NULL;
 	t_cmd *cmd_list = NULL;
+	int	exit_status;
 
 	(void)env;
 	(void)cmd_list;
@@ -514,7 +515,8 @@ int main(int ac, char const *av[], char *env[])
 		head = ft_concatenate(head);
 		head = ft_remove_redirect(head);
 		cmd_list = ft_passing(head);
-		ft_execution(cmd_list, &env_expand);
+		ft_execution(cmd_list, &env_expand, &exit_status);
+		//printf("%d\n", exit_status);
 		// (void)cmd_list;
 		// while (cmd_list)
 		// {

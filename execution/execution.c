@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/22 15:19:54 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/04/24 00:51:56 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ char **get_envp(t_expand *lst_envp)
 	return (envp);
 }
 
-void ft_execution(t_cmd *cmd, t_expand **envp)
+void ft_execution(t_cmd *cmd, t_expand **envp, int *exit_status)
 {
 	char **env;
 
@@ -51,13 +51,14 @@ void ft_execution(t_cmd *cmd, t_expand **envp)
 	if (!env)
 		exit(1);
 	set_cmd_false_true(&cmd);
-	pipe_line(cmd, *envp, env);
+	pipe_line(cmd, *envp, env, exit_status);
 }
 
 // }
 
-void ft_execute_bultin(char *cmd[], t_expand **envp)
+void ft_execute_bultin(char *cmd[], t_expand **envp, int *exit_status)
 {
+	*exit_status = 0;
 	if (!cmd || !*cmd)
 		return;
 	if (ft_strcmp(cmd[0], "echo") == 0 || ft_strcmp(cmd[0], "/bin/echo") == 0)
@@ -105,8 +106,8 @@ char *check_path(char **path, char *cmd)
 	i = 0;
 	if (!path || !*path)
 		return (NULL);
-	if (access(cmd, X_OK) == 0)
-		return (cmd);
+	// if (access(cmd, X_OK) == 0)
+	// 	return (cmd);
 	if (cmd[0] == '/')
 	{
 		if (access(cmd, X_OK) == 0)
@@ -125,6 +126,7 @@ char *check_path(char **path, char *cmd)
 	}
 	return (cmd);
 }
+
 int ft_count_word(char **output)
 {
 	int i = 0;
@@ -134,14 +136,15 @@ int ft_count_word(char **output)
 		i++;
 	return (i);
 }
-void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp)
+
+void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp, int *exit_status)
 {
 	char **paths = NULL;
 	char *new_cmd;
 
 	if (!cmd || !*cmd)
-		return;
-	ft_execute_bultin(cmd, &envp);
+		execve(cmd[0], cmd, str_envp);
+	ft_execute_bultin(cmd, &envp, exit_status);
 	while (envp)
 	{
 		if (ft_strcmp(envp->key, "PATH") == 0)
@@ -153,11 +156,15 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp)
 	new_cmd = check_path(paths, cmd[0]);
 	if (!new_cmd)
 	{
-		perror(cmd[0]);
-		exit(0);
+		printf("here : %s: command not found\n", cmd[0]);
+		exit(127);
 	}
+	printf("(%s)\n", new_cmd);
 	execve(new_cmd, cmd, str_envp);
-	perror(cmd[0]);
+	if ((access(new_cmd, X_OK) == 0))
+		printf(" %s: command not found\n", cmd[0]);
+	else
+		perror(cmd[0]);
 }
 
 // int main()

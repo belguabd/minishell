@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_pipe.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/22 17:52:20 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/04/24 00:15:44 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void init_fds(t_cmd **cmds)
 	}
 }
 
-void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[])
+void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status)
 {
 	if (!cmd)
 		return;
@@ -97,11 +97,12 @@ void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[])
 	int *pid;
 	int tmp_fd_in;
 	int i = 0;
+	int j = 0;
 
 	tmp_fd_in = -1;
 	pid = allocat_pids(cmd);
 	init_fds(&cmd);
-	if (exe_one_cmd_only(cmd, env_lst))
+	if (exe_one_cmd_only(cmd, env_lst, exit_status))
 		return;
 	while (cmd)
 	{
@@ -141,8 +142,8 @@ void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[])
 				close(fd[1]);
 				close(fd[0]);
 			}
-			ft_execute_node(cmd->args, env_lst, env);
-			exit(EXIT_SUCCESS);
+			ft_execute_node(cmd->args, env_lst, env, exit_status);
+			exit(127);
 		}
 		if (!cmd->isfirst)
 			close(tmp_fd_in);
@@ -156,15 +157,17 @@ void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[])
 		cmd = cmd->next;
 		i++;
 	}
-	while (i--)
-		waitpid(pid[i], NULL, 0);
+	while (j < i)
+		waitpid(pid[j++], exit_status, 0);
+	printf("%d\n", WEXITSTATUS(*exit_status));
 	free(pid);
 	close(fd[0]);
 	close(fd[1]);
 }
 
-int exe_one_cmd_only(t_cmd *cmd, t_expand *env)
+int exe_one_cmd_only(t_cmd *cmd, t_expand *env, int *exit_status)
 {
+	*exit_status = 0;
 	int save_in;
 	int save_out;
 
