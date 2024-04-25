@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/24 00:00:58 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/24 23:48:29 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -516,7 +516,7 @@ int main(int ac, char const *av[], char *env[])
 		head = ft_remove_redirect(head);
 		cmd_list = ft_passing(head);
 		ft_execution(cmd_list, &env_expand, &exit_status);
-		//printf("%d\n", exit_status);
+		printf("%d\n", exit_status);
 		// (void)cmd_list;
 		// while (cmd_list)
 		// {

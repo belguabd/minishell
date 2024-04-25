@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 00:39:31 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/22 15:37:27 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/04/25 02:21:48 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,11 @@ int ft_atoi(const char *str)
 
 bool check_is_digit(char *nbr)
 {
-	int i = 0;
+	int i;
+	
+	i = 0;
+	if(!nbr) //add this bcz there is a seg fault in the case (exit '')
+		return (false);
 	if (nbr[i] == '-' || nbr[i] == '+')
 		i++;
 	while (nbr[i])

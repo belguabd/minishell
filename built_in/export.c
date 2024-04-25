@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 01:53:18 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/06 02:34:32 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/25 01:11:22 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ void ft_export_exicted(t_expand *node, t_expand **envp)
 	ft_lst_add_back(envp, node);
 }
 
-void ft_export(char **cmd, t_expand **envp)
+int ft_export(char **cmd, t_expand **envp)
 {
 	t_expand *new;
 	char *key;
@@ -101,7 +101,7 @@ void ft_export(char **cmd, t_expand **envp)
 	if (!cmd[1])
 	{
 		get_env_export(*envp);
-		return;
+		return (0);
 	}
 	while (cmd[++j])
 	{
@@ -114,7 +114,9 @@ void ft_export(char **cmd, t_expand **envp)
 		}
 		key = ft_substr(cmd[j], 0, i);
 		if (pars_key(key))
-			return;
+		{
+			return (1);
+		}
 		if (cmd[j][i])
 		{
 			if (cmd[j][i] == '=' && !cmd[j][i + 1])
@@ -126,7 +128,8 @@ void ft_export(char **cmd, t_expand **envp)
 			value = ft_strdup("");
 		new = ft_lst_new(key, value);
 		if (!new)
-			return;
+			return (1);
 		ft_export_exicted(new, envp);
 	}
+	return (0);
 }

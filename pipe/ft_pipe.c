@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/24 00:15:44 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/25 02:54:16 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,10 @@ void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status)
 	}
 	while (j < i)
 		waitpid(pid[j++], exit_status, 0);
-	printf("%d\n", WEXITSTATUS(*exit_status));
+	if(WIFEXITED(*exit_status))
+		*exit_status =  WEXITSTATUS(*exit_status);
+	else if(WIFSIGNALED(*exit_status))
+		*exit_status = WTERMSIG(*exit_status) + 128;
 	free(pid);
 	close(fd[0]);
 	close(fd[1]);
@@ -167,7 +170,6 @@ void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status)
 
 int exe_one_cmd_only(t_cmd *cmd, t_expand *env, int *exit_status)
 {
-	*exit_status = 0;
 	int save_in;
 	int save_out;
 
@@ -187,7 +189,7 @@ int exe_one_cmd_only(t_cmd *cmd, t_expand *env, int *exit_status)
 				return (1);
 			close(cmd->outfile);
 		}
-		if (!exe_bultin_in_parent(cmd->args, env))
+		if (!exe_bultin_in_parent(cmd->args, env, exit_status))
 			return (0);
 		if ((dup2(save_in, 0) < 0))
 			close(0);
@@ -209,21 +211,31 @@ int is_builtin(t_cmd *cmd)
 	return (0);
 }
 
-int exe_bultin_in_parent(char *cmd[], t_expand *env)
+int exe_bultin_in_parent(char *cmd[], t_expand *env, int *exit_status)
 {
+	*exit_status = 0;
 	if (ft_strcmp(cmd[0], "echo") == 0 || ft_strcmp(cmd[0], "/bin/echo") == 0)
 		return (ft_echo(cmd), 1);
 	else if (ft_strcmp(cmd[0], "exit") == 0)
 		return (ft_exit(cmd), 1);
 	else if (ft_strcmp(cmd[0], "export") == 0)
-		return (ft_export(cmd, &env), 1);
+	{
+		*exit_status = ft_export(cmd, &env);
+		return (1);
+	}
 	else if (ft_strcmp(cmd[0], "env") == 0 || ft_strcmp(cmd[0], "/usr/bin/env") == 0)
 		return (ft_env(cmd, env), 1);
 	else if (ft_strcmp(cmd[0], "cd") == 0 || ft_strcmp(cmd[0], "/usr/bin/cd") == 0)
-		return (ft_cd(cmd[1], env), 1);
+	{
+		*exit_status = ft_cd(cmd[1], env);
+		return (1);
+	}
 	else if (ft_strcmp(cmd[0], "pwd") == 0 || ft_strcmp(cmd[0], "/bin/pwd") == 0)
 		return (ft_pwd(), 1);
 	else if (ft_strcmp(cmd[0], "unset") == 0)
-		return (ft_unset(cmd, &env), 1);
+	{
+		*exit_status = ft_unset(cmd, &env);
+		return (1);
+	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/24 00:51:56 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/25 01:56:06 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,7 @@ void ft_execute_bultin(char *cmd[], t_expand **envp, int *exit_status)
 	}
 	if (ft_strcmp(cmd[0], "export") == 0)
 	{
-		ft_export(cmd, envp);
-		exit(0);
+		exit(ft_export(cmd, envp));
 	}
 	if (ft_strcmp(cmd[0], "env") == 0 || ft_strcmp(cmd[0], "/usr/bin/env") == 0)
 	{
@@ -78,8 +77,7 @@ void ft_execute_bultin(char *cmd[], t_expand **envp, int *exit_status)
 	}
 	if (ft_strcmp(cmd[0], "cd") == 0 || ft_strcmp(cmd[0], "/usr/bin/cd") == 0)
 	{
-		ft_cd(cmd[1], *envp);
-		exit(0);
+		exit(ft_cd(cmd[1], *envp));
 	}
 	if (ft_strcmp(cmd[0], "pwd") == 0 || ft_strcmp(cmd[0], "/bin/pwd") == 0)
 	{
@@ -88,14 +86,10 @@ void ft_execute_bultin(char *cmd[], t_expand **envp, int *exit_status)
 	}
 	if (ft_strcmp(cmd[0], "unset") == 0)
 	{
-		ft_unset(cmd, envp);
-		exit(0);
+		exit(ft_unset(cmd, envp));
 	}
 	if (ft_strcmp(cmd[0], "exit") == 0)
-	{
 		ft_exit(cmd);
-		exit(0);
-	}
 }
 
 char *check_path(char **path, char *cmd)
@@ -108,7 +102,7 @@ char *check_path(char **path, char *cmd)
 		return (NULL);
 	// if (access(cmd, X_OK) == 0)
 	// 	return (cmd);
-	if (cmd[0] == '/')
+	if (cmd[0] == '/' || cmd[0] == '.')
 	{
 		if (access(cmd, X_OK) == 0)
 			return (cmd);
@@ -156,10 +150,9 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp, int *exit_sta
 	new_cmd = check_path(paths, cmd[0]);
 	if (!new_cmd)
 	{
-		printf("here : %s: command not found\n", cmd[0]);
+		printf(" %s: command not found\n", cmd[0]);
 		exit(127);
 	}
-	printf("(%s)\n", new_cmd);
 	execve(new_cmd, cmd, str_envp);
 	if ((access(new_cmd, X_OK) == 0))
 		printf(" %s: command not found\n", cmd[0]);
