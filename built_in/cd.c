@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 02:14:56 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/21 23:49:18 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/25 22:14:23 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ char *get_home(t_expand *env)
 	return (NULL);
 }
 
-void	ft_cd(char *path, t_expand *env)
+int	ft_cd(char *path, t_expand *env)
 {
 	t_expand 	*oldpwd;
 	t_expand 	*new_pwd;
@@ -71,11 +71,27 @@ void	ft_cd(char *path, t_expand *env)
 		else
 		{
 			printf("cd: HOME not set\n");
-			return ;
+			return(1);
+		}
+	}
+	if (ft_strcmp(path, "-") == 0)
+	{
+		oldpwd = get_oldpwd(env);
+		if(!oldpwd || !*oldpwd->value)
+		{
+			printf("cd: OLDPWD not set\n");
+			return (1);
+		}
+		else
+		{
+			path = oldpwd->value;
+			printf("%s\n", path);
 		}
 	}
 	if (chdir(path) < 0)
-		return (perror("cd "));
+	{
+		return (perror("cd "), 1);
+	}
 	getcwd(np, PATH_MAX);
 	oldpwd = get_oldpwd(env);
 	if(oldpwd)
@@ -91,4 +107,5 @@ void	ft_cd(char *path, t_expand *env)
 			free(new_pwd->value);
 		new_pwd->value = ft_strdup(np);
 	}
+	return (0);
 }
