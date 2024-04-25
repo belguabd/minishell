@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/25 01:56:06 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/25 18:13:07 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,8 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp, int *exit_sta
 	char *new_cmd;
 
 	if (!cmd || !*cmd)
-		execve(cmd[0], cmd, str_envp);
+		exit (0);
+		//execve(cmd[0], cmd, str_envp);
 	ft_execute_bultin(cmd, &envp, exit_status);
 	while (envp)
 	{

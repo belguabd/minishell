@@ -6,11 +6,21 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/24 23:48:29 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/25 19:23:38 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+////////
+void ft_sig_handler_her_doc(int sig)
+{
+	if (sig == SIGINT)
+		close(0);
+}
+
+////////
+
 void displayLinkedList(token_node *head)
 {
 	printf("\n+--------+---------------+\n");
@@ -225,9 +235,15 @@ char *ft_readline(int flag, char *dlmtr, t_expand *env)
 	char *cmd;
 
 	buffer = NULL;
+	signal(SIGINT, ft_sig_handler_her_doc);
 	while (1)
 	{
 		cmd = readline("> ");
+		if (!ttyname(0))
+		{
+			open(ttyname(2), O_RDWR);
+			return (ft_strdup("NULL"));
+		}
 		if (!cmd)
 		{
 			free(cmd);
@@ -480,7 +496,7 @@ int main(int ac, char const *av[], char *env[])
 	const char *cmd = NULL;
 	token_node *head = NULL;
 	t_cmd *cmd_list = NULL;
-	int	exit_status;
+	int exit_status;
 
 	(void)env;
 	(void)cmd_list;
