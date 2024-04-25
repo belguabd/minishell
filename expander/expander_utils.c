@@ -32,6 +32,11 @@ char *get_until_var(char *str_var)
 		{
 			while (str_var[i] && str_var[i] == '$')
 				i++;
+			if (str_var[i] >= '0' && str_var[i] <= '9')
+			{
+				i++;
+				break;
+			}
 			while (str_var[i] && (ft_isalnum(str_var[i]) || str_var[i] == '_'))
 				i++;
 			break;

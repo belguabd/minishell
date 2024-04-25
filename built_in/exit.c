@@ -16,7 +16,7 @@ int ft_atoi(const char *str)
 {
 
 	int sign;
-	unsigned long long res;
+	size_t res;
 	int i;
 
 	i = 0;
@@ -33,7 +33,7 @@ int ft_atoi(const char *str)
 		if (res > LONG_MAX)
 		{
 			printf("exit\n");
-			printf("minishell: exit: %llu: numeric argument required\n", res);
+			printf("minishell: exit: %zu: numeric argument required\n", res);
 			exit(255);
 		}
 		i++;

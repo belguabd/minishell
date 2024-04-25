@@ -23,7 +23,4 @@ void    handler(int sig)
         rl_on_new_line(); // Reset readline's internal state
         rl_redisplay();
     }
-    else if(sig == SIGQUIT)
-    {
-    }
 }

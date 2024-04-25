@@ -201,6 +201,7 @@ char *write_to_file(char *buffer)
 	while (access(file_tmp, F_OK) != -1)
 		file_tmp = ft_strjoin(".heardoc", ft_itoa(i++));
 	int fd = open(file_tmp, O_CREAT | O_RDWR | O_TRUNC, 0777);
+	
 	if (fd < 0)
 		write(2, "Error\n", 6);
 	write(fd, buffer, ft_strlen(buffer));
@@ -481,6 +482,8 @@ int main(int ac, char const *av[], char *env[])
 	token_node *head = NULL;
 	t_cmd *cmd_list = NULL;
 
+	// tcgetattr()
+	// tcsetattr()
 	(void)env;
 	(void)cmd_list;
 	head = NULL;
@@ -503,7 +506,6 @@ int main(int ac, char const *av[], char *env[])
 		int error = handle_errors_cmd(head, cmd);
 		if (error == -1)
 		{
-
 			free((void *)cmd);
 			continue;
 		}
@@ -532,14 +534,17 @@ int main(int ac, char const *av[], char *env[])
 		// 	cmd_list = cmd_list->next;
 		// 	printf("\n");
 		// }
-		free((void *)cmd);
-		while (cmd_list->redir)
+		free((void *)cmd);	
+		while (cmd_list)
 		{
-			if (cmd_list->redir->type == HEREDOC)
-				unlink(cmd_list->redir->value);
-			cmd_list->redir = cmd_list->redir->next;
+			while (cmd_list->redir)
+			{
+				if (cmd_list->redir->type == HEREDOC)
+					unlink(cmd_list->redir->value);
+				cmd_list->redir = cmd_list->redir->next;
+			}
+			cmd_list = cmd_list->next;
 		}
-
 		// unlink(".heardoc");
 		// ft_malloc(FREE, FREE);
 	}

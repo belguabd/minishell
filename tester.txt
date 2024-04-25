@@ -1,1 +1,27 @@
 "cd .. ; pwd" 
+➜  minishell export =
+invalid option: Undefined error: 0
+
+=====================
+bash-3.2$ export $?
+bash: export: `1': not a valid identifier
+minishell ^C
+
+
+minishell export x=
+➜  minishell $x
+"": No such file or directory
+
+➜  minishell << $$PWD$"USER" cat
+syntax error near unexpected token
+➜  minishell export a="aa ss"
+➜  minishell > $a
+ss: No such file or directory
+➜  minishell rm aa
+➜  minishell > $a
+ss: No such file or directory
+➜  minishell echo $a
+aa ss
+➜  minishell export x=
+➜  minishell > $x
+➜  minishell > $x
