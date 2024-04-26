@@ -38,6 +38,7 @@ typedef struct token_node
 {
 	int type;
 	char *value;
+	bool flage;
 	struct token_node *next;
 } token_node;
 
@@ -115,33 +116,32 @@ char *get_str_env(t_expand *env, char *str_var);
 void *ft_malloc(size_t size, int status);
 
 // execution
-void	ft_execution(t_cmd *cmd, t_expand **envp, int *exit_status);
+void ft_execution(t_cmd *cmd, t_expand **envp, int *exit_status);
 void ft_execute_bultin(char *cmd[], t_expand **envp, int *exit_status);
 int exe_bultin_in_parent(char *cmd[], t_expand *env, int *exit_status);
-int 	exe_one_cmd_only(t_cmd *cmd, t_expand *env, int *exit_status);
-char	**get_envp(t_expand *lst_envp);
+int exe_one_cmd_only(t_cmd *cmd, t_expand *env, int *exit_status);
+char **get_envp(t_expand *lst_envp);
 void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp, int *exit_status);
-char	**get_envp(t_expand *lst_envp);
-char	**ft_split_last_cmd(char *cmd);
-//signals
-void    handler(int sig);
+char **get_envp(t_expand *lst_envp);
+char **ft_split_last_cmd(char *cmd);
+// signals
+void handler(int sig);
 
-//pipe & fds
-void	set_cmd_false_true(t_cmd **cmds);
-void    set_fds(t_cmd **cmds);
-void    init_fds(t_cmd **cmds);
+// pipe & fds
+void set_cmd_false_true(t_cmd **cmds);
+void set_fds(t_cmd **cmds);
+void init_fds(t_cmd **cmds);
 void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status);
 
-
 // builtin
-void 	ft_pwd();
-int	ft_cd(char *path, t_expand *env);
-void 	ft_echo(char **cmd);
-void 	ft_env(char **cmd, t_expand *envp);
-int	ft_unset(char **cmd, t_expand **envp);
-int 	ft_export(char **cmd, t_expand **envp);
-int		is_builtin(t_cmd *cmd);
-void	get_env_export(t_expand *envp);
+void ft_pwd();
+int ft_cd(char *path, t_expand *env);
+void ft_echo(char **cmd);
+void ft_env(char **cmd, t_expand *envp);
+int ft_unset(char **cmd, t_expand **envp);
+int ft_export(char **cmd, t_expand **envp);
+int is_builtin(t_cmd *cmd);
+void get_env_export(t_expand *envp);
 void ft_exit(char **cmd);
 // tools
 
@@ -152,7 +152,7 @@ void ft_del_node(t_expand **lst, char *key);
 t_expand *ft_lst_new(char *key, char *val);
 void ft_free_node(t_expand *node);
 size_t ft_lst_size(t_expand *lst);
-char	*ft_itoa(int n);
+char *ft_itoa(int n);
 
 // static int allocationCount = 0;
 

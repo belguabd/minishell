@@ -111,12 +111,25 @@ void expand_var_and_split(token_node **new_head, token_node *head, t_expand *env
 
 	output = ft_split_last_cmd(head->value);
 	i = 0;
+	token_node *tmp = NULL;
 	while (output[i])
 	{
-		lstadd_back(new_head, addnew_tkn_node(VAR, output[i]));
+
+		token_node *new = addnew_tkn_node(VAR, output[i]);
+		lstadd_back(new_head, new);
+		if (!tmp)
+			tmp = new;
 		if (output[i + 1])
 			lstadd_back(new_head, addnew_tkn_node(SPC, " "));
 		i++;
+	}
+	if (i > 1)
+		tmp->flage = true;
+	if (!output[i])
+	{
+		token_node *new = addnew_tkn_node(VAR, ft_strdup(""));
+		new->flage = true;
+		lstadd_back(new_head, new);
 	}
 }
 char *expand_str_vars(token_node *head, t_expand *env)

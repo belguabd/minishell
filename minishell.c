@@ -23,18 +23,20 @@ void ft_sig_handler_her_doc(int sig)
 
 void displayLinkedList(token_node *head)
 {
-	printf("\n+--------+---------------+\n");
-	printf("|  Index |     Value     |\n");
-	printf("+--------+---------------+\n");
+	printf("\n+--------+-------+---------------+\n");
+	printf("| flage | Index |     Value     |\n");
+	printf("+--------+-------+---------------+\n");
 
-	// int index = 0;
+	int index = 0;
 	while (head != NULL)
 	{
-		printf("|%7d | %-14s|\n", head->type, head->value);
+		printf("|%8d |%7d | %-14s|\n", head->flage, head->type, head->value);
 		head = head->next;
+		index++;
 	}
-	printf("+--------+---------------+\n");
+	printf("+--------+-------+---------------+\n");
 }
+
 int ft_strcmp(char *str1, char *str2)
 {
 	int i = 0;
@@ -211,7 +213,7 @@ char *write_to_file(char *buffer)
 	while (access(file_tmp, F_OK) != -1)
 		file_tmp = ft_strjoin(".heardoc", ft_itoa(i++));
 	int fd = open(file_tmp, O_CREAT | O_RDWR | O_TRUNC, 0777);
-	
+
 	if (fd < 0)
 		write(2, "Error\n", 6);
 	write(fd, buffer, ft_strlen(buffer));
@@ -333,7 +335,7 @@ token_node *ft_concatenate(token_node *head)
 {
 	token_node *new = NULL;
 	char *buffer = NULL;
-
+	bool check = false;
 	while (head != NULL)
 	{
 		if (is_string_type(head->type))
@@ -341,12 +343,20 @@ token_node *ft_concatenate(token_node *head)
 			buffer = NULL;
 			while (head != NULL && is_string_type(head->type))
 			{
+				if (head->flage)
+					check = true;
 				if (!buffer)
 					buffer = ft_strdup("");
 				buffer = ft_strjoin(buffer, head->value);
 				head = head->next;
 			}
-			lstadd_back(&new, addnew_tkn_node(STRING, buffer));
+			token_node *new_node = addnew_tkn_node(STRING, buffer);
+			if (check)
+			{
+				new_node->flage = true;
+				check = false;
+			}
+			lstadd_back(&new, new_node);
 		}
 		else
 		{
@@ -395,9 +405,12 @@ void parse_redirection_token(token_node **head, token_node **new_node)
 	if (type == HEREDOC)
 		value = value_hrd;
 	else
-		value = (*head)->value;
+		value = ft_strdup((*head)->value);
+	token_node *new = addnew_tkn_node(type, value);
+	if ((*head)->flage)
+		new->flage = true;
+	lstadd_back(new_node, new);
 	(*head) = (*head)->next;
-	lstadd_back(new_node, addnew_tkn_node(type, value));
 }
 
 token_node *ft_remove_redirect(token_node *head)
@@ -463,7 +476,12 @@ t_cmd *ft_split_cmd(token_node *new_head)
 		if (new_head->type == STRING)
 			args[i++] = ft_strdup(new_head->value);
 		if (is_redirection(new_head->type))
-			lstadd_back(&redir, addnew_tkn_node(new_head->type, new_head->value));
+		{
+			token_node *new = addnew_tkn_node(new_head->type, new_head->value);
+			if (new_head->flage)
+				new->flage = true;
+			lstadd_back(&redir, new);
+		}
 		new_head = new_head->next;
 	}
 	args[i] = NULL;
@@ -479,7 +497,10 @@ t_cmd *ft_passing(token_node *head)
 		{
 			if (head->type == PIPE)
 				break;
-			lstadd_back(&new_head, addnew_tkn_node(head->type, head->value));
+			token_node *new_node = addnew_tkn_node(head->type, head->value);
+			if (head->flage)
+				new_node->flage = true;
+			lstadd_back(&new_head, new_node);
 			head = head->next;
 		}
 		lst_addback_cmd(&new_cmd, ft_split_cmd(new_head));
@@ -498,6 +519,7 @@ int main(int ac, char const *av[], char *env[])
 	token_node *head = NULL;
 	t_cmd *cmd_list = NULL;
 	int exit_status;
+	(void)exit_status;
 
 	// tcgetattr()
 	// tcsetattr()
@@ -547,22 +569,25 @@ int main(int ac, char const *av[], char *env[])
 		// 	while (tmp)
 		// 	{
 		// 		printf("%s ", tmp->value);
+		// 		printf("%d ", tmp->flage);
+		// 		printf(" %s ", "|");
+
 		// 		tmp = tmp->next;
 		// 	}
 		// 	cmd_list = cmd_list->next;
 		// 	printf("\n");
 		// }
-		free((void *)cmd);	
-		while (cmd_list)
-		{
-			while (cmd_list->redir)
-			{
-				if (cmd_list->redir->type == HEREDOC)
-					unlink(cmd_list->redir->value);
-				cmd_list->redir = cmd_list->redir->next;
-			}
-			cmd_list = cmd_list->next;
-		}
+		free((void *)cmd);
+		// while (cmd_list)
+		// {
+		// 	while (cmd_list->redir)
+		// 	{
+		// 		if (cmd_list->redir->type == HEREDOC)
+		// 			unlink(cmd_list->redir->value);
+		// 		cmd_list->redir = cmd_list->redir->next;
+		// 	}
+		// 	cmd_list = cmd_list->next;
+		// }
 		// unlink(".heardoc");
 		// ft_malloc(FREE, FREE);
 	}

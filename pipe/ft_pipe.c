@@ -45,24 +45,40 @@ void init_fds(t_cmd **cmds)
 	tmp = head->redir;
 	old_fd_in = -2;
 	old_fd_out = -2;
+
 	if (tmp)
 	{
 		while (tmp)
 		{
 			if (tmp->type == REDIRECT_OUT)
 			{
+				if (tmp->flage)
+				{
+					perror("bash: ambiguous redirect");
+					tmp->flage = false;
+				}
 				head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_TRUNC, 0777);
 				if (head->outfile < 0)
 					perror("fd_out");
 			}
 			else if (tmp->type == REDIRECT_APPEND)
 			{
+				if (tmp->flage)
+				{
+					perror("bash: ambiguous redirect");
+					tmp->flage = false;
+				}
 				head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_APPEND, 0777);
 				if (head->outfile < 0)
 					perror("fd_app");
 			}
 			else if (tmp->type == REDIRECT_IN)
 			{
+				if (tmp->flage)
+				{
+					perror("bash: ambiguous redirect");
+					tmp->flage = false;
+				}
 				head->infile = open(tmp->value, O_RDWR, 0777);
 				if (head->infile < 0)
 				{
@@ -158,9 +174,9 @@ void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status)
 	}
 	while (j < i)
 		waitpid(pid[j++], exit_status, 0);
-	if(WIFEXITED(*exit_status))
-		*exit_status =  WEXITSTATUS(*exit_status);
-	else if(WIFSIGNALED(*exit_status))
+	if (WIFEXITED(*exit_status))
+		*exit_status = WEXITSTATUS(*exit_status);
+	else if (WIFSIGNALED(*exit_status))
 		*exit_status = WTERMSIG(*exit_status) + 128;
 	free(pid);
 	close(fd[0]);
