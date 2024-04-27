@@ -130,8 +130,9 @@ char *check_path(char **path, char *cmd)
 		// free(cmd_path);
 		cmd_path = NULL;
 	}
-	ft_putstr_fd(cmd, 2);
-	ft_putendl_fd(": command not found", 2);
+	// ft_putstr_fd(cmd, 2);
+	// ft_putendl_fd(": command not found", 2);
+	printf("bash: %s: command not found\n",cmd);
 	exit(127);
 }
 
@@ -151,7 +152,7 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp, int *exit_sta
 	char *new_cmd;
 	// signal(SIGINT, SIG_DFL);
 	// signal(SIGQUIT, SIG_DFL);
-	if (!cmd || !*cmd || cmd[0][0] == '\0')
+	if (!cmd || !*cmd  || cmd[0][0] == '\0')
 		exit (0);
 	ft_execute_bultin(cmd, &envp, exit_status);
 	while (envp)
@@ -166,8 +167,9 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp, int *exit_sta
 	execve(new_cmd, cmd, str_envp);
 	if ((access(new_cmd, X_OK) == 0))
 	{
-		ft_putstr_fd(cmd[0], 2);
-		ft_putendl_fd(": command not found", 2);
+		// ft_putstr_fd(cmd[0], 2);
+		// ft_putendl_fd(": command not found", 2);
+		printf("bash: %s: command not found\n",cmd[0]);
 	}
 	else
 		perror(cmd[0]); 

@@ -12,20 +12,20 @@
 
 #include "../minishell.h"
 
-void	ft_env(char **cmd, t_expand *envp)
+void ft_env(char **cmd, t_expand *envp)
 {
 	(void)cmd;
-	t_expand	*head;
-	
+	t_expand *head;
+
 	head = envp;
 	while (head)
 	{
-		if(*head->value)
+		if (*head->value)
 		{
 			printf("%s", head->key);
-			if(ft_strcmp(head->value, "\"\"") == 0)
+			if (ft_strcmp(head->value, "\"\"") == 0)
 				printf("=\n");
-			else if(*(head->value))
+			else if (*(head->value))
 				printf("=%s\n", head->value);
 			else
 				printf("\n");
@@ -34,17 +34,17 @@ void	ft_env(char **cmd, t_expand *envp)
 	}
 }
 
-void	get_env_export(t_expand *envp)
+void get_env_export(t_expand *envp)
 {
-	t_expand	*head;
-	
+	t_expand *head;
+
 	head = envp;
 	while (head)
 	{
 		printf("declare -x %s", head->key);
-		if(ft_strcmp(head->value, "\"\"") == 0)
+		if (ft_strcmp(head->value, "\"\"") == 0)
 			printf("=%s\n", head->value);
-		else if(*(head->value))
+		else if (*(head->value))
 			printf("=\"%s\"\n", head->value);
 		else
 			printf("\n");

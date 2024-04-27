@@ -25,3 +25,10 @@ aa ss
 ➜  minishell export x=
 ➜  minishell > $x
 ➜  minishell > $x
+➜  minishell echo hello""world
+hello world
+
+/
+//
+ABC=hola
+"$HOMEdskjhfkdshfsd"

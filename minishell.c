@@ -103,17 +103,6 @@ void init_env(t_expand **head, char *env[])
 	char *cmd2[] = {"export", "OLDPWD", NULL};
 	ft_export(cmd2, head);
 }
-// bool check_exist_env(char *str, t_expand *env)
-// {
-// 	(void)str;
-// 	while (env)
-// 	{
-// 		t_expand *tmp = env;
-// 		env = env->next;
-// 		free(tmp);
-// 	}
-// 	return (false);
-// }
 int get_var_len(const char *str, int i)
 {
 	int len = 0;
@@ -261,48 +250,13 @@ char *ft_readline(int flag, char *dlmtr, t_expand *env)
 			cmd = expand_heardoc(cmd, env);
 		buffer = append_cmd_to_buffer(cmd, buffer);
 	}
-	// write_to_file(buffer);
 	return (free(dlm), write_to_file(buffer));
 }
 char *readline_hdc(char *dlmtr, t_expand *env, int flag)
 {
 	char *buffer;
-	// char *file_tmp;
 	buffer = NULL;
-	// int i;
-	// file_tmp = ft_strdup(".heardoc");
-	// i = 0;
-	// while (access(file_tmp, F_OK) != -1)
-	// 	file_tmp = ft_strjoin(".heardoc", ft_itoa(i++));
 	return (ft_readline(flag, dlmtr, env));
-
-	// while (1)
-	// {
-	// 	char *cmd = readline("> ");
-	// 	if (!cmd)
-	// 	{
-	// 		free(cmd);
-	// 		write_to_file(file_tmp, buffer);
-	// 		return (file_tmp);
-	// 	}
-	// 	if (!ft_strcmp(cmd, dlmtr))
-	// 	{
-	// 		dlm = cmd;
-	// 		break;
-	// 	}
-	// 	if (flag != 1337)
-	// 		cmd = expand_heardoc(cmd, env);
-	// 	if (!buffer)
-	// 		buffer = ft_strdup("");
-	// 	if (!cmd)
-	// 		cmd = ft_strdup("");
-	// 	buffer = ft_strjoin(buffer, cmd);
-	// 	buffer = ft_strjoin(buffer, ft_strdup("\n"));
-	// 	free(cmd);
-	// }
-	// free(dlm);
-	// write_to_file(file_tmp, buffer);
-	// return (file_tmp);
 }
 void ft_headoc(token_node *head, t_expand *env)
 {
@@ -528,6 +482,11 @@ int main(int ac, char const *av[], char *env[])
 	head = NULL;
 	t_expand *env_expand = NULL;
 	init_env(&env_expand, env);
+	// if (!env_expand->key[0])
+	// {
+	// 	puts("OK");
+	// 	exit(0);
+	// }
 	signal(SIGINT, handler);
 	signal(SIGQUIT, handler);
 	rl_catch_signals = 0;
@@ -557,6 +516,7 @@ int main(int ac, char const *av[], char *env[])
 		head = ft_remove_redirect(head);
 		cmd_list = ft_passing(head);
 		ft_execution(cmd_list, &env_expand, &exit_status);
+
 		// (void)cmd_list;
 		// while (cmd_list)
 		// {

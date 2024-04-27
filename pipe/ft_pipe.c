@@ -71,9 +71,12 @@ void init_fds(t_cmd **cmds)
 					perror("bash: ambiguous redirect");
 					tmp->flage = false;
 				}
-				head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_APPEND, 0777);
-				if (head->outfile < 0)
-					perror("fd_app");
+				else
+				{
+					head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_APPEND, 0777);
+					if (head->outfile < 0)
+						perror("fd_app");
+				}
 			}
 			else if (tmp->type == REDIRECT_IN)
 			{
@@ -82,11 +85,15 @@ void init_fds(t_cmd **cmds)
 					perror("bash: ambiguous redirect");
 					tmp->flage = false;
 				}
-				head->infile = open(tmp->value, O_RDWR, 0777);
-				if (head->infile < 0)
+				else
 				{
-					perror(tmp->value);
-					return;
+
+					head->infile = open(tmp->value, O_RDWR, 0777);
+					if (head->infile < 0)
+					{
+						perror(tmp->value);
+						return;
+					}
 				}
 			}
 			else if (tmp->type == HEREDOC)
