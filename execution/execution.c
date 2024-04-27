@@ -53,9 +53,6 @@ void ft_execution(t_cmd *cmd, t_expand **envp, int *exit_status)
 	set_cmd_false_true(&cmd);
 	pipe_line(cmd, *envp, env, exit_status);
 }
-
-// }
-
 void ft_execute_bultin(char *cmd[], t_expand **envp, int *exit_status)
 {
 	*exit_status = 0;

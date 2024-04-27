@@ -35,6 +35,7 @@ token_node *addnew_tkn_node(int token, char *value)
 	if (!new)
 		return (NULL);
 	new->type = token;
+	new->flage = false;
 	new->value = ft_strdup(value);
 	new->next = NULL;
 	return (new);

@@ -51,7 +51,7 @@ int print_error_redirection(token_node *head)
 			tmp = tmp->next;
 			if (tmp && tmp->type == SPC)
 				tmp = tmp->next;
-			if (tmp && tmp->type != STRING && tmp->type != DOUBLE_Q && tmp->type != SINGLE_Q && tmp->type != VAR)
+			if (tmp && tmp->type != STRING && tmp->type != DOUBLE_Q && tmp->type != SINGLE_Q && tmp->type != VAR && tmp->type !=DOUBLE_DLR)
 			{
 				ft_putendl_fd("syntax error near unexpected token", 2);
 				return (-1);
