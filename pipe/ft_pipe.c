@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/25 18:26:05 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/26 22:58:50 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,7 +230,7 @@ int exe_bultin_in_parent(char *cmd[], t_expand *env, int *exit_status)
 		return (1);
 	}
 	else if (ft_strcmp(cmd[0], "pwd") == 0 || ft_strcmp(cmd[0], "/bin/pwd") == 0)
-		return (ft_pwd(), 1);
+		return (ft_pwd(env), 1);
 	else if (ft_strcmp(cmd[0], "unset") == 0)
 	{
 		*exit_status = ft_unset(cmd, &env);

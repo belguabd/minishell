@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/25 18:13:07 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/27 00:54:59 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void ft_execute_bultin(char *cmd[], t_expand **envp, int *exit_status)
 	}
 	if (ft_strcmp(cmd[0], "pwd") == 0 || ft_strcmp(cmd[0], "/bin/pwd") == 0)
 	{
-		ft_pwd();
+		ft_pwd(*envp);
 		exit(0);
 	}
 	if (ft_strcmp(cmd[0], "unset") == 0)
@@ -99,14 +99,29 @@ char *check_path(char **path, char *cmd)
 
 	i = 0;
 	if (!path || !*path)
-		return (NULL);
+	{
+		ft_putstr_fd(cmd, 2);
+		ft_putendl_fd(": No such file or directory", 2);
+		exit(127);
+	}
 	// if (access(cmd, X_OK) == 0)
 	// 	return (cmd);
 	if (cmd[0] == '/' || cmd[0] == '.')
 	{
-		if (access(cmd, X_OK) == 0)
+		if (access(cmd, X_OK) == 0 || access(cmd, F_OK) == 0)
+		{
+			if(access(cmd, X_OK) == -1)
+			{
+				ft_putstr_fd(cmd, 2);
+				ft_putendl_fd(": Permission denied", 2);
+				exit(126);
+				
+			}
 			return (cmd);
-		return (NULL);
+		}
+		ft_putstr_fd(cmd, 2);
+		ft_putendl_fd(": No such file or directory", 2);
+		exit(127);
 	}
 	while (path[i])
 	{
@@ -118,7 +133,9 @@ char *check_path(char **path, char *cmd)
 		// free(cmd_path);
 		cmd_path = NULL;
 	}
-	return (cmd);
+	ft_putstr_fd(cmd, 2);
+	ft_putendl_fd(": command not found", 2);
+	exit(127);
 }
 
 int ft_count_word(char **output)
@@ -138,7 +155,6 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp, int *exit_sta
 
 	if (!cmd || !*cmd)
 		exit (0);
-		//execve(cmd[0], cmd, str_envp);
 	ft_execute_bultin(cmd, &envp, exit_status);
 	while (envp)
 	{
@@ -149,14 +165,12 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp, int *exit_sta
 	if (envp)
 		paths = ft_split(envp->value, ':');
 	new_cmd = check_path(paths, cmd[0]);
-	if (!new_cmd)
-	{
-		printf(" %s: command not found\n", cmd[0]);
-		exit(127);
-	}
 	execve(new_cmd, cmd, str_envp);
 	if ((access(new_cmd, X_OK) == 0))
-		printf(" %s: command not found\n", cmd[0]);
+	{
+		ft_putstr_fd(cmd[0], 2);
+		ft_putendl_fd(": command not found", 2);
+	}
 	else
 		perror(cmd[0]);
 }

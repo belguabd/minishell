@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/24 23:48:49 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/27 00:24:11 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ char	**get_envp(t_expand *lst_envp);
 void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp, int *exit_status);
 char	**get_envp(t_expand *lst_envp);
 char	**ft_split_last_cmd(char *cmd);
+void	ft_putstr_fd(char *s, int fd);
 //signals
 void    handler(int sig);
 
@@ -134,7 +135,7 @@ void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status);
 
 
 // builtin
-void 	ft_pwd();
+void 	ft_pwd(t_expand *env);
 int	ft_cd(char *path, t_expand *env);
 void 	ft_echo(char **cmd);
 void 	ft_env(char **cmd, t_expand *envp);

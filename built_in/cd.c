@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 02:14:56 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/25 22:14:23 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/26 01:48:02 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,14 @@ int	ft_cd(char *path, t_expand *env)
 	}
 	if (chdir(path) < 0)
 	{
-		return (perror("cd "), 1);
+		perror("cd");
+		return (1);
 	}
-	getcwd(np, PATH_MAX);
+	if(!getcwd(np, PATH_MAX))
+	{
+		ft_putendl_fd("cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory", 2);
+		return (0);
+	}
 	oldpwd = get_oldpwd(env);
 	if(oldpwd)
 	{
