@@ -102,9 +102,9 @@ int print_error_double_pipe(token_node *head)
 		}
 		tmp = tmp->next;
 	}
-	return (0);	
+	return (0);
 }
-int handle_errors_cmd(token_node *head, const char *cmd)
+int handle_errors_cmd(token_node *head, const char *cmd )
 {
 	if(!head)
 		return (-1);

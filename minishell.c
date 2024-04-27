@@ -545,18 +545,18 @@ int main(int ac, char const *av[], char *env[])
 		int error = handle_errors_cmd(head, cmd);
 		if (error == -1)
 		{
+			exit_status = 258;
 			free((void *)cmd);
 			continue;
 		}
 		remove_single_q(head);
 		remove_double_q(head);
 		ft_headoc(head, env_expand);
-		head = expand_and_print_vars(head, env_expand);
+		head = expand_and_print_vars(head, env_expand, exit_status);
 		head = ft_concatenate(head);
 		head = ft_remove_redirect(head);
 		cmd_list = ft_passing(head);
 		ft_execution(cmd_list, &env_expand, &exit_status);
-		printf("%d\n", exit_status);
 		// (void)cmd_list;
 		// while (cmd_list)
 		// {

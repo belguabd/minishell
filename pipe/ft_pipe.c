@@ -57,9 +57,12 @@ void init_fds(t_cmd **cmds)
 					perror("bash: ambiguous redirect");
 					tmp->flage = false;
 				}
-				head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_TRUNC, 0777);
-				if (head->outfile < 0)
-					perror("fd_out");
+				else
+				{
+					head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_TRUNC, 0777);
+					if (head->outfile < 0)
+						perror("fd_out");
+				}
 			}
 			else if (tmp->type == REDIRECT_APPEND)
 			{
@@ -113,8 +116,9 @@ void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status)
 	int tmp_fd_in;
 	int i = 0;
 	int j = 0;
-
 	tmp_fd_in = -1;
+	// signal(SIGINT, SIG_IGN);
+	// signal(SIGQUIT, SIG_IGN);
 	pid = allocat_pids(cmd);
 	init_fds(&cmd);
 	if (exe_one_cmd_only(cmd, env_lst, exit_status))

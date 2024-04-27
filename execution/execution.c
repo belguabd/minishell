@@ -132,8 +132,9 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp, int *exit_sta
 {
 	char **paths = NULL;
 	char *new_cmd;
-
-	if (!cmd || !*cmd)
+	// signal(SIGINT, SIG_DFL);
+	// signal(SIGQUIT, SIG_DFL);
+	if (!cmd || !*cmd || cmd[0][0] == '\0')
 		exit (0);
 		//execve(cmd[0], cmd, str_envp);
 	ft_execute_bultin(cmd, &envp, exit_status);
@@ -155,7 +156,7 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp, int *exit_sta
 	if ((access(new_cmd, X_OK) == 0))
 		printf(" %s: command not found\n", cmd[0]);
 	else
-		perror(cmd[0]);
+		perror(cmd[0]); 
 }
 
 // int main()

@@ -108,7 +108,11 @@ void expand_var_and_split(token_node **new_head, token_node *head, t_expand *env
 	ft_expand_var(head, env);
 	char **output;
 	int i;
-
+	if (head->value[0] == '\t' || head->value[0] == ' ')
+	{
+		token_node *new = addnew_tkn_node(SPC, ft_strdup(" "));
+		lstadd_back(new_head, new);
+	}
 	output = ft_split_last_cmd(head->value);
 	i = 0;
 	token_node *tmp = NULL;
@@ -132,7 +136,7 @@ void expand_var_and_split(token_node **new_head, token_node *head, t_expand *env
 		lstadd_back(new_head, new);
 	}
 }
-char *expand_str_vars(token_node *head, t_expand *env)
+char *expand_str_vars(token_node *head, t_expand *env, int exit_status)
 {
 	size_t i;
 	char *buffer;
@@ -143,10 +147,14 @@ char *expand_str_vars(token_node *head, t_expand *env)
 	buffer = NULL;
 	i = 0;
 	str = head->value;
+	(void)exit_status;
 	while (str[i])
 	{
 		str_var = get_until_var(str + i);
-		str_exp = ft_str_exp(str_var, env);
+		if (!ft_strcmp(str_var, "$?"))
+			str_exp = ft_itoa(exit_status);
+		else
+			str_exp = ft_str_exp(str_var, env);
 		if (!buffer)
 			buffer = ft_strdup("");
 		buffer = ft_strjoin(buffer, str_exp);
@@ -156,7 +164,7 @@ char *expand_str_vars(token_node *head, t_expand *env)
 		buffer = ft_strdup("");
 	return (buffer);
 }
-token_node *expand_and_print_vars(token_node *head, t_expand *env)
+token_node *expand_and_print_vars(token_node *head, t_expand *env, int exit_status)
 {
 	char *buffer;
 	token_node *new_head;
@@ -165,6 +173,11 @@ token_node *expand_and_print_vars(token_node *head, t_expand *env)
 	new_head = NULL;
 	while (head)
 	{
+		if (head->type == EXIT_STATUS)
+		{
+			head->value = ft_itoa(exit_status);
+			head->type = STRING;
+		}
 		if (head->type == VAR)
 		{
 			expand_var_and_split(&new_head, head, env);
@@ -172,7 +185,7 @@ token_node *expand_and_print_vars(token_node *head, t_expand *env)
 		}
 		else if (head->type == DOUBLE_Q)
 		{
-			buffer = expand_str_vars(head, env);
+			buffer = expand_str_vars(head, env, exit_status);
 			head->value = buffer;
 		}
 		if (head && head->type != VAR)

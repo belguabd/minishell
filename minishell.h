@@ -110,7 +110,7 @@ int handle_errors_cmd(token_node *head, const char *cmd);
 char *ft_str_exp(char *str_var, t_expand *env);
 char *ft_get_var(char *str_var);
 char *get_until_var(char *str_var);
-token_node *expand_and_print_vars(token_node *head, t_expand *env);
+token_node *expand_and_print_vars(token_node *head, t_expand *env, int exit_status);
 char *get_str_env(t_expand *env, char *str_var);
 /*garbage collector*/
 void *ft_malloc(size_t size, int status);

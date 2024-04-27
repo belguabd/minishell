@@ -30,8 +30,13 @@ char *get_until_var(char *str_var)
 	{
 		if (str_var[i] == '$')
 		{
-			while (str_var[i] && str_var[i] == '$')
-				i++;
+			// while (str_var[i] && str_var[i] == '$')
+			// 	i++;
+			if (str_var[i] == '$' && str_var[i + 1] == '$')
+				return (ft_strdup("$$"));
+			if (str_var[i] == '$' && str_var[i + 1] == '?')
+				return (ft_strdup("$?"));
+			i++;
 			if (str_var[i] >= '0' && str_var[i] <= '9')
 			{
 				i++;
