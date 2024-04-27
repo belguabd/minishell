@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 01:11:06 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/03/30 06:53:49 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/27 00:23:41 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,20 @@ size_t	ft_lst_size(t_expand *lst)
 		lst = lst->next;
 	}
 	return (i);
+}
+
+void	ft_putstr_fd(char *s, int fd)
+{
+	int	i;
+
+	i = 0;
+	if (!s || fd < 0)
+		return ;
+	while (s[i])
+	{
+		write(fd, &s[i], 1);
+		i++;
+	}
 }
 // int ft_strcmp(char *str1, char *str2)
 // {

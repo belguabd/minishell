@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/24 23:48:49 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/27 02:09:58 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,26 +122,27 @@ int exe_bultin_in_parent(char *cmd[], t_expand *env, int *exit_status);
 int exe_one_cmd_only(t_cmd *cmd, t_expand *env, int *exit_status);
 char **get_envp(t_expand *lst_envp);
 void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp, int *exit_status);
-char **get_envp(t_expand *lst_envp);
-char **ft_split_last_cmd(char *cmd);
-// signals
-void handler(int sig);
+char	**get_envp(t_expand *lst_envp);
+char	**ft_split_last_cmd(char *cmd);
+void	ft_putstr_fd(char *s, int fd);
+//signals
+void    handler(int sig);
 
-// pipe & fds
-void set_cmd_false_true(t_cmd **cmds);
-void set_fds(t_cmd **cmds);
-void init_fds(t_cmd **cmds);
+//pipe & fds
+void	set_cmd_false_true(t_cmd **cmds);
+void    set_fds(t_cmd **cmds);
+void    init_fds(t_cmd **cmds);
 void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status);
 
 // builtin
-void ft_pwd();
-int ft_cd(char *path, t_expand *env);
-void ft_echo(char **cmd);
-void ft_env(char **cmd, t_expand *envp);
-int ft_unset(char **cmd, t_expand **envp);
-int ft_export(char **cmd, t_expand **envp);
-int is_builtin(t_cmd *cmd);
-void get_env_export(t_expand *envp);
+void 	ft_pwd(t_expand *env);
+int	ft_cd(char *path, t_expand *env);
+void 	ft_echo(char **cmd);
+void 	ft_env(char **cmd, t_expand *envp);
+int	ft_unset(char **cmd, t_expand **envp);
+int 	ft_export(char **cmd, t_expand **envp);
+int		is_builtin(t_cmd *cmd);
+void	get_env_export(t_expand *envp);
 void ft_exit(char **cmd);
 // tools
 
