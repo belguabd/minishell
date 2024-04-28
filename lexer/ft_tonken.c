@@ -22,7 +22,7 @@ void ft_process_odd(const char *cmd, token_node **head, int start)
 	if (cmd[j] >= '0' && cmd[j] <= '9')
 	{
 		str = ft_substr(cmd, start, (j + 1) - start);
-		lstadd_back(head, addnew_tkn_node(VAR, str));
+		lstadd_back(head, addnew_tkn_node(VAR, str, -2));
 	}
 	else
 	{
@@ -31,10 +31,10 @@ void ft_process_odd(const char *cmd, token_node **head, int start)
 			while (ft_isalnum(cmd[j]) || cmd[j] == '_')
 				j++;
 			str = ft_substr(cmd, start, j - start);
-			lstadd_back(head, addnew_tkn_node(VAR, str));
+			lstadd_back(head, addnew_tkn_node(VAR, str, -2));
 		}
 		else
-			lstadd_back(head, addnew_tkn_node(STRING, "$"));
+			lstadd_back(head, addnew_tkn_node(STRING, "$", -2));
 	}
 }
 void ft_process_vars(const char *cmd, token_node **head, int i)
@@ -51,7 +51,7 @@ void ft_process_vars(const char *cmd, token_node **head, int i)
 			i++;
 		str = ft_substr(cmd, start, i - start);
 	}
-	lstadd_back(head, addnew_tkn_node(VAR, str));
+	lstadd_back(head, addnew_tkn_node(VAR, str, -2));
 }
 
 void handle_single_quotes(int start, const char *cmd, token_node **head)
@@ -67,7 +67,7 @@ void handle_single_quotes(int start, const char *cmd, token_node **head)
 		j++;
 	}
 	str = ft_substr(cmd, start, (j + 1) - start);
-	lstadd_back(head, addnew_tkn_node(SINGLE_Q, str));
+	lstadd_back(head, addnew_tkn_node(SINGLE_Q, str, -2));
 }
 void handle_double_quotes(int start, const char *cmd, token_node **head)
 {
@@ -82,7 +82,7 @@ void handle_double_quotes(int start, const char *cmd, token_node **head)
 		j++;
 	}
 	str = ft_substr(cmd, start, (j + 1) - start);
-	lstadd_back(head, addnew_tkn_node(DOUBLE_Q, str));
+	lstadd_back(head, addnew_tkn_node(DOUBLE_Q, str, -2));
 }
 void handle_string(int start, const char *cmd, token_node **head)
 {
@@ -93,28 +93,28 @@ void handle_string(int start, const char *cmd, token_node **head)
 	while (cmd[j] && !is_string(cmd[j]))
 		j++;
 	str = ft_substr(cmd, start, j - start);
-	lstadd_back(head, addnew_tkn_node(STRING, str));
+	lstadd_back(head, addnew_tkn_node(STRING, str, -2));
 }
 int ft_redirection(token_node **head, const char *cmd, int i)
 {
 	if (cmd[i] == '>' && cmd[i + 1] == '>')
 	{
-		lstadd_back(head, addnew_tkn_node(REDIRECT_APPEND, ">>"));
+		lstadd_back(head, addnew_tkn_node(REDIRECT_APPEND, ">>", -2));
 		return (0);
 	}
 	else if (cmd[i] == '<' && cmd[i + 1] == '<')
 	{
-		lstadd_back(head, addnew_tkn_node(HEREDOC, "<<"));
+		lstadd_back(head, addnew_tkn_node(HEREDOC, "<<", -2));
 		return (0);
 	}
 	else if (cmd[i] == '>')
 	{
-		lstadd_back(head, addnew_tkn_node(REDIRECT_OUT, ">"));
+		lstadd_back(head, addnew_tkn_node(REDIRECT_OUT, ">", -2));
 		return (0);
 	}
 	else if (cmd[i] == '<')
 	{
-		lstadd_back(head, addnew_tkn_node(REDIRECT_IN, "<"));
+		lstadd_back(head, addnew_tkn_node(REDIRECT_IN, "<", -2));
 		return (0);
 	}
 	return (-1);
@@ -123,17 +123,17 @@ int ft_dollar(token_node **head, const char *cmd, int *i)
 {
 	if (cmd[(*i)] == '$' && cmd[(*i) + 1] == '?')
 	{
-		lstadd_back(head, addnew_tkn_node(EXIT_STATUS, "$?"));
+		lstadd_back(head, addnew_tkn_node(EXIT_STATUS, "$?", -2));
 		return (0);
 	}
 	else if (cmd[(*i)] == '$' && cmd[(*i) + 1] == '$')
 	{
-		lstadd_back(head, addnew_tkn_node(DOUBLE_DLR, "$$"));
+		lstadd_back(head, addnew_tkn_node(DOUBLE_DLR, "$$", -2));
 		return (0);
 	}
 	else if ((cmd[(*i)] == '$' && cmd[(*i) + 1] == '\"') || (cmd[(*i)] == '$' && cmd[(*i) + 1] == '\''))
 	{
-		lstadd_back(head, addnew_tkn_node(STRING, ""));
+		lstadd_back(head, addnew_tkn_node(STRING, "", -2));
 		(*i)++;
 		return (0);
 	}
@@ -148,7 +148,7 @@ int ft_spaces(token_node **head, const char *cmd, int *i)
 {
 	if (cmd[(*i)] && (cmd[(*i)] == ' ' || (cmd[(*i)] >= 9 && cmd[(*i)] <= 13)))
 	{
-		lstadd_back(head, addnew_tkn_node(SPC, " "));
+		lstadd_back(head, addnew_tkn_node(SPC, " ", -2));
 		while (cmd[(*i)] && (cmd[(*i)] == ' ' || (cmd[(*i)] >= 9 && cmd[(*i)] <= 13)))
 			(*i)++;
 		(*i)--;
@@ -182,11 +182,15 @@ token_node *tokenization(const char *cmd, token_node **head)
 	while ((size_t)i < len)
 	{
 		if (cmd[i] == '|')
-			lstadd_back(head, addnew_tkn_node(PIPE, "|"));
-		else if (!ft_dollar(head, cmd, &i));
-		else if (!ft_spaces(head, cmd, &i));
-		else if (!ft_single_double(head, cmd, i));
-		else if (!ft_redirection(head, cmd, i));
+			lstadd_back(head, addnew_tkn_node(PIPE, "|", -2));
+		else if (!ft_dollar(head, cmd, &i))
+			;
+		else if (!ft_spaces(head, cmd, &i))
+			;
+		else if (!ft_single_double(head, cmd, i))
+			;
+		else if (!ft_redirection(head, cmd, i))
+			;
 		else
 			handle_string(i, cmd, head);
 		i += ft_strlen(ft_lstlast(*head)->value);

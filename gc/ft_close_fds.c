@@ -43,7 +43,7 @@ void add_back_fd(t_fd **head, t_fd *new)
 void ft_close_fds(int fd, int status)
 {
     static t_fd *head = NULL;
-    if(status == OPEN)
+    if (status == OPEN)
         add_back_fd(&head, add_new_fd(fd));
     if (status == CLOSE)
     {

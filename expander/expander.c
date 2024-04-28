@@ -111,7 +111,7 @@ void expand_var_and_split(token_node **new_head, token_node *head, t_expand *env
 	int i;
 	if ((head->value[0] == '\t' || head->value[0] == ' '))
 	{
-		token_node *new = addnew_tkn_node(SPC, ft_strdup(" "));
+		token_node *new = addnew_tkn_node(SPC, ft_strdup(" "), -2);
 		lstadd_back(new_head, new);
 	}
 	output = ft_split_last_cmd(head->value);
@@ -120,19 +120,19 @@ void expand_var_and_split(token_node **new_head, token_node *head, t_expand *env
 	while (output[i])
 	{
 
-		token_node *new = addnew_tkn_node(VAR, output[i]);
+		token_node *new = addnew_tkn_node(VAR, output[i], -2);
 		lstadd_back(new_head, new);
 		if (!tmp)
 			tmp = new;
 		if (output[i + 1])
-			lstadd_back(new_head, addnew_tkn_node(SPC, " "));
+			lstadd_back(new_head, addnew_tkn_node(SPC, " ", -2));
 		i++;
 	}
 	if (i > 1)
 		tmp->flage = true;
 	if (!output[i])
 	{
-		token_node *new = addnew_tkn_node(VAR, ft_strdup(""));
+		token_node *new = addnew_tkn_node(VAR, ft_strdup(""),head->fd_hrd);
 		new->flage = true;
 		lstadd_back(new_head, new);
 	}
@@ -191,7 +191,7 @@ token_node *expand_and_print_vars(token_node *head, t_expand *env, int exit_stat
 		}
 		if (head && head->type != VAR)
 		{
-			lstadd_back(&new_head, addnew_tkn_node(head->type, head->value));
+			lstadd_back(&new_head, addnew_tkn_node(head->type, head->value, head->fd_hrd));
 			head = head->next;
 		}
 	}

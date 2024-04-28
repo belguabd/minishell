@@ -46,6 +46,7 @@ void init_fds(t_cmd **cmds)
 	old_fd_in = -2;
 	old_fd_out = -2;
 
+	// displayLinkedList(tmp);
 	if (tmp)
 	{
 		while (tmp)
@@ -94,7 +95,7 @@ void init_fds(t_cmd **cmds)
 
 					head->infile = open(tmp->value, O_RDWR, 0777);
 					if (head->infile > 2)
-						ft_close_fds(head->outfile, OPEN);
+						ft_close_fds(head->infile, OPEN);
 					if (head->infile < 0)
 					{
 						perror(tmp->value);
@@ -104,9 +105,9 @@ void init_fds(t_cmd **cmds)
 			}
 			else if (tmp->type == HEREDOC)
 			{
-				head->infile = open(tmp->value, O_RDWR, 0777);
+				head->infile = tmp->fd_hrd;
 				if (head->infile > 2)
-					ft_close_fds(head->outfile, OPEN);
+					ft_close_fds(head->infile, OPEN);
 				if (head->infile < 0)
 				{
 					return;
@@ -140,7 +141,7 @@ void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status)
 		return;
 	while (cmd)
 	{
-		init_fds(&cmd);
+		// init_fds(&cmd);
 		if (!cmd->islast)
 			pipe(fd);
 		pid[i] = fork();

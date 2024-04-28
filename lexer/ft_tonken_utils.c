@@ -28,7 +28,7 @@ bool is_string(char c)
 {
 	return (c == '\"' || c == '\'' || c == '|' || c == '>' || c == '$' || c == '<' || is_spaces(c));
 }
-token_node *addnew_tkn_node(int token, char *value)
+token_node *addnew_tkn_node(int token, char *value ,int fd)
 {
 	token_node *new;
 	new = (token_node *)ft_malloc(sizeof(token_node), ALLOC);
@@ -37,6 +37,7 @@ token_node *addnew_tkn_node(int token, char *value)
 	new->type = token;
 	new->flage = false;
 	new->value = ft_strdup(value);
+	new->fd_hrd = fd;
 	new->next = NULL;
 	return (new);
 }

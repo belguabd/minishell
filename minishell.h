@@ -41,6 +41,7 @@ typedef struct token_node
 	int type;
 	char *value;
 	bool flage;
+	int fd_hrd;
 	struct token_node *next;
 } token_node;
 
@@ -89,7 +90,7 @@ typedef struct s_expand
 /*ft_split*/
 char **ft_split(char const *str, char c);
 size_t ft_strlen(const char *s);
-
+void displayLinkedList(token_node *head);
 char *ft_strdup(const char *s1);
 // char *ft_strdup(const char *cmd, int start, int end);
 /*libft*/
@@ -104,7 +105,7 @@ char *ft_itoa(int n);
 /*functions for tokenization */
 token_node *ft_lstlast(token_node *lst);
 token_node *tokenization(const char *cmd, token_node **head);
-token_node *addnew_tkn_node(int token, char *value);
+token_node *addnew_tkn_node(int token, char *value ,int fd);
 void lstadd_back(token_node **lst, token_node *new);
 bool is_var(char c);
 bool is_string(char c);
@@ -117,17 +118,15 @@ char *get_str_env(t_expand *env, char *str_var);
 /*garbage collector*/
 void *ft_malloc(size_t size, int status);
 void *ft_malloc_env(size_t size, int status);
-char	*ft_substr_env(char const *s, unsigned int start, size_t len);
+char *ft_substr_env(char const *s, unsigned int start, size_t len);
 char *ft_strdup_env(const char *s1);
 t_expand *addnew_expand_node_env(char *key, char *value);
 void lstadd_back_expand_env(t_expand **lst, t_expand *new_node);
 void *ft_malloc_env(size_t size, int status);
-char	*ft_strjoin_env(char const *s1, char const *s2);
+char *ft_strjoin_env(char const *s1, char const *s2);
 void init_env(t_expand **head, char *env[]);
 /*garbage collector for fds */
-void ft_close_fds(int fd , int status);
-
-
+void ft_close_fds(int fd, int status);
 
 // execution
 void ft_execution(t_cmd *cmd, t_expand **envp, int *exit_status);
@@ -136,27 +135,27 @@ int exe_bultin_in_parent(char *cmd[], t_expand *env, int *exit_status);
 int exe_one_cmd_only(t_cmd *cmd, t_expand *env, int *exit_status);
 char **get_envp(t_expand *lst_envp);
 void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp, int *exit_status);
-char	**get_envp(t_expand *lst_envp);
-char	**ft_split_last_cmd(char *cmd);
-void	ft_putstr_fd(char *s, int fd);
-//signals
-void    handler(int sig);
+char **get_envp(t_expand *lst_envp);
+char **ft_split_last_cmd(char *cmd);
+void ft_putstr_fd(char *s, int fd);
+// signals
+void handler(int sig);
 
-//pipe & fds
-void	set_cmd_false_true(t_cmd **cmds);
-void    set_fds(t_cmd **cmds);
-void    init_fds(t_cmd **cmds);
+// pipe & fds
+void set_cmd_false_true(t_cmd **cmds);
+void set_fds(t_cmd **cmds);
+void init_fds(t_cmd **cmds);
 void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status);
 
 // builtin
-void 	ft_pwd(t_expand *env);
-int	ft_cd(char *path, t_expand *env);
-void 	ft_echo(char **cmd);
-void 	ft_env(char **cmd, t_expand *envp);
-int	ft_unset(char **cmd, t_expand **envp);
-int 	ft_export(char **cmd, t_expand **envp);
-int		is_builtin(t_cmd *cmd);
-void	get_env_export(t_expand *envp);
+void ft_pwd(t_expand *env);
+int ft_cd(char *path, t_expand *env);
+void ft_echo(char **cmd);
+void ft_env(char **cmd, t_expand *envp);
+int ft_unset(char **cmd, t_expand **envp);
+int ft_export(char **cmd, t_expand **envp);
+int is_builtin(t_cmd *cmd);
+void get_env_export(t_expand *envp);
 void ft_exit(char **cmd);
 // tools
 
