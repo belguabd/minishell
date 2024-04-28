@@ -73,7 +73,7 @@ char	**ft_split(char const *str, char c)
 
 	if (!str)
 		return (NULL);
-	var.res = (char **)ft_malloc((count_words(str, c) + 1) * sizeof(char *) ,ALLOC);
+	var.res = (char **)ft_malloc_env((count_words(str, c) + 1) * sizeof(char *) ,ALLOC);
 	if (!var.res)
 		return (NULL);
 	var.i = -1;

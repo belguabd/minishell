@@ -23,14 +23,14 @@ char **get_envp(t_expand *lst_envp)
 	size = ft_lst_size(lst_envp);
 	if (size == 0)
 		return (NULL);
-	envp = (char **)ft_malloc((size + 1) * sizeof(char *), ALLOC);
+	envp = (char **)ft_malloc_env((size + 1) * sizeof(char *), ALLOC);
 	if (!envp)
 		return (perror("malloc"), NULL);
 	while (head)
 	{
 		// TO_DO:ft_strjoin fail case
-		envp[i] = ft_strjoin(head->key, "=");
-		envp[i] = ft_strjoin(envp[i], head->value);
+		envp[i] = ft_strjoin_env(head->key, "=");
+		envp[i] = ft_strjoin_env(envp[i], head->value);
 		i++;
 		head = head->next;
 	}
@@ -122,8 +122,8 @@ char *check_path(char **path, char *cmd)
 	}
 	while (path[i])
 	{
-		cmd_path = ft_strjoin("/", cmd);
-		cmd_path = ft_strjoin(path[i], cmd_path);
+		cmd_path = ft_strjoin_env("/", cmd);
+		cmd_path = ft_strjoin_env(path[i], cmd_path);
 		if (access(cmd_path, X_OK) == 0)
 			return (cmd_path);
 		i++;
@@ -152,7 +152,7 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp, int *exit_sta
 	char *new_cmd;
 	// signal(SIGINT, SIG_DFL);
 	// signal(SIGQUIT, SIG_DFL);
-	if (!cmd || !*cmd  || cmd[0][0] == '\0')
+	if (!cmd || !*cmd)
 		exit (0);
 	ft_execute_bultin(cmd, &envp, exit_status);
 	while (envp)

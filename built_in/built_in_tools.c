@@ -12,9 +12,9 @@
 
 #include "../minishell.h"
 
-t_expand	*ft_lst_last(t_expand *lst)
+t_expand *ft_lst_last(t_expand *lst)
 {
-	t_expand	*last;
+	t_expand *last;
 
 	if (lst == NULL)
 		return (NULL);
@@ -26,9 +26,9 @@ t_expand	*ft_lst_last(t_expand *lst)
 	return (last);
 }
 
-void	ft_lst_add_back(t_expand **lst, t_expand *new_node)
+void ft_lst_add_back(t_expand **lst, t_expand *new_node)
 {
-	t_expand	*last;
+	t_expand *last;
 
 	last = ft_lst_last(*lst);
 	if (!last)
@@ -37,11 +37,11 @@ void	ft_lst_add_back(t_expand **lst, t_expand *new_node)
 		last->next = new_node;
 }
 
-t_expand	*ft_lst_new(char *key, char *val)
+t_expand *ft_lst_new(char *key, char *val)
 {
 	t_expand *new;
 
-	new = (t_expand*)ft_malloc(sizeof(t_expand),ALLOC);
+	new = (t_expand *)ft_malloc(sizeof(t_expand), ALLOC);
 	if (!new)
 		return (NULL);
 	new->key = key;
@@ -50,13 +50,13 @@ t_expand	*ft_lst_new(char *key, char *val)
 	return (new);
 }
 
-void	ft_free_node(t_expand *node)
+void ft_free_node(t_expand *node)
 {
-
-	free(node->key);
+	(void)node;
+	// free(node->key);
 	// node->key = NULL;
-	free(node->value);
+	// free(node->value);
 	// node->value = NULL;
-	free(node);
+	// free(node);
 	// node = NULL;
 }

@@ -19,7 +19,9 @@ void ft_free_all(t_free *head)
 	{
 		t_free *next = current->next;
 		free(current->add);
+		current->add = NULL;
 		free(current);
+
 		current = next;
 	}
 	head = NULL;
@@ -56,7 +58,7 @@ void *ft_malloc(size_t size, int status)
 		void *rt = malloc(size);
 		if (!rt)
 			exit(0);
-		tmp = addnew_free(rt);
+		tmp = addnew_free(rt );
 		if (!tmp)
 		{
 			ft_free_all(head);

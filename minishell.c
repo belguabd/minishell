@@ -45,32 +45,31 @@ int ft_strcmp(char *str1, char *str2)
 		i++;
 	return (str1[i] - str2[i]);
 }
+// t_expand *addnew_expand_node(char *key, char *value)
+// {
+// 	t_expand *new_node = (t_expand *)ft_malloc(sizeof(t_expand), ALLOC);
+// 	if (!new_node)
+// 		return NULL;
 
-t_expand *addnew_expand_node(char *key, char *value)
-{
-	t_expand *new_node = (t_expand *)ft_malloc(sizeof(t_expand), ALLOC);
-	if (!new_node)
-		return NULL;
+// 	new_node->key = ft_strdup(key);
+// 	new_node->value = ft_strdup(value);
+// 	new_node->next = NULL;
+// 	return new_node;
+// }
 
-	new_node->key = ft_strdup(key);
-	new_node->value = ft_strdup(value);
-	new_node->next = NULL;
-	return new_node;
-}
+// void lstadd_back_expand(t_expand **lst, t_expand *new_node)
+// {
+// 	if (!*lst)
+// 	{
+// 		*lst = new_node;
+// 		return;
+// 	}
+// 	t_expand *last = *lst;
+// 	while (last->next)
+// 		last = last->next;
 
-void lstadd_back_expand(t_expand **lst, t_expand *new_node)
-{
-	if (!*lst)
-	{
-		*lst = new_node;
-		return;
-	}
-	t_expand *last = *lst;
-	while (last->next)
-		last = last->next;
-
-	last->next = new_node;
-}
+// 	last->next = new_node;
+// }
 void display_expand_list(t_expand *head)
 {
 	t_expand *current = head;
@@ -82,27 +81,7 @@ void display_expand_list(t_expand *head)
 	}
 }
 
-void init_env(t_expand **head, char *env[])
-{
-	int i;
 
-	char *cmd[] = {"unset", "OLDPWD", NULL};
-
-	i = 0;
-	while (env[i])
-	{
-		int j = 0;
-		while (env[i][j] && env[i][j] != '=')
-			j++;
-		char *key = ft_substr(env[i], 0, j);
-		char *value = ft_substr(env[i], j + 1, ft_strlen(env[i]) - j - 1);
-		lstadd_back_expand(head, addnew_expand_node(key, value));
-		i++;
-	}
-	ft_unset(cmd, head);
-	char *cmd2[] = {"export", "OLDPWD", NULL};
-	ft_export(cmd2, head);
-}
 int get_var_len(const char *str, int i)
 {
 	int len = 0;
@@ -117,14 +96,13 @@ int get_var_len(const char *str, int i)
 }
 char *get_str_env(t_expand *env, char *str_var)
 {
-
-	while (env)
+	while (env && str_var)
 	{
 		if (!ft_strcmp(env->key, str_var))
 			return (env->value);
 		env = env->next;
 	}
-	return (ft_strdup(""));
+	return (NULL);
 }
 
 void remove_single_q(token_node *head)
@@ -217,7 +195,6 @@ char *append_cmd_to_buffer(char *cmd, char *buffer)
 		cmd = ft_strdup("");
 	buffer = ft_strjoin(buffer, cmd);
 	buffer = ft_strjoin(buffer, ft_strdup("\n"));
-	free(cmd);
 	return (buffer);
 }
 char *ft_readline(int flag, char *dlmtr, t_expand *env)
@@ -233,6 +210,7 @@ char *ft_readline(int flag, char *dlmtr, t_expand *env)
 		cmd = readline("> ");
 		if (!ttyname(0))
 		{
+			free(cmd);
 			open(ttyname(2), O_RDWR);
 			return (ft_strdup("NULL"));
 		}
@@ -249,8 +227,10 @@ char *ft_readline(int flag, char *dlmtr, t_expand *env)
 		if (flag != 1337)
 			cmd = expand_heardoc(cmd, env);
 		buffer = append_cmd_to_buffer(cmd, buffer);
+		dlm = cmd;
 	}
-	return (free(dlm), write_to_file(buffer));
+	free(dlm);
+	return (write_to_file(buffer));
 }
 char *readline_hdc(char *dlmtr, t_expand *env, int flag)
 {
@@ -493,7 +473,7 @@ int main(int ac, char const *av[], char *env[])
 	while (1 && isatty(STDIN_FILENO))
 	{
 		head = NULL;
-		cmd = readline("➜  minishell ");
+		cmd = readline("➜ minishell ");
 		if (!cmd)
 		{
 			write(1, "exit\n", 5);
@@ -506,6 +486,7 @@ int main(int ac, char const *av[], char *env[])
 		{
 			exit_status = 258;
 			free((void *)cmd);
+			// ft_malloc(FREE, FREE);
 			continue;
 		}
 		remove_single_q(head);
@@ -538,18 +519,19 @@ int main(int ac, char const *av[], char *env[])
 		// 	printf("\n");
 		// }
 		free((void *)cmd);
-		// while (cmd_list)
-		// {
-		// 	while (cmd_list->redir)
-		// 	{
-		// 		if (cmd_list->redir->type == HEREDOC)
-		// 			unlink(cmd_list->redir->value);
-		// 		cmd_list->redir = cmd_list->redir->next;
-		// 	}
-		// 	cmd_list = cmd_list->next;
-		// }
-		// unlink(".heardoc");
-		// ft_malloc(FREE, FREE);
+		while (cmd_list)
+		{
+			while (cmd_list->redir)
+			{
+				if (cmd_list->redir->type == HEREDOC)
+					unlink(cmd_list->redir->value);
+				cmd_list->redir = cmd_list->redir->next;
+			}
+			cmd_list = cmd_list->next;
+		}
+		ft_malloc(FREE, FREE);
+		ft_close_fds(FREE, CLOSE);
 	}
+
 	return 0;
 }

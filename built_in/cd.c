@@ -17,9 +17,9 @@ t_expand *get_oldpwd(t_expand *env)
 	t_expand *oldpwd;
 
 	oldpwd = env;
-	while(oldpwd)
+	while (oldpwd)
 	{
-		if((ft_strcmp(oldpwd->key, "OLDPWD") == 0))
+		if ((ft_strcmp(oldpwd->key, "OLDPWD") == 0))
 			return (oldpwd);
 		oldpwd = oldpwd->next;
 	}
@@ -31,9 +31,9 @@ t_expand *get_pwd(t_expand *env)
 	t_expand *pwd;
 
 	pwd = env;
-	while(pwd)
+	while (pwd)
 	{
-		if((ft_strcmp(pwd->key, "PWD") == 0))
+		if ((ft_strcmp(pwd->key, "PWD") == 0))
 			return (pwd);
 		pwd = pwd->next;
 	}
@@ -45,39 +45,39 @@ char *get_home(t_expand *env)
 	t_expand *pwd;
 
 	pwd = env;
-	while(pwd)
+	while (pwd)
 	{
-		if((ft_strcmp(pwd->key, "HOME") == 0))
+		if ((ft_strcmp(pwd->key, "HOME") == 0))
 			return (pwd->value);
 		pwd = pwd->next;
 	}
 	return (NULL);
 }
 
-int	ft_cd(char *path, t_expand *env)
+int ft_cd(char *path, t_expand *env)
 {
-	t_expand 	*oldpwd;
-	t_expand 	*new_pwd;
-	char	op[PATH_MAX];
-	char	np[PATH_MAX];
-	char 	*home;
+	t_expand *oldpwd;
+	t_expand *new_pwd;
+	char op[PATH_MAX];
+	char np[PATH_MAX];
+	char *home;
 
 	getcwd(op, PATH_MAX);
-	if(!path || ft_strcmp(path, "~") == 0)
+	if (!path || ft_strcmp(path, "~") == 0)
 	{
 		home = get_home(env);
-		if(home)
-			path = ft_strdup(home);
+		if (home)
+			path = ft_strdup_env(home);
 		else
 		{
 			printf("cd: HOME not set\n");
-			return(1);
+			return (1);
 		}
 	}
 	if (ft_strcmp(path, "-") == 0)
 	{
 		oldpwd = get_oldpwd(env);
-		if(!oldpwd || !*oldpwd->value)
+		if (!oldpwd || !*oldpwd->value)
 		{
 			printf("cd: OLDPWD not set\n");
 			return (1);
@@ -93,24 +93,31 @@ int	ft_cd(char *path, t_expand *env)
 		perror("cd");
 		return (1);
 	}
-	if(!getcwd(np, PATH_MAX))
+	if (!getcwd(np, PATH_MAX))
 	{
 		ft_putendl_fd("cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory", 2);
 		return (0);
 	}
 	oldpwd = get_oldpwd(env);
-	if(oldpwd)
+	if (oldpwd)
 	{
-		if(oldpwd->value)
+		if (oldpwd->value)
+		{
+
 			free(oldpwd->value);
-		oldpwd->value = ft_strdup(op);
+			oldpwd->value = NULL;
+		}
+		oldpwd->value = ft_strdup_env(op);
 	}
 	new_pwd = get_pwd(env);
-	if(new_pwd)
+	if (new_pwd)
 	{
-		if(new_pwd->value)
+		if (new_pwd->value)
+		{
 			free(new_pwd->value);
-		new_pwd->value = ft_strdup(np);
+			new_pwd->value = NULL;
+		}
+		new_pwd->value = ft_strdup_env(np);
 	}
 	return (0);
 }

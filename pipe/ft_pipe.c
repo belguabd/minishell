@@ -25,7 +25,7 @@ int *allocat_pids(t_cmd *cmd)
 		tmp = tmp->next;
 		i++;
 	}
-	pids = (int *)ft_malloc(i * sizeof(int), ALLOC);
+	pids = (int *)ft_malloc_env(i * sizeof(int), ALLOC);
 	if (!pids)
 	{
 		perror("faild to allocat memory for pids");
@@ -60,6 +60,8 @@ void init_fds(t_cmd **cmds)
 				else
 				{
 					head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_TRUNC, 0777);
+					if (head->outfile > 2)
+						ft_close_fds(head->outfile, OPEN);
 					if (head->outfile < 0)
 						perror("fd_out");
 				}
@@ -74,6 +76,8 @@ void init_fds(t_cmd **cmds)
 				else
 				{
 					head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_APPEND, 0777);
+					if (head->outfile > 2)
+						ft_close_fds(head->outfile, OPEN);
 					if (head->outfile < 0)
 						perror("fd_app");
 				}
@@ -89,6 +93,8 @@ void init_fds(t_cmd **cmds)
 				{
 
 					head->infile = open(tmp->value, O_RDWR, 0777);
+					if (head->infile > 2)
+						ft_close_fds(head->outfile, OPEN);
 					if (head->infile < 0)
 					{
 						perror(tmp->value);
@@ -99,6 +105,8 @@ void init_fds(t_cmd **cmds)
 			else if (tmp->type == HEREDOC)
 			{
 				head->infile = open(tmp->value, O_RDWR, 0777);
+				if (head->infile > 2)
+					ft_close_fds(head->outfile, OPEN);
 				if (head->infile < 0)
 				{
 					return;
@@ -189,7 +197,7 @@ void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status)
 		*exit_status = WEXITSTATUS(*exit_status);
 	else if (WIFSIGNALED(*exit_status))
 		*exit_status = WTERMSIG(*exit_status) + 128;
-	free(pid);
+	// free(pid);
 	close(fd[0]);
 	close(fd[1]);
 }

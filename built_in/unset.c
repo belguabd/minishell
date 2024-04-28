@@ -51,8 +51,11 @@ void	ft_del_node(t_expand **lst, char *key)
 			tmp = head;
 			head = head->next;
 			free(tmp->key);
+			tmp->key = NULL;	
 			free(tmp->value);
+			tmp->value = NULL;
 			free(tmp);
+			tmp = NULL;
 			return ;
 		}
 		prev = head;

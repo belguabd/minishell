@@ -44,16 +44,16 @@ int	ft_join_value(t_expand *node, t_expand **envp)
 		if(ft_strcmp(node->key, head->key) == 0)
 		{
 			if(head->value && *head->value && ft_strcmp(head->value, "\"\""))
-				head->value = ft_strjoin(head->value, &node->value[2]);
+				head->value = ft_strjoin_env(head->value, &node->value[2]);
 			else if(!head->value[1] || (ft_strcmp(head->value, "\"\"") == 0))
-				head->value = ft_strdup(&node->value[2]);
-			ft_free_node(node);
+				head->value = ft_strdup_env(&node->value[2]);
+			// ft_free_node(node);
 			return (1);
 		}
 		head = head->next;
 	}
-	node->value = ft_substr(node->value, 2, ft_strlen(node->value) - 1);
-	ft_lst_add_back(envp, node);
+	node->value = ft_substr_env(node->value, 2, ft_strlen(node->value) - 1);
+	lstadd_back_expand_env(envp, node);
 	return (1);
 }
 
@@ -72,19 +72,19 @@ void ft_export_exicted(t_expand *node, t_expand **envp)
 		if (ft_strcmp(node->key, head->key) == 0)
 		{
 			if(ft_strcmp(node->value, "\"\"") == 0)
-				head->value = ft_strdup("\"\"");
+				head->value = ft_strdup_env("\"\"");
 			else if (node->value && node->value[1])
-				head->value = ft_strdup(&node->value[1]);
-			ft_free_node(node);
+				head->value = ft_strdup_env(&node->value[1]);
+			// ft_free_node(node);
 			return;
 		}
 		head = head->next;
 	}
 	if(ft_strcmp(node->value, "\"\"") == 0)
-		node->value = ft_strdup("");
+		node->value = ft_strdup_env("");
 	else
-		node->value = ft_substr(node->value, 1, ft_strlen(node->value));
-	ft_lst_add_back(envp, node);
+		node->value = ft_substr_env(node->value, 1, ft_strlen(node->value));
+	lstadd_back_expand_env(envp, node);
 }
 
 int ft_export(char **cmd, t_expand **envp)
@@ -112,7 +112,7 @@ int ft_export(char **cmd, t_expand **envp)
 				break;
 			i++;
 		}
-		key = ft_substr(cmd[j], 0, i);
+		key = ft_substr_env(cmd[j], 0, i);
 		if (pars_key(key))
 		{
 			return (1);
@@ -120,13 +120,13 @@ int ft_export(char **cmd, t_expand **envp)
 		if (cmd[j][i])
 		{
 			if (cmd[j][i] == '=' && !cmd[j][i + 1])
-				value = ft_strdup("\"\"");
+				value = ft_strdup_env("\"\"");
 			else
-				value = ft_strdup(&cmd[j][i]);
+				value = ft_strdup_env(&cmd[j][i]);
 		}
 		else
-			value = ft_strdup("");
-		new = ft_lst_new(key, value);
+			value = ft_strdup_env("");
+		new = addnew_expand_node_env(key, value);
 		if (!new)
 			return (1);
 		ft_export_exicted(new, envp);

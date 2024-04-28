@@ -26,7 +26,9 @@
 enum
 {
 	FREE,
-	ALLOC
+	ALLOC,
+	CLOSE,
+	OPEN,
 };
 typedef struct ft_free
 {
@@ -114,6 +116,18 @@ token_node *expand_and_print_vars(token_node *head, t_expand *env, int exit_stat
 char *get_str_env(t_expand *env, char *str_var);
 /*garbage collector*/
 void *ft_malloc(size_t size, int status);
+void *ft_malloc_env(size_t size, int status);
+char	*ft_substr_env(char const *s, unsigned int start, size_t len);
+char *ft_strdup_env(const char *s1);
+t_expand *addnew_expand_node_env(char *key, char *value);
+void lstadd_back_expand_env(t_expand **lst, t_expand *new_node);
+void *ft_malloc_env(size_t size, int status);
+char	*ft_strjoin_env(char const *s1, char const *s2);
+void init_env(t_expand **head, char *env[]);
+/*garbage collector for fds */
+void ft_close_fds(int fd , int status);
+
+
 
 // execution
 void ft_execution(t_cmd *cmd, t_expand **envp, int *exit_status);

@@ -87,7 +87,6 @@ char *ft_str_exp(char *str_var, t_expand *env)
 }
 void ft_expand_var(token_node *head, t_expand *env)
 {
-
 	char *str;
 	int i;
 	size_t len;
@@ -106,9 +105,11 @@ void ft_expand_var(token_node *head, t_expand *env)
 void expand_var_and_split(token_node **new_head, token_node *head, t_expand *env)
 {
 	ft_expand_var(head, env);
+	if (!head->value)
+		return;
 	char **output;
 	int i;
-	if (head->value[0] == '\t' || head->value[0] == ' ')
+	if ((head->value[0] == '\t' || head->value[0] == ' '))
 	{
 		token_node *new = addnew_tkn_node(SPC, ft_strdup(" "));
 		lstadd_back(new_head, new);
