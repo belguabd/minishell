@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 01:34:47 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/29 08:43:44 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/29 14:46:57 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,10 @@ void	ft_echo(char **cmd)
 	while (cmd[i])
 	{
 		if (cmd[i])
+		{
+			write(1, " ", 1);
 			ft_putstr_fd(cmd[i++], 1);
+		}
 	}
 	if (n == 0)
 		write(1, "\n", 1);
