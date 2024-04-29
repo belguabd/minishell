@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 08:44:40 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/29 16:13:52 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/29 18:18:44 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ void	ft_del_node(t_expand **lst, char *key)
 	t_expand 	*head;
 	t_expand	*prev;
 	
+	if(!lst || !*lst)
+		return ;
 	tmp = NULL;
 	prev = NULL;
 	head = *lst;

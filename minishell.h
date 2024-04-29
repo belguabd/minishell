@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/29 09:22:11 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/29 18:32:55 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,8 +137,8 @@ void ft_close_fds(int fd, int status);
 // execution
 void ft_execution(t_cmd *cmd, t_expand **envp, int *exit_status);
 void ft_execute_bultin(char *cmd[], t_expand **envp, int *exit_status);
-int exe_bultin_in_parent(char *cmd[], t_expand *env, int *exit_status);
-int exe_one_cmd_only(t_cmd *cmd, t_expand *env, int *exit_status);
+int exe_bultin_in_parent(char *cmd[], t_expand **env, int *exit_status);
+int exe_one_cmd_only(t_cmd *cmd, t_expand **env, int *exit_status);
 char **get_envp(t_expand *lst_envp);
 void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp, int *exit_status);
 char **get_envp(t_expand *lst_envp);
@@ -151,7 +151,7 @@ void handler(int sig);
 void set_cmd_false_true(t_cmd **cmds);
 void set_fds(t_cmd **cmds);
 void init_fds(t_cmd **cmds);
-void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status);
+void pipe_line(t_cmd *cmd, t_expand **env_lst, char *env[], int *exit_status);
 
 // builtin
 void ft_pwd(t_expand *env);
