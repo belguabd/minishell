@@ -45,8 +45,6 @@ void init_fds(t_cmd **cmds)
 	tmp = head->redir;
 	old_fd_in = -2;
 	old_fd_out = -2;
-
-	// displayLinkedList(tmp);
 	if (tmp)
 	{
 		while (tmp)
@@ -56,10 +54,11 @@ void init_fds(t_cmd **cmds)
 				if (tmp->flage)
 				{
 					perror("bash: ambiguous redirect");
-					tmp->flage = false;
+					// tmp->flage = false;
 				}
 				else
 				{
+					puts("here");
 					head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_TRUNC, 0777);
 					if (head->outfile > 2)
 						ft_close_fds(head->outfile, OPEN);
@@ -72,7 +71,7 @@ void init_fds(t_cmd **cmds)
 				if (tmp->flage)
 				{
 					perror("bash: ambiguous redirect");
-					tmp->flage = false;
+					// tmp->flage = false;
 				}
 				else
 				{
@@ -88,7 +87,7 @@ void init_fds(t_cmd **cmds)
 				if (tmp->flage)
 				{
 					perror("bash: ambiguous redirect");
-					tmp->flage = false;
+					// tmp->flage = false;
 				}
 				else
 				{
@@ -125,9 +124,8 @@ void init_fds(t_cmd **cmds)
 
 void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status)
 {
-	struct termios term;
-	
-	tcgetattr(STDIN_FILENO, &term);
+	// struct termios term;
+	// tcgetattr(STDIN_FILENO, &term);
 	if (!cmd)
 		return;
 	int fd[2];
@@ -197,11 +195,11 @@ void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status)
 	}
 	while (j < i)
 		waitpid(pid[j++], exit_status, 0);
-	if (WIFSIGNALED(*exit_status) && WTERMSIG(*exit_status) == SIGQUIT)
-	{
-		tcsetattr(STDIN_FILENO, TCSANOW, &term);
-		write(1, "\n", 1);
-	}
+	// if (WIFSIGNALED(*exit_status) && WTERMSIG(*exit_status) == SIGQUIT)
+	// {
+	// 	tcsetattr(STDIN_FILENO, TCSANOW, &term);
+	// 	write(1, "\n", 1);
+	// }
 	if (WIFEXITED(*exit_status))
 		*exit_status = WEXITSTATUS(*exit_status);
 	else if (WIFSIGNALED(*exit_status))

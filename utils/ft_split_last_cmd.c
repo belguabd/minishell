@@ -58,6 +58,8 @@ char **ft_split_last_cmd(char *cmd)
 	int j = 0;
 	int k = 0;
 	int wc = 0;
+	if(!cmd)
+		return (NULL);
 	wc = count_words(cmd);
 	char **tab = (char **)ft_malloc(sizeof(char *) * (wc + 1),ALLOC);
 	i = 0;

@@ -330,7 +330,7 @@ void parse_redirection_token(token_node **head, token_node **new_node)
 		tmp = (*head)->next;
 	}
 	(*head) = tmp;
-	value = ft_strdup((*head)->value);
+	value = (*head)->value;
 	token_node *new = addnew_tkn_node(type, value, fd_hrd);
 	if ((*head)->flage)
 		new->flage = true;
@@ -399,7 +399,8 @@ t_cmd *ft_split_cmd(token_node *new_head)
 	while (new_head)
 	{
 		if (new_head->type == STRING)
-			args[i++] = ft_strdup(new_head->value);
+			args[i++] = new_head->value; // args[i++] = ft_strdup(new_head->value);
+
 		if (is_redirection(new_head->type))
 		{
 			token_node *new = addnew_tkn_node(new_head->type, new_head->value, new_head->fd_hrd);
@@ -453,8 +454,10 @@ int main(int ac, char const *av[], char *env[])
 	signal(SIGINT, handler);
 	signal(SIGQUIT, handler);
 	rl_catch_signals = 0;
-	while (1 && isatty(STDIN_FILENO))
-	{     
+	// while (1 && isatty(STDIN_FILENO))
+	while (1)
+	{
+		// puts("======");
 		head = NULL;
 		cmd = readline("➜ minishell ");
 		if (!cmd)
@@ -480,9 +483,9 @@ int main(int ac, char const *av[], char *env[])
 		head = ft_concatenate(head);
 		head = ft_remove_redirect(head);
 		cmd_list = ft_passing(head);
-		// g_var; g_var = 1;
+		// // g_var; g_var = 1;
 		ft_execution(cmd_list, &env_expand, &exit_status);
-
+		// displayLinkedList(head);
 		// (void)cmd_list;
 		// while (cmd_list)
 		// {
@@ -506,9 +509,8 @@ int main(int ac, char const *av[], char *env[])
 		// free((void *)cmd);
 		// ft_malloc(FREE, FREE);
 		// ft_close_fds(FREE, CLOSE);
-		//g_var = 0
+		// g_var = 0
 	}
 
-	
 	return 0;
 }
