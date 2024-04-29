@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 08:44:40 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/24 23:40:00 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/29 16:13:52 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,9 @@ int pars_key_env(char *cmd)
 		i++;
 	if (cmd[i])
 	{
-		printf("bash: unset: `%s': not a valid identifier\n", cmd);
+		ft_putstr_fd("unset: `", 2);
+		ft_putstr_fd(cmd, 2);
+		ft_putendl_fd("': not a valid identifier", 2);
 		return (1);
 	}
 	return (0);
