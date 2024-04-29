@@ -125,6 +125,9 @@ void init_fds(t_cmd **cmds)
 
 void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status)
 {
+	struct termios term;
+	
+	tcgetattr(STDIN_FILENO, &term);
 	if (!cmd)
 		return;
 	int fd[2];
@@ -141,7 +144,7 @@ void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status)
 		return;
 	while (cmd)
 	{
-		// init_fds(&cmd);
+		init_fds(&cmd);
 		if (!cmd->islast)
 			pipe(fd);
 		pid[i] = fork();
@@ -194,6 +197,11 @@ void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status)
 	}
 	while (j < i)
 		waitpid(pid[j++], exit_status, 0);
+	if (WIFSIGNALED(*exit_status) && WTERMSIG(*exit_status) == SIGQUIT)
+	{
+		tcsetattr(STDIN_FILENO, TCSANOW, &term);
+		write(1, "\n", 1);
+	}
 	if (WIFEXITED(*exit_status))
 		*exit_status = WEXITSTATUS(*exit_status);
 	else if (WIFSIGNALED(*exit_status))

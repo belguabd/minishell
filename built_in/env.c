@@ -56,6 +56,7 @@ void ft_sort_export(t_expand *head)
 		head = head->next;
 	}
 }
+
 void get_env_export(t_expand *envp)
 {
 	t_expand *head;

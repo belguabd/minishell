@@ -445,24 +445,16 @@ int main(int ac, char const *av[], char *env[])
 	t_cmd *cmd_list = NULL;
 	int exit_status;
 	(void)exit_status;
-
-	// tcgetattr()
-	// tcsetattr()
 	(void)env;
 	(void)cmd_list;
 	head = NULL;
 	t_expand *env_expand = NULL;
 	init_env(&env_expand, env);
-	// if (!env_expand->key[0])
-	// {
-	// 	puts("OK");
-	// 	exit(0);
-	// }
 	signal(SIGINT, handler);
 	signal(SIGQUIT, handler);
 	rl_catch_signals = 0;
 	while (1 && isatty(STDIN_FILENO))
-	{
+	{     
 		head = NULL;
 		cmd = readline("➜ minishell ");
 		if (!cmd)
@@ -477,7 +469,7 @@ int main(int ac, char const *av[], char *env[])
 		{
 			exit_status = 258;
 			free((void *)cmd);
-			// ft_malloc(FREE, FREE);
+			ft_malloc(FREE, FREE);
 			continue;
 		}
 		remove_single_q(head);
@@ -488,6 +480,7 @@ int main(int ac, char const *av[], char *env[])
 		head = ft_concatenate(head);
 		head = ft_remove_redirect(head);
 		cmd_list = ft_passing(head);
+		// g_var; g_var = 1;
 		ft_execution(cmd_list, &env_expand, &exit_status);
 
 		// (void)cmd_list;
@@ -510,20 +503,12 @@ int main(int ac, char const *av[], char *env[])
 		// 	cmd_list = cmd_list->next;
 		// 	printf("\n");
 		// }
-		free((void *)cmd);
-		while (cmd_list)
-		{
-			while (cmd_list->redir)
-			{
-				if (cmd_list->redir->type == HEREDOC)
-					unlink(cmd_list->redir->value);
-				cmd_list->redir = cmd_list->redir->next;
-			}
-			cmd_list = cmd_list->next;
-		}
-		ft_malloc(FREE, FREE);
-		ft_close_fds(FREE, CLOSE);
+		// free((void *)cmd);
+		// ft_malloc(FREE, FREE);
+		// ft_close_fds(FREE, CLOSE);
+		//g_var = 0
 	}
 
+	
 	return 0;
 }

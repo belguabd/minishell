@@ -32,3 +32,10 @@ hello world
 //
 ABC=hola
 "$HOMEdskjhfkdshfsd"
+
+
+// signal: check before redisplay when received a signal  in function (void    handler(int sig))
+// signal : when we are in line and the program received a signal ctr-c the exit status should be 1 not 0 
+
+minishell echo -n hhhhhhhhh > file
+hhhhhhhhh➜ minishell

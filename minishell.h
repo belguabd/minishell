@@ -21,6 +21,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <sys/param.h>
+#include <termios.h>
 #define COLOR_RESET "\x1b[0m"
 #define COLOR_GREEN "\x1b[32m"
 enum
