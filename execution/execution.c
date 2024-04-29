@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/27 00:54:59 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/29 09:25:48 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ void ft_execute_bultin(char *cmd[], t_expand **envp, int *exit_status)
 char *check_path(char **path, char *cmd)
 {
 	char *cmd_path;
+	DIR *mydir;
 	int i;
 
 	i = 0;
@@ -107,12 +108,18 @@ char *check_path(char **path, char *cmd)
 	{
 		if (access(cmd, X_OK) == 0 || access(cmd, F_OK) == 0)
 		{
-			if(access(cmd, X_OK) == -1)
+			if (access(cmd, X_OK) == -1)
 			{
 				ft_putstr_fd(cmd, 2);
 				ft_putendl_fd(": Permission denied", 2);
 				exit(126);
-				
+			}
+			if((mydir = opendir(cmd)) && mydir)
+			{
+				closedir(mydir);
+				ft_putstr_fd(cmd, 2);
+				ft_putendl_fd(": is a directory", 2);
+				exit(126);
 			}
 			return (cmd);
 		}

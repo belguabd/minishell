@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/27 02:09:58 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/29 09:22:11 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 #include <readline/history.h>
 #include <sys/param.h>
 #include <termios.h>
+#include <dirent.h>
+
 #define COLOR_RESET "\x1b[0m"
 #define COLOR_GREEN "\x1b[32m"
 enum
@@ -86,6 +88,9 @@ typedef struct s_expand
 {
 	char *key;
 	char *value;
+	bool isnull;
+    bool isequal;
+    bool ishiden;
 	struct s_expand *next;
 } t_expand;
 /*ft_split*/
