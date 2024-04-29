@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/26 22:58:50 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/29 19:12:19 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,12 +122,12 @@ void init_fds(t_cmd **cmds)
 	}
 }
 
-void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status)
+void pipe_line(t_cmd *cmd, t_expand **env_lst, char *env[], int *exit_status)
 {
 	// struct termios term;
 	// tcgetattr(STDIN_FILENO, &term);
 	if (!cmd)
-		return;
+		return ;
 	int fd[2];
 	int *pid;
 	int tmp_fd_in;
@@ -139,7 +139,7 @@ void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status)
 	pid = allocat_pids(cmd);
 	init_fds(&cmd);
 	if (exe_one_cmd_only(cmd, env_lst, exit_status))
-		return;
+		return ;
 	while (cmd)
 	{
 		init_fds(&cmd);
@@ -178,7 +178,7 @@ void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status)
 				close(fd[1]);
 				close(fd[0]);
 			}
-			ft_execute_node(cmd->args, env_lst, env, exit_status);
+			ft_execute_node(cmd->args, *env_lst, env, exit_status);
 			exit(127);
 		}
 		if (!cmd->isfirst)
@@ -204,12 +204,11 @@ void pipe_line(t_cmd *cmd, t_expand *env_lst, char *env[], int *exit_status)
 		*exit_status = WEXITSTATUS(*exit_status);
 	else if (WIFSIGNALED(*exit_status))
 		*exit_status = WTERMSIG(*exit_status) + 128;
-	// free(pid);
 	close(fd[0]);
 	close(fd[1]);
 }
 
-int exe_one_cmd_only(t_cmd *cmd, t_expand *env, int *exit_status)
+int exe_one_cmd_only(t_cmd *cmd, t_expand **env, int *exit_status)
 {
 	int save_in;
 	int save_out;
@@ -252,7 +251,7 @@ int is_builtin(t_cmd *cmd)
 	return (0);
 }
 
-int exe_bultin_in_parent(char *cmd[], t_expand *env, int *exit_status)
+int exe_bultin_in_parent(char *cmd[], t_expand **env, int *exit_status)
 {
 	*exit_status = 0;
 	if (ft_strcmp(cmd[0], "echo") == 0 || ft_strcmp(cmd[0], "/bin/echo") == 0)
@@ -261,21 +260,21 @@ int exe_bultin_in_parent(char *cmd[], t_expand *env, int *exit_status)
 		return (ft_exit(cmd), 1);
 	else if (ft_strcmp(cmd[0], "export") == 0)
 	{
-		*exit_status = ft_export(cmd, &env);
+		*exit_status = ft_export(cmd, env);
 		return (1);
 	}
 	else if (ft_strcmp(cmd[0], "env") == 0 || ft_strcmp(cmd[0], "/usr/bin/env") == 0)
-		return (ft_env(cmd, env), 1);
+		return (ft_env(cmd, *env), 1);
 	else if (ft_strcmp(cmd[0], "cd") == 0)
 	{
-		*exit_status = ft_cd(cmd[1], env);
+		*exit_status = ft_cd(cmd[1], *env);
 		return (1);
 	}
 	else if (ft_strcmp(cmd[0], "pwd") == 0 || ft_strcmp(cmd[0], "/bin/pwd") == 0)
-		return (ft_pwd(env), 1);
+		return (ft_pwd(*env), 1);
 	else if (ft_strcmp(cmd[0], "unset") == 0)
 	{
-		*exit_status = ft_unset(cmd, &env);
+		*exit_status = ft_unset(cmd, env);
 		return (1);
 	}
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 01:53:18 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/29 14:30:15 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/29 15:14:08 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,9 @@ int pars_key(char *cmd)
 		i++;
 	if (cmd[i])
 	{
-		perror("invalid option");
+		ft_putstr_fd("export: `", 2);
+		ft_putstr_fd(cmd, 2);
+		ft_putendl_fd("': not a valid identifier", 2);
 		return (1);
 	}
 	return (0);

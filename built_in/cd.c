@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 02:14:56 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/26 01:48:02 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/29 18:32:52 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int ft_cd(char *path, t_expand *env)
 			path = ft_strdup_env(home);
 		else
 		{
-			printf("cd: HOME not set\n");
+			ft_putstr_fd("cd: HOME not set\n", 2);
 			return (1);
 		}
 	}
@@ -79,7 +79,7 @@ int ft_cd(char *path, t_expand *env)
 		oldpwd = get_oldpwd(env);
 		if (!oldpwd || !*oldpwd->value)
 		{
-			printf("cd: OLDPWD not set\n");
+			ft_putstr_fd("cd: OLDPWD not set\n", 2);
 			return (1);
 		}
 		else

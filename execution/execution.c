@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/29 09:25:48 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/29 19:09:16 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ char **get_envp(t_expand *lst_envp)
 	int i;
 
 	i = 0;
+	if (lst_envp == NULL)
+		return (NULL);
 	size = ft_lst_size(lst_envp);
 	if (size == 0)
 		return (NULL);
@@ -42,16 +44,16 @@ void ft_execution(t_cmd *cmd, t_expand **envp, int *exit_status)
 {
 	char **env;
 
-	if (!envp || !*envp)
+	if (!envp)
 	{
 		perror("no env");
 		exit(1);
 	}
 	env = get_envp(*envp);
-	if (!env)
-		exit(1);
+	// if (!env)
+	// 	return ;
 	set_cmd_false_true(&cmd);
-	pipe_line(cmd, *envp, env, exit_status);
+	pipe_line(cmd, envp, env, exit_status);
 }
 void ft_execute_bultin(char *cmd[], t_expand **envp, int *exit_status)
 {

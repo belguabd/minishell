@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 01:11:06 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/27 00:23:41 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/29 17:32:51 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ size_t	ft_lst_size(t_expand *lst)
 {
 	size_t	i;
 
+	if(!lst)
+		return (0);
 	i = 0;
 	while (lst)
 	{
