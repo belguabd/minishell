@@ -178,6 +178,8 @@ int write_to_file(char *buffer)
 	int fd_read = open(file_tmp, O_RDWR | O_TRUNC, 0777);
 	if (fd < 0)
 		write(2, "Error\n", 6);
+	if (fd_read < 0)
+		write(2, "Error\n", 6);
 	write(fd, buffer, ft_strlen(buffer));
 	close(fd);
 	unlink(file_tmp);
