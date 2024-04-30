@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/29 19:12:19 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/30 11:05:52 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,84 +42,88 @@ void init_fds(t_cmd **cmds)
 	int old_fd_out;
 
 	head = *cmds;
-	tmp = head->redir;
-	old_fd_in = -2;
-	old_fd_out = -2;
-
-	// displayLinkedList(tmp);
-	if (tmp)
+	while(head)
 	{
-		while (tmp)
-		{
-			if (tmp->type == REDIRECT_OUT)
-			{
-				if (tmp->flage)
-				{
-					perror("bash: ambiguous redirect");
-					tmp->flage = false;
-				}
-				else
-				{
-					head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_TRUNC, 0777);
-					if (head->outfile > 2)
-						ft_close_fds(head->outfile, OPEN);
-					if (head->outfile < 0)
-						perror("fd_out");
-				}
-			}
-			else if (tmp->type == REDIRECT_APPEND)
-			{
-				if (tmp->flage)
-				{
-					perror("bash: ambiguous redirect");
-					tmp->flage = false;
-				}
-				else
-				{
-					head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_APPEND, 0777);
-					if (head->outfile > 2)
-						ft_close_fds(head->outfile, OPEN);
-					if (head->outfile < 0)
-						perror("fd_app");
-				}
-			}
-			else if (tmp->type == REDIRECT_IN)
-			{
-				if (tmp->flage)
-				{
-					perror("bash: ambiguous redirect");
-					tmp->flage = false;
-				}
-				else
-				{
+		tmp = head->redir;
+		old_fd_in = -2;
+		old_fd_out = -2;
 
-					head->infile = open(tmp->value, O_RDWR, 0777);
+		// displayLinkedList(tmp);
+		if (tmp)
+		{
+			while (tmp)
+			{
+				if (tmp->type == REDIRECT_OUT)
+				{
+					if (tmp->flage)
+					{
+						perror("bash: ambiguous redirect");
+						head->outfile = -1;
+						tmp->flage = false;
+					}
+					else
+					{
+						head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_TRUNC, 0777);
+						if (head->outfile > 2)
+							ft_close_fds(head->outfile, OPEN);
+						if (head->outfile < 0)
+							perror("fd_out");
+					}
+				}
+				else if (tmp->type == REDIRECT_APPEND)
+				{
+					if (tmp->flage)
+					{
+						perror("bash: ambiguous redirect");
+						tmp->flage = false;
+					}
+					else
+					{
+						head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_APPEND, 0777);
+						if (head->outfile > 2)
+							ft_close_fds(head->outfile, OPEN);
+						if (head->outfile < 0)
+							perror("fd_app");
+					}
+				}
+				else if (tmp->type == REDIRECT_IN)
+				{
+					if (tmp->flage)
+					{
+						perror("bash: ambiguous redirect");
+						tmp->flage = false;
+					}
+					else
+					{
+						head->infile = open(tmp->value, O_RDWR, 0777);
+						if (head->infile > 2)
+							ft_close_fds(head->infile, OPEN);
+						if (head->infile < 0)
+						{
+							perror(tmp->value);
+							//return;
+						}
+					}
+				}
+				else if (tmp->type == HEREDOC)
+				{
+					head->infile = tmp->fd_hrd;
 					if (head->infile > 2)
 						ft_close_fds(head->infile, OPEN);
 					if (head->infile < 0)
 					{
-						perror(tmp->value);
 						return;
 					}
 				}
+				tmp = tmp->next;
 			}
-			else if (tmp->type == HEREDOC)
-			{
-				head->infile = tmp->fd_hrd;
-				if (head->infile > 2)
-					ft_close_fds(head->infile, OPEN);
-				if (head->infile < 0)
-				{
-					return;
-				}
-			}
-			tmp = tmp->next;
 		}
-	}
-	else
-	{
-		head->infile = 0;
-		head->outfile = 1;
+		else
+		{
+			head->infile = 0;
+			head->outfile = 1;
+		}
+		head = head->next;
 	}
 }
 
@@ -144,7 +148,7 @@ void pipe_line(t_cmd *cmd, t_expand **env_lst, char *env[], int *exit_status)
 		return ;
 	while (cmd)
 	{
-		init_fds(&cmd);
+		//init_fds(&cmd);
 		if (!cmd->islast)
 			pipe(fd);
 		pid[i] = fork();
