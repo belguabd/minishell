@@ -1,5 +1,5 @@
 while true; do
     lsof -c minishell ; 
-    sleep 1;
+    sleep 4;
     clear;
     done;

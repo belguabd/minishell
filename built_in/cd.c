@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 02:14:56 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/29 18:32:52 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/30 12:43:53 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ int ft_cd(char *path, t_expand *env)
 			oldpwd->value = NULL;
 		}
 		oldpwd->value = ft_strdup_env(op);
+		oldpwd->isnull = false;
 	}
 	new_pwd = get_pwd(env);
 	if (new_pwd)

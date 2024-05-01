@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/29 19:09:16 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/30 17:40:53 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void ft_execution(t_cmd *cmd, t_expand **envp, int *exit_status)
 }
 void ft_execute_bultin(char *cmd[], t_expand **envp, int *exit_status)
 {
-	*exit_status = 0;
+	(void)exit_status;
 	if (!cmd || !*cmd)
 		return;
 	if (ft_strcmp(cmd[0], "echo") == 0 || ft_strcmp(cmd[0], "/bin/echo") == 0)

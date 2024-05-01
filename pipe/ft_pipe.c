@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/30 11:05:52 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/01 15:01:50 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void init_fds(t_cmd **cmds)
 				{
 					if (tmp->flage)
 					{
-						perror("bash: ambiguous redirect");
+						ft_putendl_fd("bash: ambiguous redirect", 2);
 						head->outfile = -1;
 						tmp->flage = false;
 					}
@@ -74,7 +74,8 @@ void init_fds(t_cmd **cmds)
 				{
 					if (tmp->flage)
 					{
-						perror("bash: ambiguous redirect");
+						head->outfile = -1;
+						ft_putendl_fd("bash: ambiguous redirect", 2);
 						tmp->flage = false;
 					}
 					else
@@ -90,7 +91,8 @@ void init_fds(t_cmd **cmds)
 				{
 					if (tmp->flage)
 					{
-						perror("bash: ambiguous redirect");
+						head->infile = -1;
+						ft_putendl_fd("bash: ambiguous redirect", 2);
 						tmp->flage = false;
 					}
 					else
@@ -101,7 +103,7 @@ void init_fds(t_cmd **cmds)
 						if (head->infile < 0)
 						{
 							perror(tmp->value);
-							//return;
+							break ;
 						}
 					}
 				}
@@ -112,7 +114,7 @@ void init_fds(t_cmd **cmds)
 						ft_close_fds(head->infile, OPEN);
 					if (head->infile < 0)
 					{
-						return;
+						break;
 					}
 				}
 				tmp = tmp->next;
@@ -130,7 +132,6 @@ void init_fds(t_cmd **cmds)
 void pipe_line(t_cmd *cmd, t_expand **env_lst, char *env[], int *exit_status)
 {
 	struct termios term;
-	
 	tcgetattr(STDIN_FILENO, &term);
 	if (!cmd)
 		return ;
@@ -140,15 +141,14 @@ void pipe_line(t_cmd *cmd, t_expand **env_lst, char *env[], int *exit_status)
 	int i = 0;
 	int j = 0;
 	tmp_fd_in = -1;
-	// signal(SIGINT, SIG_IGN);
-	// signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	pid = allocat_pids(cmd);
 	init_fds(&cmd);
 	if (exe_one_cmd_only(cmd, env_lst, exit_status))
 		return ;
 	while (cmd)
 	{
-		//init_fds(&cmd);
 		if (!cmd->islast)
 			pipe(fd);
 		pid[i] = fork();
@@ -156,6 +156,8 @@ void pipe_line(t_cmd *cmd, t_expand **env_lst, char *env[], int *exit_status)
 			perror("fork");
 		if (pid[i] == 0)
 		{
+			signal(SIGINT, SIG_DFL);
+			signal(SIGQUIT, SIG_DFL);
 			if (cmd->infile != 0)
 			{
 				if (cmd->infile == -1)
@@ -202,6 +204,11 @@ void pipe_line(t_cmd *cmd, t_expand **env_lst, char *env[], int *exit_status)
 	while (j < i)
 		waitpid(pid[j++], exit_status, 0);
 	if (WIFSIGNALED(*exit_status) && WTERMSIG(*exit_status) == SIGQUIT)
+	{
+		tcsetattr(STDIN_FILENO, TCSANOW, &term);
+		write(1, "Quit: 3\n", 8);
+	}
+	if (WIFSIGNALED(*exit_status) && WTERMSIG(*exit_status) == SIGINT)
 	{
 		tcsetattr(STDIN_FILENO, TCSANOW, &term);
 		write(1, "\n", 1);

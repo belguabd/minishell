@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 01:12:43 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/29 18:36:42 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/04/30 12:41:21 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,9 @@ void ft_env(char **cmd, t_expand *envp)
 	head = envp;
 	while (head)
 	{
-		if (*head->value)
+		if (!head->isnull)
 		{
 			printf("%s", head->key);
-			if (head->value)
 				printf("=%s\n", head->value);
 		}
 		head = head->next;

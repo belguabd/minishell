@@ -6,16 +6,32 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/29 16:56:30 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/01 14:56:27 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int g_sig;
+
 void ft_sig_handler_her_doc(int sig)
 {
 	if (sig == SIGINT)
 		close(0);
+}
+
+void sig_handler(int sig)
+{
+    rl_catch_signals = 0;
+    // add a variable to check if you are in line or in execution and check if the variable is 0 or no if 0 execute the if condition else don't
+    if (sig == SIGINT)
+    {
+        write(1, "\n", 1); // Print a newline to ensure a new prompt starts on a new line
+        rl_replace_line("", 0);
+        rl_on_new_line(); // Reset readline's internal state
+        rl_redisplay();
+		g_sig = 1;
+    }
 }
 void displayLinkedList(token_node *head)
 {
@@ -178,6 +194,8 @@ int write_to_file(char *buffer)
 	int fd_read = open(file_tmp, O_RDWR | O_TRUNC, 0777);
 	if (fd < 0)
 		write(2, "Error\n", 6);
+	if (fd_read < 0)
+		write(2, "Error\n", 6);
 	write(fd, buffer, ft_strlen(buffer));
 	close(fd);
 	unlink(file_tmp);
@@ -330,7 +348,7 @@ void parse_redirection_token(token_node **head, token_node **new_node)
 		tmp = (*head)->next;
 	}
 	(*head) = tmp;
-	value = ft_strdup((*head)->value);
+	value = (*head)->value;
 	token_node *new = addnew_tkn_node(type, value, fd_hrd);
 	if ((*head)->flage)
 		new->flage = true;
@@ -399,7 +417,8 @@ t_cmd *ft_split_cmd(token_node *new_head)
 	while (new_head)
 	{
 		if (new_head->type == STRING)
-			args[i++] = ft_strdup(new_head->value);
+			args[i++] = new_head->value; // args[i++] = ft_strdup(new_head->value);
+
 		if (is_redirection(new_head->type))
 		{
 			token_node *new = addnew_tkn_node(new_head->type, new_head->value, new_head->fd_hrd);
@@ -444,19 +463,22 @@ int main(int ac, char const *av[], char *env[])
 	token_node *head = NULL;
 	t_cmd *cmd_list = NULL;
 	int exit_status;
-	(void)exit_status;
 	(void)env;
 	(void)cmd_list;
 	head = NULL;
 	t_expand *env_expand = NULL;
 	init_env(&env_expand, env);
-	signal(SIGINT, handler);
-	signal(SIGQUIT, handler);
+	
 	rl_catch_signals = 0;
 	while (1 && isatty(STDIN_FILENO))
-	{     
+	{
+		signal(SIGINT, sig_handler);
+		signal(SIGQUIT, handler);
+		// puts("======");
 		head = NULL;
 		cmd = readline("➜ minishell ");
+		if(g_sig == 1)
+			exit_status = g_sig;
 		if (!cmd)
 		{
 			write(1, "exit\n", 5);
@@ -480,9 +502,8 @@ int main(int ac, char const *av[], char *env[])
 		head = ft_concatenate(head);
 		head = ft_remove_redirect(head);
 		cmd_list = ft_passing(head);
-		// g_var; g_var = 1;
 		ft_execution(cmd_list, &env_expand, &exit_status);
-
+		// displayLinkedList(head);
 		// (void)cmd_list;
 		// while (cmd_list)
 		// {
@@ -506,9 +527,8 @@ int main(int ac, char const *av[], char *env[])
 		// free((void *)cmd);
 		// ft_malloc(FREE, FREE);
 		// ft_close_fds(FREE, CLOSE);
-		//g_var = 0
+		g_sig = 0;
 	}
 
-	
 	return 0;
 }
