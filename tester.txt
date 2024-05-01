@@ -39,3 +39,29 @@ ABC=hola
 
 minishell echo -n hhhhhhhhh > file
 hhhhhhhhh➜ minishell
+
+--------------------------
+
+export a="     "
+
+ls > $a
+
+--------------------------
+
+➜ minishell cat << "t"
+> '$USER'
+> aasd
+> asd
+> asd
+> $HOME$USER
+> sdf
+>
+
+--------------------------
+
+➜ minishell export e="+"
+➜ minishell env | grep e=
+MallocNanoZone=0
+e=
+
+--------------------------

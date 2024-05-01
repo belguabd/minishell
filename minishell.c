@@ -6,16 +6,32 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/29 16:56:30 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/01 14:56:27 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int g_sig;
+
 void ft_sig_handler_her_doc(int sig)
 {
 	if (sig == SIGINT)
 		close(0);
+}
+
+void sig_handler(int sig)
+{
+	rl_catch_signals = 0;
+	// add a variable to check if you are in line or in execution and check if the variable is 0 or no if 0 execute the if condition else don't
+	if (sig == SIGINT)
+	{
+		write(1, "\n", 1); // Print a newline to ensure a new prompt starts on a new line
+		rl_replace_line("", 0);
+		rl_on_new_line(); // Reset readline's internal state
+		rl_redisplay();
+		g_sig = 1;
+	}
 }
 void displayLinkedList(token_node *head)
 {
@@ -164,7 +180,6 @@ char *expand_heredoc(char *cmd, t_expand *env)
 		buffer = ft_strjoin(buffer, str_exp);
 		i += ft_strlen(str_var);
 	}
-	free((void *)cmd);
 	return (buffer);
 }
 int write_to_file(char *buffer)
@@ -176,6 +191,7 @@ int write_to_file(char *buffer)
 		file_tmp = ft_strjoin(".heredoc", ft_itoa(i++));
 	int fd = open(file_tmp, O_CREAT | O_RDWR | O_TRUNC, 0777);
 	int fd_read = open(file_tmp, O_RDWR | O_TRUNC, 0777);
+	// ft_close_fds(fd_read, OPEN);
 	if (fd < 0)
 		write(2, "Error\n", 6);
 	if (fd_read < 0)
@@ -197,7 +213,6 @@ char *append_cmd_to_buffer(char *cmd, char *buffer)
 }
 int ft_readline(int flag, char *dlmtr, t_expand *env)
 {
-	char *dlm;
 	char *buffer;
 	char *cmd;
 
@@ -206,28 +221,25 @@ int ft_readline(int flag, char *dlmtr, t_expand *env)
 	while (1)
 	{
 		cmd = readline("> ");
+		char *free_cmd = cmd;
 		if (!ttyname(0))
 		{
-			free(cmd);
+			free(free_cmd);
 			open(ttyname(2), O_RDWR);
 			return (-2);
 		}
 		if (!cmd)
-		{
-			free(cmd);
 			return (write_to_file(buffer));
-		}
 		if (!ft_strcmp(cmd, dlmtr))
 		{
-			dlm = cmd;
+			free(free_cmd);
 			break;
 		}
 		if (flag != 1337)
 			cmd = expand_heredoc(cmd, env);
 		buffer = append_cmd_to_buffer(cmd, buffer);
-		dlm = cmd;
+		free(free_cmd);
 	}
-	free(dlm);
 	return (write_to_file(buffer));
 }
 int readline_hdc(char *dlmtr, t_expand *env, int flag)
@@ -256,6 +268,8 @@ void ft_heredoc(token_node *head, t_expand *env)
 				buffer = ft_strjoin(buffer, tmp->value);
 				tmp = tmp->next;
 			}
+			if (!buffer)
+				return;
 			head->fd_hrd = readline_hdc(buffer, env, flag);
 			buffer = NULL;
 		}
@@ -325,6 +339,12 @@ void parse_redirection_token(token_node **head, token_node **new_node)
 
 	type = (*head)->type;
 	int fd_hrd = (*head)->fd_hrd;
+	tmp = (*head)->next;
+	if (tmp && tmp->type == SPC)
+	{
+		(*head) = tmp;
+		tmp = (*head)->next;
+	}
 	tmp = (*head)->next;
 	if (tmp && tmp->type == SPC)
 	{
@@ -438,8 +458,13 @@ t_cmd *ft_passing(token_node *head)
 	return (new_cmd);
 }
 
+void ll()
+{
+	system("leaks minishell");
+}
 int main(int ac, char const *av[], char *env[])
 {
+	// atexit(ll);
 	(void)ac;
 	(void)av;
 	(void)env;
@@ -447,21 +472,23 @@ int main(int ac, char const *av[], char *env[])
 	token_node *head = NULL;
 	t_cmd *cmd_list = NULL;
 	int exit_status;
-	(void)exit_status;
 	(void)env;
 	(void)cmd_list;
 	head = NULL;
 	t_expand *env_expand = NULL;
 	rl_catch_signals = 0;
 	init_env(&env_expand, env);
-	signal(SIGINT, handler);
-	signal(SIGQUIT, handler);
-	// while (1 && isatty(STDIN_FILENO))
-	while (1)
+
+	rl_catch_signals = 0;
+	while (1 && isatty(STDIN_FILENO))
 	{
+		signal(SIGINT, sig_handler);
+		signal(SIGQUIT, handler);
 		// puts("======");
 		head = NULL;
 		cmd = readline("➜ minishell ");
+		if (g_sig == 1)
+			exit_status = g_sig;
 		if (!cmd)
 		{
 			write(1, "exit\n", 5);
@@ -470,6 +497,9 @@ int main(int ac, char const *av[], char *env[])
 		add_history(cmd);
 		head = tokenization(cmd, &head);
 		int error = handle_errors_cmd(head, cmd);
+		remove_single_q(head);
+		remove_double_q(head);
+		ft_heredoc(head, env_expand);
 		if (error == -1)
 		{
 			exit_status = 258;
@@ -477,16 +507,12 @@ int main(int ac, char const *av[], char *env[])
 			ft_malloc(FREE, FREE);
 			continue;
 		}
-		remove_single_q(head);
-		remove_double_q(head);
-		ft_heredoc(head, env_expand);
 		head = expand_and_print_vars(head, env_expand, exit_status);
-
 		head = ft_concatenate(head);
 		head = ft_remove_redirect(head);
 		cmd_list = ft_passing(head);
-		// // g_var; g_var = 1;
 		ft_execution(cmd_list, &env_expand, &exit_status);
+
 		// displayLinkedList(head);
 		// (void)cmd_list;
 		// while (cmd_list)
@@ -508,10 +534,10 @@ int main(int ac, char const *av[], char *env[])
 		// 	cmd_list = cmd_list->next;
 		// 	printf("\n");
 		// }
-		// free((void *)cmd);
-		// ft_malloc(FREE, FREE);
-		// ft_close_fds(FREE, CLOSE);
-		// g_var = 0
+		free((void *)cmd);
+		ft_malloc(FREE, FREE);
+		ft_close_fds(FREE, CLOSE);
+		g_sig = 0;
 	}
 
 	return 0;
