@@ -14,9 +14,10 @@
 
 void ft_process_odd(const char *cmd, token_node **head, int start)
 {
-	size_t j = start;
 	char *str;
+	size_t j;
 
+	j = start;
 	while (cmd[j] && cmd[j] == '$')
 		j++;
 	if (cmd[j] >= '0' && cmd[j] <= '9')
@@ -37,11 +38,15 @@ void ft_process_odd(const char *cmd, token_node **head, int start)
 			lstadd_back(head, addnew_tkn_node(STRING, "$", -2));
 	}
 }
-void ft_process_vars(const char *cmd, token_node **head, int i)
+
+void	ft_process_vars(const char *cmd, token_node **head, int i)
 {
 
-	int start = i;
-	char *str = NULL;
+	int start;
+	char *str;
+
+	start = i;
+	str = NULL;
 	i++;
 	if (cmd[i] >= '0' && cmd[i] <= '9')
 		str = ft_substr(cmd, start, (i + 1) - start);
@@ -54,11 +59,12 @@ void ft_process_vars(const char *cmd, token_node **head, int i)
 	lstadd_back(head, addnew_tkn_node(VAR, str, -2));
 }
 
-void handle_single_quotes(int start, const char *cmd, token_node **head)
+void	handle_single_quotes(int start, const char *cmd, token_node **head)
 {
-	int j = start;
+	int j;
 	char *str;
 
+	j = start;
 	j++;
 	while (cmd[j])
 	{

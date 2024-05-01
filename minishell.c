@@ -149,7 +149,7 @@ void remove_double_q(token_node *head)
 
 int is_string_type(int type)
 {
-	return (type == STRING || type == SINGLE_Q || type == DOUBLE_Q || type == VAR || type == DOUBLE_DLR);
+	return (type == STRING || type == SINGLE_Q || type == DOUBLE_Q || type == VAR || type == DOUBLE_DLR || type == EXIT_STATUS);
 }
 char *expand_heredoc(char *cmd, t_expand *env)
 {
@@ -452,10 +452,10 @@ int main(int ac, char const *av[], char *env[])
 	(void)cmd_list;
 	head = NULL;
 	t_expand *env_expand = NULL;
+	rl_catch_signals = 0;
 	init_env(&env_expand, env);
 	signal(SIGINT, handler);
 	signal(SIGQUIT, handler);
-	rl_catch_signals = 0;
 	// while (1 && isatty(STDIN_FILENO))
 	while (1)
 	{
