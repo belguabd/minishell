@@ -17,10 +17,10 @@ void ft_env(char **cmd, t_expand *envp)
 	(void)cmd;
 	t_expand *head;
 
-	if(!envp)
+	if (!envp)
 	{
 		ft_putstr_fd("env: No such file or directory\n", 2);
-		return ;
+		return;
 	}
 	head = envp;
 	while (head)
@@ -28,7 +28,7 @@ void ft_env(char **cmd, t_expand *envp)
 		if (!head->isnull)
 		{
 			printf("%s", head->key);
-				printf("=%s\n", head->value);
+			printf("=%s\n", head->value);
 		}
 		head = head->next;
 	}
@@ -62,9 +62,9 @@ void get_env_export(t_expand *envp)
 	t_expand *head;
 
 	if (!envp)
-		return ;
+		return;
 	head = envp;
-	//ft_sort_export(head);
+	// ft_sort_export(head);
 	while (head)
 	{
 		printf("declare -x %s", head->key);

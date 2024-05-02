@@ -108,7 +108,7 @@ void expand_var_and_split(token_node **new_head, token_node *head, t_expand *env
 	ft_expand_var(head, env);
 	char **output;
 	output = ft_split_last_cmd(head->value);
-	if (!output)
+	if (!output || !output[0])
 	{
 		token_node *new = addnew_tkn_node(VAR, NULL, head->fd_hrd);
 		new->flage = true;
@@ -133,8 +133,9 @@ void expand_var_and_split(token_node **new_head, token_node *head, t_expand *env
 	}
 	if (i > 1)
 		tmp->flage = true;
-	// if (output && !output[i])
+	// if (!output[0])
 	// {
+	// 	puts("OK");
 	// 	token_node *new = addnew_tkn_node(VAR, ft_strdup(""), head->fd_hrd);
 	// 	new->flage = true;
 	// 	lstadd_back(new_head, new);
