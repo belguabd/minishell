@@ -293,6 +293,9 @@ token_node *ft_concatenate(token_node *head)
 					check = true;
 				if (!buffer)
 					buffer = ft_strdup("");
+				if (!head->value)
+					head->value = ft_strdup("");
+
 				buffer = ft_strjoin(buffer, head->value);
 				head = head->next;
 			}
@@ -421,8 +424,7 @@ t_cmd *ft_split_cmd(token_node *new_head)
 	while (new_head)
 	{
 		if (new_head->type == STRING)
-			args[i++] = new_head->value; // args[i++] = ft_strdup(new_head->value);
-
+			args[i++] = ft_strdup(new_head->value); // args[i++] = ft_strdup(new_head->value);
 		if (is_redirection(new_head->type))
 		{
 			token_node *new = addnew_tkn_node(new_head->type, new_head->value, new_head->fd_hrd);
@@ -494,7 +496,8 @@ int main(int ac, char const *av[], char *env[])
 			write(1, "exit\n", 5);
 			exit(0);
 		}
-		add_history(cmd);
+		if (cmd[0])
+			add_history(cmd);
 		head = tokenization(cmd, &head);
 		int error = handle_errors_cmd(head, cmd);
 		remove_single_q(head);
@@ -508,6 +511,7 @@ int main(int ac, char const *av[], char *env[])
 			continue;
 		}
 		head = expand_and_print_vars(head, env_expand, exit_status);
+		// displayLinkedList(head);
 		head = ft_concatenate(head);
 		head = ft_remove_redirect(head);
 		cmd_list = ft_passing(head);

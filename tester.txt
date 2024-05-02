@@ -65,3 +65,51 @@ MallocNanoZone=0
 e=
 
 --------------------------
+
+
+
+bash-3.2$ exit 1231 231 213
+exit
+
+$pwd ls
+
+➜ minishell /bin/ls
+/bin/ls: No such file or directory
+
+========================
+zaki
+echo $HHH "a"
+echo $jn[$hh]
+
+
+
+
+====================
+export OLDPWD=$USER$JHDJKSHJKDHSJKHJKHDJS$PATH
+export OLDPWD=$jkldsdjkskds
+
+
+
+minishell export a a a=$BDNSKDJHSJK a
+➜ minishell export
+declare -x a
+
+
+
+➜ minishell export a b a=$b$jhhjsdjkhsjkhdsdjs"jdsjdjs" 
+➜ minishell export
+declare -x a
+declare -x b
+declare -x jdsjdjs
+
+
+
+
+
+
+➜ minishell ./minishell
+./minishell: No such file or directory
+➜ minishell ls
+ls: No such file or directory
+➜ minishell /bin/ls
+/bin/ls: No such file or directory

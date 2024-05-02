@@ -114,6 +114,8 @@ void expand_var_and_split(token_node **new_head, token_node *head, t_expand *env
 		new->flage = true;
 		lstadd_back(new_head, new);
 	}
+	// if (!output)
+	// 	return;
 	if (head->value && (head->value[0] == '\t' || head->value[0] == ' '))
 	{
 		token_node *new = addnew_tkn_node(SPC, ft_strdup(" "), -2);
@@ -133,13 +135,6 @@ void expand_var_and_split(token_node **new_head, token_node *head, t_expand *env
 	}
 	if (i > 1)
 		tmp->flage = true;
-	// if (!output[0])
-	// {
-	// 	puts("OK");
-	// 	token_node *new = addnew_tkn_node(VAR, ft_strdup(""), head->fd_hrd);
-	// 	new->flage = true;
-	// 	lstadd_back(new_head, new);
-	// }
 }
 char *expand_str_vars(token_node *head, t_expand *env, int exit_status)
 {
@@ -199,5 +194,6 @@ token_node *expand_and_print_vars(token_node *head, t_expand *env, int exit_stat
 			head = head->next;
 		}
 	}
+
 	return (new_head);
 }
