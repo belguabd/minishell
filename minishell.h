@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/29 18:32:55 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/02 14:46:05 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,6 +165,7 @@ void get_env_export(t_expand *envp);
 void ft_exit(char **cmd);
 // tools
 
+char *ft_get_cwd(char *new_path, int mode);
 t_expand *ft_lst_last(t_expand *lst);
 void ft_lst_add_back(t_expand **lst, t_expand *new_node);
 int ft_strcmp(char *s1, char *s2);

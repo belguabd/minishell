@@ -6,11 +6,23 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 02:14:56 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/30 12:43:53 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/02 20:40:39 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	change_pwd(t_expand **env)
+{
+	char *cmd[] = {"export", "PWD", NULL};
+	ft_export(cmd, env);
+}
+
+void	change_oldpwd(t_expand **env)
+{
+	char *cmd[] = {"export", "OLDPWD", NULL};
+	ft_export(cmd, env);
+}
 
 t_expand *get_oldpwd(t_expand *env)
 {
@@ -61,8 +73,9 @@ int ft_cd(char *path, t_expand *env)
 	char op[PATH_MAX];
 	char np[PATH_MAX];
 	char *home;
-
-	getcwd(op, PATH_MAX);
+	change_oldpwd(&env);
+	change_pwd(&env);
+	strlcpy(op, ft_get_cwd(NULL, 0), PATH_MAX);
 	if (!path || ft_strcmp(path, "~") == 0)
 	{
 		home = get_home(env);
@@ -93,17 +106,18 @@ int ft_cd(char *path, t_expand *env)
 		perror("cd");
 		return (1);
 	}
+	strlcpy(np, ft_get_cwd(NULL, 0), PATH_MAX);
 	if (!getcwd(np, PATH_MAX))
 	{
 		ft_putendl_fd("cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory", 2);
-		return (0);
+		ft_get_cwd(path, 1);
+		strlcpy(np, ft_get_cwd(NULL, 0), PATH_MAX);
 	}
 	oldpwd = get_oldpwd(env);
 	if (oldpwd)
 	{
 		if (oldpwd->value)
 		{
-
 			free(oldpwd->value);
 			oldpwd->value = NULL;
 		}
@@ -119,6 +133,8 @@ int ft_cd(char *path, t_expand *env)
 			new_pwd->value = NULL;
 		}
 		new_pwd->value = ft_strdup_env(np);
+		new_pwd->isnull = false;
 	}
 	return (0);
 }
+

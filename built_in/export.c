@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 01:53:18 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/29 15:14:08 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/02 16:55:18 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,12 @@ int	ft_join_value(t_expand *node, t_expand **envp)
 	return (1);
 }
 
-void ft_export_exicted(t_expand *node, t_expand **envp)
+void ft_export_exicted(t_expand *node, t_expand **envp, bool flage)
 {
 	t_expand *head;
 
 	head = *envp;
-	if(node->value[0] == '+')
+	if(flage)
 	{
 		if((ft_join_value(node, envp)) == 1)
 			return ;
@@ -90,6 +90,7 @@ int ft_export(char **cmd, t_expand **envp)
 	char *key;
 	char *value;
 	bool isnull;
+	bool flage;
 	int i;
 	int j;
 
@@ -104,6 +105,7 @@ int ft_export(char **cmd, t_expand **envp)
 	while (cmd[++j])
 	{
 		i = 0;
+		flage = false;
 		while (cmd[j][i] && (cmd[j][i] != '='))
 		{
 			if(cmd[j][i] == '+' && cmd[j][i + 1] == '=')
@@ -125,6 +127,7 @@ int ft_export(char **cmd, t_expand **envp)
 			else if(cmd[j][i] == '+')
 			{
 				isnull = false;
+				flage = true;
 				value = ft_strdup_env(&cmd[j][i]);
 			}
 			else
@@ -142,7 +145,7 @@ int ft_export(char **cmd, t_expand **envp)
 		if (!new)
 			return (1);
 		new->isnull = isnull;
-		ft_export_exicted(new, envp);
+		ft_export_exicted(new, envp, flage);
 	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/01 14:56:27 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/02 17:16:33 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -478,7 +478,7 @@ int main(int ac, char const *av[], char *env[])
 		head = NULL;
 		cmd = readline("➜ minishell ");
 		if(g_sig == 1)
-			exit_status = g_sig;
+			exit_status = 1;
 		if (!cmd)
 		{
 			write(1, "exit\n", 5);
