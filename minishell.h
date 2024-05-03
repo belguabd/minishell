@@ -27,6 +27,8 @@
 #define COLOR_RESET "\x1b[0m"
 #define COLOR_GREEN "\x1b[32m"
 
+// #define malloc(X) NULL
+
 enum
 {
 	FREE,
@@ -90,8 +92,8 @@ typedef struct s_expand
 	char *key;
 	char *value;
 	bool isnull;
-    bool isequal;
-    bool ishiden;
+	bool isequal;
+	bool ishiden;
 	struct s_expand *next;
 } t_expand;
 /*ft_split*/
@@ -112,14 +114,15 @@ char *ft_itoa(int n);
 /*functions for tokenization */
 token_node *ft_lstlast(token_node *lst);
 token_node *tokenization(const char *cmd, token_node **head);
-token_node *addnew_tkn_node(int token, char *value ,int fd);
+token_node *addnew_tkn_node(int token, char *value, int fd);
 void lstadd_back(token_node **lst, token_node *new);
 bool is_var(char c);
 bool is_string(char c);
 int handle_errors_cmd(token_node *head, const char *cmd);
 char *ft_str_exp(char *str_var, t_expand *env);
 char *ft_get_var(char *str_var);
-char *get_until_var(char *str_var);
+// char *get_until_var(char *str_var);
+char *get_until_var_exp(char *str_var);
 token_node *expand_and_print_vars(token_node *head, t_expand *env, int exit_status);
 char *get_str_env(t_expand *env, char *str_var);
 /*garbage collector*/
@@ -163,7 +166,7 @@ int ft_unset(char **cmd, t_expand **envp);
 int ft_export(char **cmd, t_expand **envp);
 int is_builtin(t_cmd *cmd);
 void get_env_export(t_expand *envp);
-void ft_exit(char **cmd);
+int ft_exit(char **cmd);
 // tools
 
 char *ft_get_cwd(char *new_path, int mode);
@@ -196,5 +199,5 @@ char *ft_itoa(int n);
 // #ifndef malloc
 // #define malloc(size) __malloc(size, __FILE__, __LINE__)
 // #endif
-
+char *ft_str_exp_double_q(char *str_var, t_expand *env , int exit_status);
 #endif

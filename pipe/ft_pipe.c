@@ -28,7 +28,7 @@ int *allocat_pids(t_cmd *cmd)
 	pids = (int *)ft_malloc_env(i * sizeof(int), ALLOC);
 	if (!pids)
 	{
-		perror("faild to allocat memory for pids");
+		ft_putendl_fd("malloc error", 2);
 		exit(1);
 	}
 	return (pids);
@@ -143,10 +143,10 @@ void pipe_line(t_cmd *cmd, t_expand **env_lst, char *env[], int *exit_status)
 	tmp_fd_in = -1;
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
-	pid = allocat_pids(cmd);
 	init_fds(&cmd);
 	if (exe_one_cmd_only(cmd, env_lst, exit_status))
 		return ;
+	pid = allocat_pids(cmd);
 	while (cmd)
 	{
 		if (!cmd->islast)
@@ -270,7 +270,10 @@ int exe_bultin_in_parent(char *cmd[], t_expand **env, int *exit_status)
 	if (ft_strcmp(cmd[0], "echo") == 0 || ft_strcmp(cmd[0], "/bin/echo") == 0)
 		return (ft_echo(cmd), 1);
 	else if (ft_strcmp(cmd[0], "exit") == 0)
-		return (ft_exit(cmd), 1);
+	{
+		*exit_status = ft_exit(cmd);
+		return (1);
+	}
 	else if (ft_strcmp(cmd[0], "export") == 0)
 	{
 		*exit_status = ft_export(cmd, env);

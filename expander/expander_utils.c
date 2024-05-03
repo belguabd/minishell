@@ -30,12 +30,36 @@ char *get_until_var(char *str_var)
 	{
 		if (str_var[i] == '$')
 		{
-			// while (str_var[i] && str_var[i] == '$')
-			// 	i++;
 			if (str_var[i] == '$' && str_var[i + 1] == '$')
-				return (ft_strdup("$$"));
+				return (ft_substr(str_var, start, i + 2));
 			if (str_var[i] == '$' && str_var[i + 1] == '?')
-				return (ft_strdup("$?"));
+				return (ft_substr(str_var, start, i + 2));
+			i++;
+			if (str_var[i] >= '0' && str_var[i] <= '9')
+			{
+				i++;
+				break;
+			}
+			while (str_var[i] && (ft_isalnum(str_var[i]) || str_var[i] == '_'))
+				i++;
+			break;
+		}
+		i++;
+	}
+	return (ft_substr(str_var, start, i));
+}
+char *get_until_var_exp(char *str_var)
+{
+	int i = 0;
+	int start = 0;
+	while (str_var[i])
+	{
+		if (str_var[i] == '$')
+		{
+			if (str_var[i] == '$' && str_var[i + 1] == '$')
+				return (ft_substr(str_var, start, i + 2));
+			if (str_var[i] == '$' && str_var[i + 1] == '?')
+				return (ft_substr(str_var, start, i + 2));
 			i++;
 			if (str_var[i] >= '0' && str_var[i] <= '9')
 			{

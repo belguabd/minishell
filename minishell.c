@@ -167,14 +167,14 @@ int is_string_type(int type)
 {
 	return (type == STRING || type == SINGLE_Q || type == DOUBLE_Q || type == VAR || type == DOUBLE_DLR || type == EXIT_STATUS);
 }
-char *expand_heredoc(char *cmd, t_expand *env)
+char *expand_heredoc(char *cmd, t_expand *env, int exit_status)
 {
 	int i = 0;
 	char *buffer = NULL;
 	while (cmd[i])
 	{
-		char *str_var = get_until_var(cmd + i);
-		char *str_exp = ft_str_exp(str_var, env);
+		char *str_var = get_until_var_exp(cmd + i);
+		char *str_exp = ft_str_exp_double_q(str_var, env, exit_status);
 		if (!buffer)
 			buffer = ft_strdup("");
 		buffer = ft_strjoin(buffer, str_exp);
@@ -211,7 +211,7 @@ char *append_cmd_to_buffer(char *cmd, char *buffer)
 	buffer = ft_strjoin(buffer, ft_strdup("\n"));
 	return (buffer);
 }
-int ft_readline(int flag, char *dlmtr, t_expand *env)
+int ft_readline(int flag, char *dlmtr, t_expand *env, int exit_status)
 {
 	char *buffer;
 	char *cmd;
@@ -236,19 +236,19 @@ int ft_readline(int flag, char *dlmtr, t_expand *env)
 			break;
 		}
 		if (flag != 1337)
-			cmd = expand_heredoc(cmd, env);
+			cmd = expand_heredoc(cmd, env, exit_status);
 		buffer = append_cmd_to_buffer(cmd, buffer);
 		free(free_cmd);
 	}
 	return (write_to_file(buffer));
 }
-int readline_hdc(char *dlmtr, t_expand *env, int flag)
+int readline_hdc(char *dlmtr, t_expand *env, int flag, int exit_status)
 {
 	char *buffer;
 	buffer = NULL;
-	return (ft_readline(flag, dlmtr, env));
+	return (ft_readline(flag, dlmtr, env, exit_status));
 }
-void ft_heredoc(token_node *head, t_expand *env)
+void ft_heredoc(token_node *head, t_expand *env, int exit_status)
 {
 	char *buffer = NULL;
 	int flag = 0;
@@ -270,7 +270,7 @@ void ft_heredoc(token_node *head, t_expand *env)
 			}
 			if (!buffer)
 				return;
-			head->fd_hrd = readline_hdc(buffer, env, flag);
+			head->fd_hrd = readline_hdc(buffer, env, flag, exit_status);
 			buffer = NULL;
 		}
 		head = head->next;
@@ -421,8 +421,7 @@ t_cmd *ft_split_cmd(token_node *new_head)
 	while (new_head)
 	{
 		if (new_head->type == STRING)
-			args[i++] = new_head->value; // args[i++] = ft_strdup(new_head->value);
-
+			args[i++] = ft_strdup(new_head->value); // args[i++] = ft_strdup(new_head->value);
 		if (is_redirection(new_head->type))
 		{
 			token_node *new = addnew_tkn_node(new_head->type, new_head->value, new_head->fd_hrd);
@@ -462,8 +461,27 @@ void ll()
 {
 	system("leaks minishell");
 }
+token_node *skip_empty_dollar(token_node *head)
+{
+	token_node *new_head = NULL;
+	while (head)
+	{
+		if (head->type == STRING && !head->value)
+		{
+			head = head->next;
+			continue;
+		}
+		token_node *new_node = addnew_tkn_node(head->type, head->value, head->fd_hrd);
+		if (head->flage)
+			new_node->flage = true;
+		lstadd_back(&new_head, new_node);
+		head = head->next;
+	}
+	return (new_head);
+}
 int main(int ac, char const *av[], char *env[])
 {
+
 	// atexit(ll);
 	(void)ac;
 	(void)av;
@@ -476,30 +494,31 @@ int main(int ac, char const *av[], char *env[])
 	(void)cmd_list;
 	head = NULL;
 	t_expand *env_expand = NULL;
-	rl_catch_signals = 0;
 	init_env(&env_expand, env);
 
 	rl_catch_signals = 0;
-	while (1 && isatty(STDIN_FILENO))
+	// while (1 && isatty(STDIN_FILENO))
+	while (1)
 	{
 		signal(SIGINT, sig_handler);
 		signal(SIGQUIT, handler);
 		// puts("======");
 		head = NULL;
 		cmd = readline("➜ minishell ");
-		if(g_sig == 1)
+		if (g_sig == 1)
 			exit_status = 1;
 		if (!cmd)
 		{
 			write(1, "exit\n", 5);
 			exit(0);
 		}
-		add_history(cmd);
+		if (cmd[0])
+			add_history(cmd);
 		head = tokenization(cmd, &head);
 		int error = handle_errors_cmd(head, cmd);
 		remove_single_q(head);
 		remove_double_q(head);
-		ft_heredoc(head, env_expand);
+		ft_heredoc(head, env_expand, exit_status);
 		if (error == -1)
 		{
 			exit_status = 258;
@@ -510,10 +529,9 @@ int main(int ac, char const *av[], char *env[])
 		head = expand_and_print_vars(head, env_expand, exit_status);
 		head = ft_concatenate(head);
 		head = ft_remove_redirect(head);
+		head = skip_empty_dollar(head);
 		cmd_list = ft_passing(head);
 		ft_execution(cmd_list, &env_expand, &exit_status);
-
-		// displayLinkedList(head);
 		// (void)cmd_list;
 		// while (cmd_list)
 		// {

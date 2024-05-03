@@ -40,12 +40,10 @@ int checkn(char **cmd)
 	return (checkn);
 }
 
-
-void	ft_echo(char **cmd)
+void ft_echo(char **cmd)
 {
-	int	i;
+	int i;
 	int n;
-
 	n = checkn(cmd);
 	i = n + 1;
 	if (cmd[i])
