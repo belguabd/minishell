@@ -52,8 +52,43 @@ char *get_var_odd(char *str_var, t_expand *env)
 	return (str_exp);
 }
 
-char *ft_str_exp(char *str_var, t_expand *env)
+// char *ft_str_exp(char *str_var, t_expand *env )
+// {
+	
+// 	size_t i;
+// 	char *str_exp;
+// 	char *get_var;
+// 	size_t len;
+// 	size_t count;
+
+// 	str_exp = NULL;
+// 	get_var = NULL;
+// 	len = ft_strlen(str_var);
+// 	i = 0;
+// 	while (i < len)
+// 	{
+// 		if (str_var[i] == '$')
+// 		{
+// 			count = i;
+// 			while (str_var[i] && str_var[i] == '$')
+// 				i++;
+// 			count = i - count;
+// 			if (count % 2 != 0)
+// 				str_exp = get_var_odd(str_var + i, env);
+// 			else
+// 			{
+// 				get_var = ft_get_var(str_var + i);
+// 				get_var = ft_strjoin("$", get_var);
+// 				str_exp = get_var;
+// 			}
+// 		}
+// 		i++;
+// 	}
+// 	return (get_string_exp(str_var, get_var, str_exp));
+// }
+char *ft_str_exp_double_q(char *str_var, t_expand *env , int exit_status)
 {
+	
 	size_t i;
 	char *str_exp;
 	char *get_var;
@@ -66,6 +101,11 @@ char *ft_str_exp(char *str_var, t_expand *env)
 	i = 0;
 	while (i < len)
 	{
+		if(str_var[i] == '$' && str_var[i + 1] == '?')
+		{
+			str_exp = ft_itoa(exit_status);
+			break;
+		}
 		if (str_var[i] == '$')
 		{
 			count = i;
@@ -150,11 +190,8 @@ char *expand_str_vars(token_node *head, t_expand *env, int exit_status)
 	(void)exit_status;
 	while (str[i])
 	{
-		str_var = get_until_var(str + i);
-		if (!ft_strcmp(str_var, "$?"))
-			str_exp = ft_itoa(exit_status);
-		else
-			str_exp = ft_str_exp(str_var, env);
+		str_var = get_until_var_exp(str + i );
+		str_exp = ft_str_exp_double_q(str_var, env, exit_status);
 		if (!buffer)
 			buffer = ft_strdup("");
 		buffer = ft_strjoin(buffer, str_exp);

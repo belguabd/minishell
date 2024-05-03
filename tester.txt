@@ -113,3 +113,5 @@ declare -x jdsjdjs
 ls: No such file or directory
 ➜ minishell /bin/ls
 /bin/ls: No such file or directory
+
+ls | ls | ls | 

@@ -20,7 +20,10 @@ int pars_key(char *cmd)
 	i = 0;
 	if (!cmd || !*cmd)
 	{
-		perror("invalid option");
+		// perror("invalid option");
+		ft_putstr_fd("export: `", 2);
+		ft_putstr_fd(cmd, 2);
+		ft_putendl_fd("': not a valid identifier", 2);
 		return (1);
 	}
 	len = ft_strlen(cmd);

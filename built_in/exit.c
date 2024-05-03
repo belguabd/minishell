@@ -32,8 +32,7 @@ int ft_atoi(const char *str)
 		res = (str[i] - 48) + (res * 10);
 		if (res > LONG_MAX)
 		{
-			printf("exit\n");
-			printf("minishell: exit: %zu: numeric argument required\n", res);
+			write(2, " numeric argument required\n", 28);
 			exit(255);
 		}
 		i++;
@@ -44,9 +43,9 @@ int ft_atoi(const char *str)
 bool check_is_digit(char *nbr)
 {
 	int i;
-	
+
 	i = 0;
-	if(!nbr) //add this bcz there is a seg fault in the case (exit '')
+	if (!nbr) // add this bcz there is a seg fault in the case (exit '')
 		return (false);
 	if (nbr[i] == '-' || nbr[i] == '+')
 		i++;
@@ -66,14 +65,13 @@ void ft_exit(char **cmd)
 		char **output = ft_split_last_cmd(cmd[1]);
 		if (!check_is_digit(output[0]))
 		{
-			printf("exit\n");
-			printf("minishell: exit: %s: numeric argument required\n", cmd[1]);
+			write(2, ": numeric argument required\n", 28);
 			exit(255);
 		}
 		if (cmd[2])
 		{
-			printf("exit\n");
-			printf("minishell: exit: too many arguments\n");
+			write(2, ": too many arguments\n", 36);
+			return;
 		}
 		int i = ft_atoi(cmd[1]);
 		int c = (char)i;
