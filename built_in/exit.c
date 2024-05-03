@@ -32,7 +32,7 @@ int ft_atoi(const char *str)
 		res = (str[i] - 48) + (res * 10);
 		if (res > LONG_MAX)
 		{
-			write(2, " numeric argument required\n", 28);
+			ft_putendl_fd(" numeric argument required\n", 2);
 			exit(255);
 		}
 		i++;
@@ -58,20 +58,20 @@ bool check_is_digit(char *nbr)
 	return (true);
 }
 
-void ft_exit(char **cmd)
+int ft_exit(char **cmd)
 {
 	if (cmd[1])
 	{
 		char **output = ft_split_last_cmd(cmd[1]);
 		if (!check_is_digit(output[0]))
 		{
-			write(2, ": numeric argument required\n", 28);
+			ft_putendl_fd(": numeric argument required", 2);
 			exit(255);
 		}
 		if (cmd[2])
 		{
-			write(2, ": too many arguments\n", 36);
-			return;
+			ft_putendl_fd(": too many arguments", 2);
+			return (1);
 		}
 		int i = ft_atoi(cmd[1]);
 		int c = (char)i;
@@ -79,4 +79,5 @@ void ft_exit(char **cmd)
 	}
 	else
 		exit(0);
+	return (0);
 }

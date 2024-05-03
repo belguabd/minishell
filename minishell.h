@@ -27,6 +27,8 @@
 #define COLOR_RESET "\x1b[0m"
 #define COLOR_GREEN "\x1b[32m"
 
+// #define malloc(X) NULL
+
 enum
 {
 	FREE,
@@ -164,7 +166,7 @@ int ft_unset(char **cmd, t_expand **envp);
 int ft_export(char **cmd, t_expand **envp);
 int is_builtin(t_cmd *cmd);
 void get_env_export(t_expand *envp);
-void ft_exit(char **cmd);
+int ft_exit(char **cmd);
 // tools
 
 char *ft_get_cwd(char *new_path, int mode);

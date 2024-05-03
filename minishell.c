@@ -167,14 +167,14 @@ int is_string_type(int type)
 {
 	return (type == STRING || type == SINGLE_Q || type == DOUBLE_Q || type == VAR || type == DOUBLE_DLR || type == EXIT_STATUS);
 }
-char *expand_heredoc(char *cmd, t_expand *env ,int exit_status)
+char *expand_heredoc(char *cmd, t_expand *env, int exit_status)
 {
 	int i = 0;
 	char *buffer = NULL;
 	while (cmd[i])
 	{
 		char *str_var = get_until_var_exp(cmd + i);
-		char *str_exp = ft_str_exp_double_q(str_var, env ,exit_status);
+		char *str_exp = ft_str_exp_double_q(str_var, env, exit_status);
 		if (!buffer)
 			buffer = ft_strdup("");
 		buffer = ft_strjoin(buffer, str_exp);
@@ -211,7 +211,7 @@ char *append_cmd_to_buffer(char *cmd, char *buffer)
 	buffer = ft_strjoin(buffer, ft_strdup("\n"));
 	return (buffer);
 }
-int ft_readline(int flag, char *dlmtr, t_expand *env ,int exit_status)
+int ft_readline(int flag, char *dlmtr, t_expand *env, int exit_status)
 {
 	char *buffer;
 	char *cmd;
@@ -236,19 +236,19 @@ int ft_readline(int flag, char *dlmtr, t_expand *env ,int exit_status)
 			break;
 		}
 		if (flag != 1337)
-			cmd = expand_heredoc(cmd, env ,exit_status);
+			cmd = expand_heredoc(cmd, env, exit_status);
 		buffer = append_cmd_to_buffer(cmd, buffer);
 		free(free_cmd);
 	}
 	return (write_to_file(buffer));
 }
-int readline_hdc(char *dlmtr, t_expand *env, int flag ,int exit_status)
+int readline_hdc(char *dlmtr, t_expand *env, int flag, int exit_status)
 {
 	char *buffer;
 	buffer = NULL;
-	return (ft_readline(flag, dlmtr, env ,exit_status));
+	return (ft_readline(flag, dlmtr, env, exit_status));
 }
-void ft_heredoc(token_node *head, t_expand *env ,int exit_status)
+void ft_heredoc(token_node *head, t_expand *env, int exit_status)
 {
 	char *buffer = NULL;
 	int flag = 0;
@@ -270,7 +270,7 @@ void ft_heredoc(token_node *head, t_expand *env ,int exit_status)
 			}
 			if (!buffer)
 				return;
-			head->fd_hrd = readline_hdc(buffer, env, flag ,exit_status);
+			head->fd_hrd = readline_hdc(buffer, env, flag, exit_status);
 			buffer = NULL;
 		}
 		head = head->next;
@@ -293,9 +293,6 @@ token_node *ft_concatenate(token_node *head)
 					check = true;
 				if (!buffer)
 					buffer = ft_strdup("");
-				if (!head->value)
-					head->value = ft_strdup("");
-
 				buffer = ft_strjoin(buffer, head->value);
 				head = head->next;
 			}
@@ -469,7 +466,7 @@ token_node *skip_empty_dollar(token_node *head)
 	token_node *new_head = NULL;
 	while (head)
 	{
-		if (head->type == STRING && !head->value[0])
+		if (head->type == STRING && !head->value)
 		{
 			head = head->next;
 			continue;
@@ -484,6 +481,7 @@ token_node *skip_empty_dollar(token_node *head)
 }
 int main(int ac, char const *av[], char *env[])
 {
+
 	// atexit(ll);
 	(void)ac;
 	(void)av;
@@ -496,7 +494,6 @@ int main(int ac, char const *av[], char *env[])
 	(void)cmd_list;
 	head = NULL;
 	t_expand *env_expand = NULL;
-	rl_catch_signals = 0;
 	init_env(&env_expand, env);
 
 	rl_catch_signals = 0;
@@ -521,7 +518,7 @@ int main(int ac, char const *av[], char *env[])
 		int error = handle_errors_cmd(head, cmd);
 		remove_single_q(head);
 		remove_double_q(head);
-		ft_heredoc(head, env_expand ,exit_status);
+		ft_heredoc(head, env_expand, exit_status);
 		if (error == -1)
 		{
 			exit_status = 258;

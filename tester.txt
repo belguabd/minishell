@@ -115,3 +115,17 @@ ls: No such file or directory
 /bin/ls: No such file or directory
 
 ls | ls | ls | 
+
+==============
+➜ minishell ls >./outfiles/outfile01 >>./test_files/invalid_permission >>./outfiles/outfile02
+fd_out: No such file or directory
+fd_app: No such file or directory
+fd_app: No such file or directory
+
+
+
+export 2a b 4c
+minishell export a+=a b+=b c+=c
+unset 1a b 2c
+minishell exit "545456 564"
+env fgdf
