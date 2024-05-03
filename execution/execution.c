@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/30 17:40:53 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/02 22:58:17 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ char *check_path(char **path, char *cmd)
 	int i;
 
 	i = 0;
-	if (!path || !*path)
+	if ((!path || !*path) && (access(cmd, X_OK)))
 	{
 		ft_putstr_fd(cmd, 2);
 		ft_putendl_fd(": No such file or directory", 2);

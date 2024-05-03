@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 01:39:25 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/26 23:14:04 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/02 15:14:37 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,24 +27,30 @@ t_expand *get_pwd_cd(t_expand *env)
 	return (NULL);
 }
 
-void	ft_pwd(t_expand *env)
+char *ft_get_cwd(char *new_path, int mode)
 {
-	char	path[PATH_MAX];
+	char		path[PATH_MAX];
 	static char	static_path[PATH_MAX];
-	t_expand *pwd_path = NULL;
-
+	
 	if (getcwd(path, PATH_MAX) != NULL)
 	{
-		printf("%s\n", path);
-		memcpy(static_path, path, ft_strlen(path));
+		strlcpy(static_path, path, PATH_MAX);
+		return (static_path);
 	}
-	else if(!*static_path)
+	if (mode == 1)
 	{
-		pwd_path = get_pwd_cd(env);
-		if(pwd_path)
-			printf("%s\n", pwd_path->value);
+		strlcat(static_path, "/", PATH_MAX);
+		strlcat(static_path, new_path, PATH_MAX);
 	}
-	else
-		printf("%s\n", static_path);
+	return (static_path);
+}
+
+void	ft_pwd(t_expand *env)
+{
+	char *path;
+	
+	(void)env;
+	path = ft_get_cwd(NULL, 0);
+	printf("%s\n", path);
 }
 
