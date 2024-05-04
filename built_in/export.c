@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 01:53:18 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/05/02 16:55:18 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/03 22:13:47 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,11 +94,13 @@ int ft_export(char **cmd, t_expand **envp)
 	char *value;
 	bool isnull;
 	bool flage;
+	int exit_status;
 	int i;
 	int j;
 
 	i = 0;
 	j = 0;
+	exit_status = 0;
 	value = NULL;
 	if (!cmd[1])
 	{
@@ -116,39 +118,40 @@ int ft_export(char **cmd, t_expand **envp)
 			i++;
 		}
 		key = ft_substr_env(cmd[j], 0, i);
-		if (pars_key(key))
+		if (pars_key(key) == 0)
 		{
-			return (1);
-		}
-		if (cmd[j][i])
-		{
-			if (cmd[j][i] == '=' && !cmd[j][i + 1])
+			if (cmd[j][i])
 			{
-				isnull = false;
-				value = ft_strdup_env("");
-			}
-			else if(cmd[j][i] == '+')
-			{
-				isnull = false;
-				flage = true;
-				value = ft_strdup_env(&cmd[j][i]);
+				if (cmd[j][i] == '=' && !cmd[j][i + 1])
+				{
+					isnull = false;
+					value = ft_strdup_env("");
+				}
+				else if(cmd[j][i] == '+')
+				{
+					isnull = false;
+					flage = true;
+					value = ft_strdup_env(&cmd[j][i]);
+				}
+				else
+				{
+					isnull = false;
+					value = ft_strdup_env(&cmd[j][i + 1]);
+				}
 			}
 			else
 			{
-				isnull = false;
-				value = ft_strdup_env(&cmd[j][i + 1]);
+				value = ft_strdup_env("");
+				isnull = true;
 			}
+			new = addnew_expand_node_env(key, value);
+			if (!new)
+				return (1);
+			new->isnull = isnull;
+			ft_export_exicted(new, envp, flage);
 		}
 		else
-		{
-			value = ft_strdup_env("");
-			isnull = true;
-		}
-		new = addnew_expand_node_env(key, value);
-		if (!new)
-			return (1);
-		new->isnull = isnull;
-		ft_export_exicted(new, envp, flage);
+			exit_status = 1;
 	}
-	return (0);
+	return (exit_status);
 }

@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 01:12:43 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/30 12:41:21 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/03 22:38:39 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ void ft_env(char **cmd, t_expand *envp)
 		ft_putstr_fd("env: No such file or directory\n", 2);
 		return;
 	}
+	if(cmd[1])
+		return ;
 	head = envp;
 	while (head)
 	{
@@ -33,6 +35,7 @@ void ft_env(char **cmd, t_expand *envp)
 		head = head->next;
 	}
 }
+
 void ft_sort_export(t_expand *head)
 {
 	char *value;

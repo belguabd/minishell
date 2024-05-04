@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 08:44:40 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/29 18:18:44 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/03 22:36:51 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,16 +70,19 @@ void	ft_del_node(t_expand **lst, char *key)
 int	ft_unset(char **cmd, t_expand **envp)
 {
 	int	i;
+	int exit_status;
 
 	i = 1;
+	exit_status = 0;
 	if(!envp || !*envp)
 		return (1);
 	while (cmd[i])
 	{
-		if(pars_key_env(cmd[i]))
-			return (1);
-		ft_del_node(envp, cmd[i]);
+		if(pars_key_env(cmd[i]) == 0)
+			ft_del_node(envp, cmd[i]);
+		else
+			exit_status = 1;
 		i++;
 	}
-	return (0);
+	return (exit_status);
 }
