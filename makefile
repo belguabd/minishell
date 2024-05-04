@@ -16,8 +16,8 @@ READLINE1=$(shell brew --prefix readline)/include
 SRC =minishell.c \
 	$(UTILS)/ft_split.c $(UTILS)/ft_strlen.c $(UTILS)/ft_strdup.c $(UTILS)/ft_substr.c $(UTILS)/ft_strjoin.c $(UTILS)/ft_putendl_fd.c \
 	$(UTILS)/ft_lstsize.c  $(UTILS)/ft_isalnum.c $(UTILS)/ft_itoa.c $(UTILS)/ft_lstlast.c $(UTILS)/ft_split_last_cmd.c \
-	$(LEXER)/ft_tonken.c  $(LEXER)/ft_tonken_utils.c \
-	$(HANDLE_ERRORS)/handle_errors.c \
+	$(LEXER)/ft_tonken.c  $(LEXER)/ft_tonken_utils_01.c $(LEXER)/ft_tonken_utils_02.c \
+	$(HANDLE_ERRORS)/handle_errors.c $(HANDLE_ERRORS)/handle_errors_utils.c \
 	$(EXPANDER)/expander.c $(EXPANDER)/expander_utils.c \
 	$(GC)/ft_free.c  $(GC)/ft_free_env.c $(GC)/ft_close_fds.c \
 	$(EXECUTION)/execution.c $(EXECUTION)/execution_tools.c \

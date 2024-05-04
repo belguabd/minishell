@@ -1,26 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_free_fds.c                                      :+:      :+:    :+:   */
+/*   ft_close_fds.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 11:27:32 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/17 11:27:43 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/04 14:07:36 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-typedef struct s_fd
+t_fd    *add_new_fd(int fd)
 {
-    int fd;
-    struct s_fd *next;
-} t_fd;
-
-t_fd *add_new_fd(int fd)
-{
-    t_fd *new = malloc(sizeof(t_fd));
+    t_fd *new;
+    
+    new = malloc(sizeof(t_fd));
     if (!new)
         return (NULL);
     new->fd = fd;

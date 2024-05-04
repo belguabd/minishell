@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/02 14:46:05 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/04 14:07:11 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,11 @@ typedef struct ft_free
 	void *add;
 	struct ft_free *next;
 } t_free;
-
+typedef struct s_fd
+{
+    int fd;
+    struct s_fd *next;
+} t_fd;
 typedef struct token_node
 {
 	int type;
@@ -111,7 +115,19 @@ int ft_isalnum(int c);
 int ft_isdigit(int c);
 char *ft_itoa(int n);
 
-/*functions for tokenization */
+/*start functions for tokenization */
+int	ft_single_double(token_node **head, const char *cmd, int i);
+int	ft_dollar(token_node **head, const char *cmd, int *i);
+int	ft_spaces(token_node **head, const char *cmd, int *i);
+void	handle_single_quotes(int start, const char *cmd, token_node **head);
+void	handle_double_quotes(int start, const char *cmd, token_node **head);
+void	ft_process_vars(const char *cmd, token_node **head, int i);
+/* end tokenization */
+/*start handle errors*/
+int	print_error_quote(const char *cmd);
+int	quote_error_handling(const char *buffer, size_t *i, char c);
+/*end handle errors*/
+
 token_node *ft_lstlast(token_node *lst);
 token_node *tokenization(const char *cmd, token_node **head);
 token_node *addnew_tkn_node(int token, char *value, int fd);
