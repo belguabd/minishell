@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/05/01 15:01:50 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/05 17:26:38 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,10 @@ void init_fds(t_cmd **cmds)
 						if (head->outfile > 2)
 							ft_close_fds(head->outfile, OPEN);
 						if (head->outfile < 0)
-							perror("fd_out");
+						{
+							perror(tmp->value);
+							break ;
+						}
 					}
 				}
 				else if (tmp->type == REDIRECT_APPEND)
@@ -84,7 +87,10 @@ void init_fds(t_cmd **cmds)
 						if (head->outfile > 2)
 							ft_close_fds(head->outfile, OPEN);
 						if (head->outfile < 0)
-							perror("fd_app");
+						{
+							perror(tmp->value);
+							break ;
+						}
 					}
 				}
 				else if (tmp->type == REDIRECT_IN)
@@ -129,96 +135,151 @@ void init_fds(t_cmd **cmds)
 	}
 }
 
-void pipe_line(t_cmd *cmd, t_expand **env_lst, char *env[], int *exit_status)
+void	ft_get_exit_status(int *exit_status, int *pid, int i, struct termios *term)
 {
-	struct termios term;
-	tcgetattr(STDIN_FILENO, &term);
-	if (!cmd)
-		return ;
-	int fd[2];
-	int *pid;
-	int tmp_fd_in;
-	int i = 0;
-	int j = 0;
-	tmp_fd_in = -1;
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
-	init_fds(&cmd);
-	if (exe_one_cmd_only(cmd, env_lst, exit_status))
-		return ;
-	pid = allocat_pids(cmd);
-	while (cmd)
-	{
-		if (!cmd->islast)
-			pipe(fd);
-		pid[i] = fork();
-		if (pid[i] < 0)
-			perror("fork");
-		if (pid[i] == 0)
-		{
-			signal(SIGINT, SIG_DFL);
-			signal(SIGQUIT, SIG_DFL);
-			if (cmd->infile != 0)
-			{
-				if (cmd->infile == -1)
-					exit(1);
-				if ((dup2(cmd->infile, 0) < 0))
-					exit(1);
-				close(cmd->infile);
-			}
-			if (cmd->outfile != 1)
-			{
-				if (cmd->outfile == -1)
-					exit(1);
-				if ((dup2(cmd->outfile, 1) < 0))
-					close(1);
-				close(cmd->outfile);
-			}
-			if (!cmd->isfirst)
-			{
-				dup2(tmp_fd_in, cmd->infile);
-				close(tmp_fd_in);
-			}
-			if (!cmd->islast)
-			{
-				if (dup2(fd[1], cmd->outfile) < 0)
-					close(cmd->outfile);
-				close(fd[1]);
-				close(fd[0]);
-			}
-			ft_execute_node(cmd->args, *env_lst, env, exit_status);
-			exit(127);
-		}
-		if (!cmd->isfirst)
-			close(tmp_fd_in);
-		if (!cmd->islast)
-		{
-			close(fd[1]);
-			tmp_fd_in = fd[0];
-			if (tmp_fd_in < 0)
-				perror("tmp_fd_in");
-		}
-		cmd = cmd->next;
-		i++;
-	}
+	int j;
+
+	j = 0;
 	while (j < i)
 		waitpid(pid[j++], exit_status, 0);
 	if (WIFSIGNALED(*exit_status) && WTERMSIG(*exit_status) == SIGQUIT)
 	{
-		tcsetattr(STDIN_FILENO, TCSANOW, &term);
+		tcsetattr(STDIN_FILENO, TCSANOW, term);
 		write(1, "Quit: 3\n", 8);
 	}
 	if (WIFSIGNALED(*exit_status) && WTERMSIG(*exit_status) == SIGINT)
 	{
-		tcsetattr(STDIN_FILENO, TCSANOW, &term);
+		tcsetattr(STDIN_FILENO, TCSANOW, term);
 		write(1, "\n", 1);
 	}
 	if (WIFEXITED(*exit_status))
 		*exit_status = WEXITSTATUS(*exit_status);
 	else if (WIFSIGNALED(*exit_status))
 		*exit_status = WTERMSIG(*exit_status) + 128;
+}
+
+void	ft_cmd_redirection(t_cmd *cmd)
+{
+	if (cmd->infile != 0)
+	{
+		if (cmd->infile == -1)
+			exit(1);
+		if ((dup2(cmd->infile, 0) < 0))
+			exit(1);
+		close(cmd->infile);
+	}
+	if (cmd->outfile != 1)
+	{
+		if (cmd->outfile == -1)
+			exit(1);
+		if ((dup2(cmd->outfile, 1) < 0))
+			close(1);
+		close(cmd->outfile);
+	}
+}
+
+void	ft_piping(t_cmd *cmd, int tmp_fd_in, int *fd)
+{
+	if (!cmd->isfirst)
+	{
+		dup2(tmp_fd_in, cmd->infile);
+		close(tmp_fd_in);
+	}
+	if (!cmd->islast)
+	{
+		if (dup2(fd[1], cmd->outfile) < 0)
+			close(cmd->outfile);
+		close(fd[1]);
+		close(fd[0]);
+	}
+}
+
+void	ft_close_cmd_fd(t_cmd *cmd, int *tmp_fd_in, int *fd)
+{
+	if (!cmd->isfirst)
+			close(*tmp_fd_in);
+	if (!cmd->islast)
+	{
+		close(fd[1]);
+		*tmp_fd_in = fd[0];
+		if (*tmp_fd_in < 0)
+			perror("tmp_fd_in");
+	}
+}
+
+// void	ft_run_all_cmd(t_cmd *cmd, t_expand **env_lst, char *env[], int *exit_status)
+// {
+// 	int fd[2];
+// 	int *pid;
+// 	int tmp_fd_in;
+// 	int i;
+
+// 	tmp_fd_in = -1;
+// 	i = 0;
+
+// }
+
+int	ft_start_execution(t_cmd **cmd, t_expand **env_lst, int *exit_status, int *tmp_fd_in)
+{
+	*tmp_fd_in = -1;
+	if (!*cmd)
+		return(1);
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	init_fds(cmd);
+	if (exe_one_cmd_only(*cmd, env_lst, exit_status))
+		return(1);
+	return (0);
+}
+
+void	ft_child_exe(t_cmd *cmd, int tmp_fd_in, int *fd)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	ft_cmd_redirection(cmd);
+	ft_piping(cmd, tmp_fd_in, fd);
+}
+
+void	ft_fork_and_pipe(t_cmd *cmd, int *pid, int *fd)
+{
+	if (!cmd->islast)
+		pipe(fd);
+	*pid = fork();
+	if (*pid < 0)
+		perror("fork");
+}
+void	ft_close_pipe(int *fd)
+{
 	close(fd[0]);
 	close(fd[1]);
+}
+void pipe_line(t_cmd *cmd, t_expand **env_lst, char *env[], int *exit_status)
+{
+	struct termios term;
+	int fd[2];
+	int *pid;
+	int tmp_fd_in;
+	int i;
+	
+	i = 0;
+	tcgetattr(STDIN_FILENO, &term);
+	if (ft_start_execution(&cmd, env_lst, exit_status, &tmp_fd_in))
+		return ;
+	pid = allocat_pids(cmd);
+	while (cmd)
+	{
+		ft_fork_and_pipe(cmd, &pid[i], fd);
+		if (pid[i] == 0)
+		{
+			ft_child_exe(cmd, tmp_fd_in, fd);
+			ft_execute_node(cmd->args, *env_lst, env, exit_status);
+		}
+		ft_close_cmd_fd(cmd, &tmp_fd_in, fd);
+		cmd = cmd->next;
+		i++;
+	}
+	ft_get_exit_status(exit_status, pid, i, &term);
+	ft_close_pipe(fd);
 }
 
 int exe_one_cmd_only(t_cmd *cmd, t_expand **env, int *exit_status)
@@ -232,12 +293,16 @@ int exe_one_cmd_only(t_cmd *cmd, t_expand **env, int *exit_status)
 		save_out = dup(1);
 		if (cmd->infile != 0)
 		{
+			if(cmd->infile < 0)
+				*exit_status = 1;
 			if ((dup2(cmd->infile, 0) < 0))
 				return (1);
 			close(cmd->infile);
 		}
 		if (cmd->outfile != 1)
 		{
+			if(cmd->outfile < 0)
+				*exit_status = 1;
 			if ((dup2(cmd->outfile, 1) < 0))
 				return (1);
 			close(cmd->outfile);

@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/05/02 22:58:17 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/05 16:51:19 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ char **get_envp(t_expand *lst_envp)
 
 void ft_execution(t_cmd *cmd, t_expand **envp, int *exit_status)
 {
-	char **env;
+	char **env = NULL;
 
 	if (!envp)
 	{
@@ -98,14 +98,22 @@ char *check_path(char **path, char *cmd)
 	int i;
 
 	i = 0;
-	if ((!path || !*path) && (access(cmd, X_OK)))
+	if ((!path || !*path))
 	{
-		ft_putstr_fd(cmd, 2);
-		ft_putendl_fd(": No such file or directory", 2);
-		exit(127);
+		if((mydir = opendir(cmd)) && mydir)
+		{
+			closedir(mydir);
+			ft_putstr_fd(cmd, 2);
+			ft_putendl_fd(": is a directory", 2);
+			exit(126);
+		}
+		if (access(cmd, X_OK) && access(cmd, F_OK))
+		{
+			ft_putstr_fd(cmd, 2);
+			ft_putendl_fd(": No such file or directory", 2);
+			exit(127);
+		}
 	}
-	// if (access(cmd, X_OK) == 0)
-	// 	return (cmd);
 	if (cmd[0] == '/' || cmd[0] == '.')
 	{
 		if (access(cmd, X_OK) == 0 || access(cmd, F_OK) == 0)
@@ -116,7 +124,7 @@ char *check_path(char **path, char *cmd)
 				ft_putendl_fd(": Permission denied", 2);
 				exit(126);
 			}
-			if((mydir = opendir(cmd)) && mydir)
+			if((mydir = opendir(cmd)) && mydir && ft_strcmp(cmd, "..") && ft_strcmp(cmd, "."))
 			{
 				closedir(mydir);
 				ft_putstr_fd(cmd, 2);
@@ -136,12 +144,10 @@ char *check_path(char **path, char *cmd)
 		if (access(cmd_path, X_OK) == 0)
 			return (cmd_path);
 		i++;
-		// free(cmd_path);
 		cmd_path = NULL;
 	}
 	ft_putstr_fd(cmd, 2);
 	ft_putendl_fd(": command not found", 2);
-	// printf("bash: %s: command not found\n",cmd);
 	exit(127);
 }
 
@@ -159,8 +165,7 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp, int *exit_sta
 {
 	char **paths = NULL;
 	char *new_cmd;
-	// signal(SIGINT, SIG_DFL);
-	// signal(SIGQUIT, SIG_DFL);
+
 	if (!cmd || !*cmd)
 		exit (0);
 	ft_execute_bultin(cmd, &envp, exit_status);
@@ -178,10 +183,10 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp, int *exit_sta
 	{
 		ft_putstr_fd(cmd[0], 2);
 		ft_putendl_fd(": command not found", 2);
-		// printf("bash: %s: command not found\n",cmd[0]);
 	}
 	else
-		perror(cmd[0]); 
+		perror(cmd[0]);
+	exit(127);
 }
 
 // int main()
