@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 02:00:07 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/27 17:31:35 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/04 17:17:30 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		return (ft_strdup(""));
 	if (len_str < len + start)
 		len = len_str - start;
-	res = (char *)ft_malloc(len + 1 ,ALLOC);
+	res = (char *)ft_malloc(len + 1, ALLOC);
 	if (!res)
 		return (NULL);
 	i = start;

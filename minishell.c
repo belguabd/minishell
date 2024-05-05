@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/05 17:15:39 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/05 17:49:36 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,21 +121,7 @@ void remove_single_q(token_node *head)
 	while (head)
 	{
 		if (head->type == SINGLE_Q)
-		{
-			char *str = head->value;
-			size_t len = ft_strlen(str) - 2;
-			char *str_sgl = (char *)ft_malloc(len + 1, ALLOC);
-			if (str_sgl)
-			{
-
-				int i = 0;
-				int j = 1;
-				while (str[j] && str[j] != '\'')
-					str_sgl[i++] = str[j++];
-				str_sgl[i] = '\0';
-				head->value = str_sgl;
-			}
-		}
+			head->value = ft_strtrim(head->value, "\'");
 		head = head->next;
 	}
 }
@@ -144,21 +130,7 @@ void remove_double_q(token_node *head)
 	while (head)
 	{
 		if (head->type == DOUBLE_Q)
-		{
-			char *str = head->value;
-			size_t len = ft_strlen(str) - 2;
-			char *str_sgl = (char *)ft_malloc(len + 1, ALLOC);
-			if (str_sgl)
-			{
-
-				int i = 0;
-				int j = 1;
-				while (str[j] && str[j] != '\"')
-					str_sgl[i++] = str[j++];
-				str_sgl[i] = '\0';
-				head->value = str_sgl;
-			}
-		}
+			head->value = ft_strtrim(head->value, "\"");
 		head = head->next;
 	}
 }
@@ -289,7 +261,7 @@ token_node *ft_concatenate(token_node *head)
 			buffer = NULL;
 			while (head != NULL && is_string_type(head->type))
 			{
-				if (head->flage)
+				if (head->flag)
 					check = true;
 				if (!buffer)
 					buffer = ft_strdup("");
@@ -299,7 +271,7 @@ token_node *ft_concatenate(token_node *head)
 			token_node *new_node = addnew_tkn_node(STRING, buffer, -2);
 			if (check)
 			{
-				new_node->flage = true;
+				new_node->flag = true;
 				check = false;
 			}
 			lstadd_back(&new, new_node);
@@ -354,8 +326,8 @@ void parse_redirection_token(token_node **head, token_node **new_node)
 	(*head) = tmp;
 	value = (*head)->value;
 	token_node *new = addnew_tkn_node(type, value, fd_hrd);
-	if ((*head)->flage)
-		new->flage = true;
+	if ((*head)->flag)
+		new->flag = true;
 	lstadd_back(new_node, new);
 	(*head) = (*head)->next;
 }
@@ -425,8 +397,8 @@ t_cmd *ft_split_cmd(token_node *new_head)
 		if (is_redirection(new_head->type))
 		{
 			token_node *new = addnew_tkn_node(new_head->type, new_head->value, new_head->fd_hrd);
-			if (new_head->flage)
-				new->flage = true;
+			if (new_head->flag)
+				new->flag = true;
 			lstadd_back(&redir, new);
 		}
 		new_head = new_head->next;
@@ -445,8 +417,8 @@ t_cmd *ft_passing(token_node *head)
 			if (head->type == PIPE)
 				break;
 			token_node *new_node = addnew_tkn_node(head->type, head->value, head->fd_hrd);
-			if (head->flage)
-				new_node->flage = true;
+			if (head->flag)
+				new_node->flag = true;
 			lstadd_back(&new_head, new_node);
 			head = head->next;
 		}
@@ -472,8 +444,8 @@ token_node *skip_empty_dollar(token_node *head)
 			continue;
 		}
 		token_node *new_node = addnew_tkn_node(head->type, head->value, head->fd_hrd);
-		if (head->flage)
-			new_node->flage = true;
+		if (head->flag)
+			new_node->flag = true;
 		lstadd_back(&new_head, new_node);
 		head = head->next;
 	}
@@ -495,14 +467,13 @@ int main(int ac, char const *av[], char *env[])
 	head = NULL;
 	t_expand *env_expand = NULL;
 	init_env(&env_expand, env);
-
 	rl_catch_signals = 0;
+	//exit_status = 0;
 	// while (1 && isatty(STDIN_FILENO))
 	while (1)
 	{
 		signal(SIGINT, sig_handler);
 		signal(SIGQUIT, handler);
-		// puts("======");
 		head = NULL;
 		cmd = readline("➜ minishell ");
 		if (g_sig == 1)
@@ -544,7 +515,7 @@ int main(int ac, char const *av[], char *env[])
 		// 	while (tmp)
 		// 	{
 		// 		printf("%s ", tmp->value);
-		// 		printf("%d ", tmp->flage);
+		// 		printf("%d ", tmp->flag);
 		// 		printf(" %s ", "|");
 
 		// 		tmp = tmp->next;

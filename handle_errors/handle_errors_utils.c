@@ -1,35 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isalnum.c                                       :+:      :+:    :+:   */
+/*   handle_errors_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/06 21:48:41 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/04 16:45:08 by belguabd         ###   ########.fr       */
+/*   Created: 2024/05/04 13:17:31 by belguabd          #+#    #+#             */
+/*   Updated: 2024/05/04 14:05:55 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	ft_isalpha(int alpha)
+int	quote_error_handling(const char *buffer, size_t *i, char c)
 {
-	if ((alpha >= 'a' && alpha <= 'z') || (alpha >= 'A' && alpha <= 'Z'))
-		return (1);
-	else
+	while (buffer[(*i)] && buffer[(*i)] != c)
+		(*i)++;
+	if (buffer[(*i)] && buffer[(*i)] == c)
 		return (0);
-}
-
-int	ft_isdigit(int c)
-{
-	if (c >= '0' && c <= '9')
-		return (1);
+	else
+	{
+		ft_putendl_fd("close quote", 2);
+		return (-1);
+	}
 	return (0);
 }
 
-int	ft_isalnum(int c)
+int	print_error_quote(const char *cmd)
 {
-	if (ft_isalpha(c) || ft_isdigit(c))
-		return (1);
+	size_t	i;
+	size_t	len;
+
+	i = 0;
+	len = ft_strlen(cmd);
+	while (i < len)
+	{
+		if (cmd[i] == '\"' || cmd[i] == '\'')
+		{
+			i++;
+			if (quote_error_handling(cmd, &i, cmd[i - 1]) == -1)
+				return (-1);
+		}
+		i++;
+	}
 	return (0);
 }

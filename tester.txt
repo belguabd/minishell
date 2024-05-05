@@ -129,3 +129,11 @@ minishell export a+=a b+=b c+=c
 unset 1a b 2c
 minishell exit "545456 564"
 env fgdf
+
+➜ minishell cat | ls
+Makefile                gc                      minishell               script.sh
+New Document 2.tldr     handle_errors           minishell.c             scriptfd.sh
+built_in                lexer                   minishell.h             sigs
+execution               libft                   minishell_test          tester.txt
+expander                main.c                  pipe                    utils
+^C➜ minishell 

@@ -14,12 +14,12 @@ READLINE=$(shell brew --prefix readline)/lib
 READLINE1=$(shell brew --prefix readline)/include
 #-------files-------#
 SRC =minishell.c \
-	$(UTILS)/ft_split.c $(UTILS)/ft_strlen.c $(UTILS)/ft_strdup.c $(UTILS)/ft_substr.c $(UTILS)/ft_strjoin.c $(UTILS)/ft_putendl_fd.c \
-	$(UTILS)/ft_lstsize.c  $(UTILS)/ft_isalnum.c $(UTILS)/ft_itoa.c $(UTILS)/ft_lstlast.c $(UTILS)/ft_split_last_cmd.c \
-	$(LEXER)/ft_tonken.c  $(LEXER)/ft_tonken_utils.c \
-	$(HANDLE_ERRORS)/handle_errors.c \
-	$(EXPANDER)/expander.c $(EXPANDER)/expander_utils.c \
-	$(GC)/ft_free.c  $(GC)/ft_free_env.c $(GC)/ft_close_fds.c \
+	$(UTILS)/ft_split.c $(UTILS)/ft_strlen.c $(UTILS)/ft_strdup.c $(UTILS)/ft_substr.c $(UTILS)/ft_strjoin.c $(UTILS)/ft_putendl_fd.c $(UTILS)/ft_strtrim.c \
+	$(UTILS)/ft_lstsize.c  $(UTILS)/ft_isalnum.c $(UTILS)/ft_itoa.c $(UTILS)/ft_lstlast.c $(UTILS)/ft_split_last_cmd.c $(UTILS)/ft_split_last_cmd_01.c\
+	$(LEXER)/ft_tonken.c  $(LEXER)/ft_tonken_utils_01.c $(LEXER)/ft_tonken_utils_02.c \
+	$(HANDLE_ERRORS)/handle_errors.c $(HANDLE_ERRORS)/handle_errors_utils.c \
+	$(EXPANDER)/expander.c $(EXPANDER)/expander_utils01.c $(EXPANDER)/expander_utils02.c \
+	$(GC)/ft_free.c  $(GC)/ft_free_env.c $(GC)/ft_close_fds.c $(GC)/ft_free_env_utils_01.c \
 	$(EXECUTION)/execution.c $(EXECUTION)/execution_tools.c \
 	$(BUILT_IN)/built_in_tools.c $(BUILT_IN)/cd.c $(BUILT_IN)/env.c $(BUILT_IN)/export.c $(BUILT_IN)/pwd.c $(BUILT_IN)/unset.c $(BUILT_IN)/echo.c $(BUILT_IN)/exit.c \
 	$(PIPE)/ft_pipe.c sigs/signals.c
