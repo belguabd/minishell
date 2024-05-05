@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 01:53:18 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/05/05 10:17:57 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/05 17:47:05 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ int	ft_join_value(t_expand *node, t_expand **envp)
 				head->value = ft_strjoin_env(head->value, &node->value[2]);
 			else if(!head->value[0])
 				head->value = ft_strdup_env(&node->value[2]);
+			head->isnull = false;
 			return (1);
 		}
 		head = head->next;

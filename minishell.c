@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/05 17:19:55 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/05 18:15:30 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -481,7 +481,7 @@ int main(int ac, char const *av[], char *env[])
 	t_expand *env_expand = NULL;
 	init_env(&env_expand, env);
 	rl_catch_signals = 0;
-	exit_status = 0;
+	//exit_status = 0;
 	// while (1 && isatty(STDIN_FILENO))
 	while (1)
 	{
