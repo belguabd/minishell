@@ -6,19 +6,20 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 01:13:58 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/17 13:17:32 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/04 17:16:20 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-char *ft_strdup(const char *s1)
+
+char	*ft_strdup(const char *s1)
 {
-	int len;
-	int i;
-	char *string;
+	char	*string;
+	int		len;
+	int		i;
 
 	len = ft_strlen(s1);
-	string = (char *)ft_malloc((len + 1) * sizeof(char),ALLOC);
+	string = (char *)ft_malloc((len + 1) * sizeof(char), ALLOC);
 	if (!string)
 		return (NULL);
 	i = 0;

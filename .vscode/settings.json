@@ -2,6 +2,8 @@
     "files.associations": {
         "minishell.h": "c",
         "ios": "c",
-        "__functional_base": "c"
+        "__functional_base": "c",
+        "string": "c",
+        "iosfwd": "c"
     }
 }

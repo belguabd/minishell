@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/05/04 15:16:15 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/05 14:24:53 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void ft_execute_bultin(char *cmd[], t_expand **envp, int *exit_status)
 		exit(ft_unset(cmd, envp));
 	}
 	if (ft_strcmp(cmd[0], "exit") == 0)
-		ft_exit(cmd);
+		ft_exit(cmd,*exit_status);
 }
 
 char *check_path(char **path, char *cmd)

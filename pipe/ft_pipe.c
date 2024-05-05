@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_pipe.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/05/01 15:01:50 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/05 14:24:32 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,11 @@ void init_fds(t_cmd **cmds)
 			{
 				if (tmp->type == REDIRECT_OUT)
 				{
-					if (tmp->flage)
+					if (tmp->flag)
 					{
 						ft_putendl_fd("bash: ambiguous redirect", 2);
 						head->outfile = -1;
-						tmp->flage = false;
+						tmp->flag = false;
 					}
 					else
 					{
@@ -72,11 +72,11 @@ void init_fds(t_cmd **cmds)
 				}
 				else if (tmp->type == REDIRECT_APPEND)
 				{
-					if (tmp->flage)
+					if (tmp->flag)
 					{
 						head->outfile = -1;
 						ft_putendl_fd("bash: ambiguous redirect", 2);
-						tmp->flage = false;
+						tmp->flag = false;
 					}
 					else
 					{
@@ -89,11 +89,11 @@ void init_fds(t_cmd **cmds)
 				}
 				else if (tmp->type == REDIRECT_IN)
 				{
-					if (tmp->flage)
+					if (tmp->flag)
 					{
 						head->infile = -1;
 						ft_putendl_fd("bash: ambiguous redirect", 2);
-						tmp->flage = false;
+						tmp->flag = false;
 					}
 					else
 					{
@@ -266,12 +266,12 @@ int is_builtin(t_cmd *cmd)
 
 int exe_bultin_in_parent(char *cmd[], t_expand **env, int *exit_status)
 {
-	*exit_status = 0;
+	// *exit_status = 0;
 	if (ft_strcmp(cmd[0], "echo") == 0 || ft_strcmp(cmd[0], "/bin/echo") == 0)
 		return (ft_echo(cmd), 1);
 	else if (ft_strcmp(cmd[0], "exit") == 0)
 	{
-		*exit_status = ft_exit(cmd);
+		*exit_status = ft_exit(cmd , *exit_status);
 		return (1);
 	}
 	else if (ft_strcmp(cmd[0], "export") == 0)

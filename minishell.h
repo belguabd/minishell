@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/04 14:07:11 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/05 14:17:38 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ typedef struct token_node
 {
 	int type;
 	char *value;
-	bool flage;
+	bool flag;
 	int fd_hrd;
 	struct token_node *next;
 } token_node;
@@ -87,7 +87,7 @@ typedef struct s_vars
 	char **res;
 	size_t i;
 	int j;
-	int flage;
+	int flag;
 	int start;
 } t_vars;
 
@@ -114,7 +114,15 @@ int ft_lstsize(token_node *lst);
 int ft_isalnum(int c);
 int ft_isdigit(int c);
 char *ft_itoa(int n);
-
+/*function for gc*/
+char	*ft_strjoin_env(char const *s1, char const *s2);
+char	*ft_strdup_env(const char *s1);
+char	*ft_substr_env(char const *s, unsigned int start, size_t len);
+t_expand	*addnew_expand_node_env(char *key, char *value);
+void	lstadd_back_expand_env(t_expand **lst, t_expand *new_node);
+/*split_cmd functions*/
+bool	not_space(char c);
+bool	is_space(char c);
 /*start functions for tokenization */
 int	ft_single_double(token_node **head, const char *cmd, int i);
 int	ft_dollar(token_node **head, const char *cmd, int *i);
@@ -182,7 +190,7 @@ int ft_unset(char **cmd, t_expand **envp);
 int ft_export(char **cmd, t_expand **envp);
 int is_builtin(t_cmd *cmd);
 void get_env_export(t_expand *envp);
-int ft_exit(char **cmd);
+int ft_exit(char **cmd , int exit_status);
 // tools
 
 char *ft_get_cwd(char *new_path, int mode);
@@ -216,4 +224,5 @@ char *ft_itoa(int n);
 // #define malloc(size) __malloc(size, __FILE__, __LINE__)
 // #endif
 char *ft_str_exp_double_q(char *str_var, t_expand *env , int exit_status);
+char	*ft_strtrim(char const *s1, char const *set);
 #endif

@@ -1,28 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putendl_fd.c                                    :+:      :+:    :+:   */
+/*   ft_split_last_cmd_01.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/06 17:35:07 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/04 16:47:09 by belguabd         ###   ########.fr       */
+/*   Created: 2024/05/04 17:04:16 by belguabd          #+#    #+#             */
+/*   Updated: 2024/05/04 17:09:09 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
+#include "../minishell.h"
 
-void	ft_putendl_fd(char *s, int fd)
+bool	is_space(char c)
 {
-	if (fd < 0)
-		return ;
-	if (s)
-	{
-		while (*s)
-		{
-			write(fd, s, 1);
-			s++;
-		}
-		write(fd, "\n", 1);
-	}
+	if (c == ' ' || (c >= 9 && c <= 13))
+		return (true);
+	return (false);
+}
+
+bool	not_space(char c)
+{
+	if (c != ' ' && (c < 9 || c > 13))
+		return (true);
+	return (false);
 }

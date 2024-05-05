@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 09:49:47 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/04 13:11:11 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/05 10:17:57 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ token_node	*addnew_tkn_node(int token, char *value, int fd)
 	if (!new)
 		return (NULL);
 	new->type = token;
-	new->flage = false;
+	new->flag = false;
 	new->value = value;
 	new->fd_hrd = fd;
 	new->next = NULL;

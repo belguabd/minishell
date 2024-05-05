@@ -6,29 +6,11 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 05:11:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/27 20:40:29 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/05 10:17:57 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-static int	ft_free(char **res, char *str, int index)
-{
-	int	i;
-
-	i = 0;
-	if (!str)
-	{
-		while (i < index)
-		{
-			free(res[i]);
-			i++;
-		}
-		free(res);
-		return (0);
-	}
-	return (1);
-}
 
 static int	count_words(const char *str, char c)
 {
@@ -56,7 +38,7 @@ static char	*word_dup(const char *str, int start, int end, int *flag)
 	char	*word;
 	int		i;
 
-	word = (char *)ft_malloc(((end - start) + 1) * sizeof(char),ALLOC);
+	word = (char *)ft_malloc(((end - start) + 1) * sizeof(char), ALLOC);
 	if (!word)
 		return (NULL);
 	i = 0;
@@ -73,25 +55,22 @@ char	**ft_split(char const *str, char c)
 
 	if (!str)
 		return (NULL);
-	var.res = (char **)ft_malloc_env((count_words(str, c) + 1) * sizeof(char *) ,ALLOC);
+	var.res = (char **)ft_malloc_env(
+			(count_words(str, c) + 1) * sizeof(char *), ALLOC);
 	if (!var.res)
 		return (NULL);
 	var.i = -1;
 	var.j = 0;
-	var.flage = 1;
+	var.flag = 1;
 	while (++var.i <= ft_strlen(str))
 	{
-		if (str[var.i] != c && var.flage > 0)
+		if (str[var.i] != c && var.flag > 0)
 		{
 			var.start = var.i;
-			var.flage = 0;
+			var.flag = 0;
 		}
-		else if ((str[var.i] == c || !str[var.i]) && var.flage == 0)
-		{
-			var.res[var.j++] = word_dup(str, var.start, var.i, &var.flage);
-			if (!ft_free(var.res, var.res[var.j - 1], var.j - 1))
-				return (NULL);
-		}
+		else if ((str[var.i] == c || !str[var.i]) && var.flag == 0)
+			var.res[var.j++] = word_dup(str, var.start, var.i, &var.flag);
 	}
 	return (var.res[var.j] = 0, var.res);
 }

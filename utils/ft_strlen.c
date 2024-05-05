@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/02 10:29:34 by belguabd          #+#    #+#             */
-/*   Updated: 2024/03/17 10:45:32 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/04 17:17:10 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,9 @@
 size_t	ft_strlen(const char *s)
 {
 	size_t	i;
-	if(!s)
-		return 0;
+
+	if (!s)
+		return (0);
 	i = 0;
 	while (s[i])
 		i++;

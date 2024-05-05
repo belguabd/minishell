@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 23:19:52 by belguabd          #+#    #+#             */
-/*   Updated: 2024/04/03 07:35:07 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/04 16:46:18 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static size_t	get_len(int n)
+static	size_t	get_len(int n)
 {
 	size_t	len;
 
@@ -38,7 +38,7 @@ char	*ft_itoa(int n)
 
 	i = 0;
 	len = get_len(n);
-	res = (char *)ft_malloc(len + 1,ALLOC);
+	res = (char *)ft_malloc(len + 1, ALLOC);
 	if (!res)
 		return (NULL);
 	res[len] = '\0';
