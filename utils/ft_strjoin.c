@@ -6,18 +6,22 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 01:19:54 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/04 17:16:46 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/05 18:10:48 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char *ft_strjoin(char const *s1, char const *s2)
 {
-	char	*string;
-	size_t	i;
-	size_t	j;
+	char *string;
+	size_t i;
+	size_t j;
 
+	if (s1 && !s2)
+		return (ft_strdup(s1));
+	if (!s1 && s2)
+		return (ft_strdup(s2));
 	if (!s1 || !s2)
 		return (NULL);
 	string = ft_malloc((ft_strlen(s1) + ft_strlen(s2)) + 1, ALLOC);

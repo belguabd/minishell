@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/05 10:17:57 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/05 17:19:55 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,6 +243,11 @@ void ft_heredoc(token_node *head, t_expand *env, int exit_status)
 			if (!buffer)
 				return;
 			head->fd_hrd = readline_hdc(buffer, env, flag, exit_status);
+			if (head && head->fd_hrd == -2)
+			{
+				exit_status = 1;
+				return;
+			}
 			buffer = NULL;
 		}
 		head = head->next;
@@ -263,8 +268,6 @@ token_node *ft_concatenate(token_node *head)
 			{
 				if (head->flag)
 					check = true;
-				if (!buffer)
-					buffer = ft_strdup("");
 				buffer = ft_strjoin(buffer, head->value);
 				head = head->next;
 			}
@@ -393,7 +396,7 @@ t_cmd *ft_split_cmd(token_node *new_head)
 	while (new_head)
 	{
 		if (new_head->type == STRING)
-			args[i++] = ft_strdup(new_head->value); // args[i++] = ft_strdup(new_head->value);
+			args[i++] = ft_strdup(new_head->value);
 		if (is_redirection(new_head->type))
 		{
 			token_node *new = addnew_tkn_node(new_head->type, new_head->value, new_head->fd_hrd);
@@ -451,6 +454,16 @@ token_node *skip_empty_dollar(token_node *head)
 	}
 	return (new_head);
 }
+bool ft_hr_dc_cntrl_c(token_node *head)
+{
+	token_node *tmp = head;
+	while (tmp)
+	{
+		if(tmp->fd_hrd == -2)
+			return (true);
+	}
+	return (false);
+}
 int main(int ac, char const *av[], char *env[])
 {
 
@@ -490,6 +503,12 @@ int main(int ac, char const *av[], char *env[])
 		remove_single_q(head);
 		remove_double_q(head);
 		ft_heredoc(head, env_expand, exit_status);
+		// if(ft_hr_dc_cntrl_c(head))
+		// {
+		// 	free((void *)cmd);
+		// 	ft_malloc(FREE, FREE);
+		// 	continue;
+		// }
 		if (error == -1)
 		{
 			exit_status = 258;
@@ -502,6 +521,7 @@ int main(int ac, char const *av[], char *env[])
 		head = ft_remove_redirect(head);
 		head = skip_empty_dollar(head);
 		cmd_list = ft_passing(head);
+		
 		ft_execution(cmd_list, &env_expand, &exit_status);
 		// (void)cmd_list;
 		// while (cmd_list)

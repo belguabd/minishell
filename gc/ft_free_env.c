@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 02:07:02 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/04 18:21:55 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/05 16:02:47 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,8 @@ void	init_env(t_expand **head, char *env[])
 	char	*value;
 	
 	cmd = ft_malloc(sizeof(char *) * 3, ALLOC);
-	cmd[0] = "unset";
-	cmd[1] = "OLDPWD";
+	cmd[0] = ft_strdup_env("unset");
+	cmd[1] = ft_strdup_env("OLDPWD");
 	cmd[2] = NULL;
 	i = -1;
 	while (env[++i])
@@ -102,8 +102,8 @@ void	init_env(t_expand **head, char *env[])
 		lstadd_back_expand_env(head, addnew_expand_node_env(key, value));
 	}
 	ft_unset(cmd, head);
-	cmd[0] = "export";
-	cmd[1] = "OLDPWD";
+	cmd[0] = ft_strdup_env("export");
+	cmd[1] = ft_strdup("OLDPWD");
 	cmd[2] = NULL;
 	ft_export(cmd, head);
 }
