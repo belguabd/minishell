@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 01:55:07 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/04 23:41:24 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 00:57:07 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ char	*ft_strtrim(char const *s1, char const *set)
 	end = find_end(s1, set);
 	if (start > end)
 		return (ft_strdup(""));
-	res = (char *)malloc(end - start + 1);
+	res = (char *)ft_malloc(end - start + 1, ALLOC);
 	if (!res)
 		return (NULL);
 	x = 0;
