@@ -6,13 +6,13 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 09:36:33 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/04 13:03:34 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 03:46:44 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	ft_process_odd(const char *cmd, token_node **head, int start)
+void	ft_process_odd(const char *cmd, t_token_node **head, int start)
 {
 	char	*str;
 	size_t	j;
@@ -39,7 +39,7 @@ void	ft_process_odd(const char *cmd, token_node **head, int start)
 	}
 }
 
-void	ft_process_vars(const char *cmd, token_node **head, int i)
+void	ft_process_vars(const char *cmd, t_token_node **head, int i)
 {
 	int		start;
 	char	*str;
@@ -58,7 +58,7 @@ void	ft_process_vars(const char *cmd, token_node **head, int i)
 	lstadd_back(head, addnew_tkn_node(VAR, str, -2));
 }
 
-void	handle_string(int start, const char *cmd, token_node **head)
+void	handle_string(int start, const char *cmd, t_token_node **head)
 {
 	char	*str;
 	int		j;
@@ -70,7 +70,7 @@ void	handle_string(int start, const char *cmd, token_node **head)
 	lstadd_back(head, addnew_tkn_node(STRING, str, -2));
 }
 
-int	ft_redirection(token_node **head, const char *cmd, int i)
+int	ft_redirection(t_token_node **head, const char *cmd, int i)
 {
 	if (cmd[i] == '>' && cmd[i + 1] == '>')
 	{
@@ -95,7 +95,7 @@ int	ft_redirection(token_node **head, const char *cmd, int i)
 	return (-1);
 }
 
-token_node	*tokenization(const char *cmd, token_node **head)
+t_token_node	*tokenization(const char *cmd, t_token_node **head)
 {
 	int		i;
 	size_t	len;

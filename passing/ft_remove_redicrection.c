@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_rm_redicrection.c                               :+:      :+:    :+:   */
+/*   ft_remove_redicrection.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 03:15:10 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/09 03:16:28 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 04:07:02 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,14 @@ bool	is_redirection(int type)
 		|| type == HEREDOC);
 }
 
-void	parse_redirection_token(token_node **head,
-		token_node **new_node)
+void	parse_redirection_token(t_token_node **head,
+		t_token_node **new_node)
 {
-	token_node	*tmp;
-	token_node	*new;
-	int			type;
-	char		*value;
-	int			fd_hrd;
+	t_token_node	*tmp;
+	t_token_node	*new;
+	int				type;
+	char			*value;
+	int				fd_hrd;
 
 	tmp = NULL;
 	type = (*head)->type;
@@ -47,9 +47,9 @@ void	parse_redirection_token(token_node **head,
 	(*head) = (*head)->next;
 }
 
-token_node	*rm_redirect(token_node *head)
+t_token_node	*rm_redirect(t_token_node *head)
 {
-	token_node	*new_node;
+	t_token_node	*new_node;
 
 	new_node = NULL;
 	while (head)

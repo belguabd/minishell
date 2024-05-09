@@ -6,16 +6,16 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 03:21:50 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/09 03:23:04 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 04:06:43 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-token_node *skip_dr(token_node *head)
+t_token_node	*skip_dr(t_token_node *head)
 {
-	token_node	*new_head;
-	token_node	*new_node;
+	t_token_node	*new_head;
+	t_token_node	*new_node;
 
 	new_head = NULL;
 	while (head)
@@ -23,7 +23,7 @@ token_node *skip_dr(token_node *head)
 		if (head->type == STRING && !head->value)
 		{
 			head = head->next;
-			continue;
+			continue ;
 		}
 		new_node = addnew_tkn_node(head->type, head->value, head->fd_hrd);
 		if (head->flag)
@@ -33,7 +33,8 @@ token_node *skip_dr(token_node *head)
 	}
 	return (new_head);
 }
-void	rm_sgl_q(token_node *head)
+
+void	rm_sgl_q(t_token_node *head)
 {
 	while (head)
 	{
@@ -43,7 +44,7 @@ void	rm_sgl_q(token_node *head)
 	}
 }
 
-void	rm_dbl_q(token_node *head)
+void	rm_dbl_q(t_token_node *head)
 {
 	while (head)
 	{

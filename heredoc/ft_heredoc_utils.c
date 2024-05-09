@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 02:43:38 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/09 02:55:51 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 03:46:44 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ void	ft_sig_handler_her_doc(int sig)
 		close(0);
 }
 
-bool	ft_hr_dc_cntrl_c(token_node *head)
+bool	ft_hr_dc_cntrl_c(t_token_node *head)
 {
-	token_node	*tmp;
+	t_token_node	*tmp;
 
 	tmp = head;
 	while (tmp)

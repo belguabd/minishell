@@ -6,13 +6,13 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/11 23:18:03 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/04 16:47:06 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 03:46:44 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	ft_lstsize(token_node *lst)
+int	ft_lstsize(t_token_node *lst)
 {
 	int	i;
 

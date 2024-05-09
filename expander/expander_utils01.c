@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 21:20:05 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/09 02:05:42 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 04:16:45 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ char	*get_str_env(t_expand *env, char *str_var)
 	}
 	return (NULL);
 }
+
 char	*ft_get_var(char *str_var)
 {
 	int	i;

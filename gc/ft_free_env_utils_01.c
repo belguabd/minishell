@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 17:41:23 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/04 17:42:36 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 04:15:19 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char	*ft_strjoin_env(char const *s1, char const *s2)
 
 	if (!s1 || !s2)
 		return (NULL);
-	string = ft_malloc_env((ft_strlen(s1) + ft_strlen(s2)) + 1 ,ALLOC);
+	string = ft_malloc_env((ft_strlen(s1) + ft_strlen(s2)) + 1, ALLOC);
 	if (!string)
 		return (NULL);
 	i = 0;
@@ -47,7 +47,7 @@ char	*ft_strdup_env(const char *s1)
 	int		i;
 
 	len = ft_strlen(s1);
-	string = (char *)ft_malloc_env((len + 1) * sizeof(char),ALLOC);
+	string = (char *)ft_malloc_env((len + 1) * sizeof(char), ALLOC);
 	if (!string)
 		return (NULL);
 	i = 0;
@@ -74,7 +74,7 @@ char	*ft_substr_env(char const *s, unsigned int start, size_t len)
 		return (ft_strdup_env(""));
 	if (len_str < len + start)
 		len = len_str - start;
-	res = (char *)ft_malloc_env(len + 1 ,ALLOC);
+	res = (char *)ft_malloc_env(len + 1, ALLOC);
 	if (!res)
 		return (NULL);
 	i = start;
@@ -84,10 +84,11 @@ char	*ft_substr_env(char const *s, unsigned int start, size_t len)
 	res[j] = '\0';
 	return (res);
 }
+
 t_expand	*addnew_expand_node_env(char *key, char *value)
 {
 	t_expand	*new_node;
-	
+
 	new_node = (t_expand *)ft_malloc_env(sizeof(t_expand), ALLOC);
 	if (!new_node)
 		return (NULL);
@@ -100,14 +101,14 @@ t_expand	*addnew_expand_node_env(char *key, char *value)
 void	lstadd_back_expand_env(t_expand **lst, t_expand *new_node)
 {
 	t_expand	*last;
+
 	if (!*lst)
 	{
 		*lst = new_node;
-		return;
+		return ;
 	}
 	last = *lst;
 	while (last->next)
 		last = last->next;
-
 	last->next = new_node;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_pipe.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/05/05 17:51:34 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/09 03:46:44 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int *allocat_pids(t_cmd *cmd)
 void init_fds(t_cmd **cmds)
 {
 	t_cmd *head;
-	token_node *tmp;
+	t_token_node *tmp;
 	int old_fd_in;
 	int old_fd_out;
 

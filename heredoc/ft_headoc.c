@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 02:41:20 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/09 02:56:44 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 04:07:24 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,10 @@ int	readline_hdc(char *dlmtr, t_expand *env, int flag, int *exit_status)
 	return (ft_readline(flag, dlmtr, env, exit_status));
 }
 
-char	*process_next_string(token_node **head, int *flag)
+char	*process_next_string(t_token_node **head, int *flag)
 {
-	token_node	*tmp;
-	char		*buffer;
+	t_token_node	*tmp;
+	char			*buffer;
 
 	buffer = NULL;
 	tmp = (*head)->next;
@@ -81,7 +81,7 @@ char	*process_next_string(token_node **head, int *flag)
 	return (buffer);
 }
 
-void	ft_heredoc(token_node *head, t_expand *env, int *exit_status)
+void	ft_heredoc(t_token_node *head, t_expand *env, int *exit_status)
 {
 	char	*buffer;
 	int		flag;

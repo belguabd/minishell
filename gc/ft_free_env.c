@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 02:07:02 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/08 22:25:08 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 04:13:38 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void	init_env(t_expand **head, char *env[])
 	int		j;
 	char	*key;
 	char	*value;
-	
+
 	cmd = ft_malloc(sizeof(char *) * 3, ALLOC);
 	cmd[0] = ft_strdup_env("unset");
 	cmd[1] = ft_strdup_env("OLDPWD");

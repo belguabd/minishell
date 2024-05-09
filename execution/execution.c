@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/05/05 17:44:49 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/09 03:46:44 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,9 +200,9 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp, int *exit_sta
 // 	ft_lst_add_back(&envp, ft_lst_new(ft_strdup("PATH"), ft_strdup("/Users/soel-bou/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki:/Library/Apple/usr/bin:/Users/soel-bou/.brew/bin")));
 // 	ft_lst_add_back(&envp, ft_lst_new(ft_strdup("var3"), ft_strdup("jkanf")));
 
-// 	token_node *token = (token_node*)malloc(sizeof(token_node));
-// 	token_node *token2 = (token_node*)malloc(sizeof(token_node));
-// 	token_node *token3 = (token_node*)malloc(sizeof(token_node));
+// 	t_token_node *token = (t_token_node*)malloc(sizeof(t_token_node));
+// 	t_token_node *token2 = (t_token_node*)malloc(sizeof(t_token_node));
+// 	t_token_node *token3 = (t_token_node*)malloc(sizeof(t_token_node));
 //     token->type = REDIRECT_IN;
 //     token->value = "file";
 //     token->next = NULL;

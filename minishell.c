@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/09 03:40:59 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 04:04:28 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,10 @@ void	shell_signal_read(const char **cmd, int *exit_st)
 
 int	main(int ac, char const *av[], char *env[])
 {
-	const char	*cmd;
-	token_node	*head;
-	t_expand	*env_e;
-	int			exit_st;
+	const char		*cmd;
+	t_token_node	*head;
+	t_expand		*env_e;
+	int				exit_st;
 
 	(1) && ((void)ac, (void)av, cmd = NULL, env_e = NULL);
 	init_env(&env_e, env);

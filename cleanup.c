@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 03:29:26 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/09 03:31:57 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 03:46:44 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	clean_fd_cmd(const char *cmd)
 	ft_close_fds(FREE, CLOSE);
 }
 
-void	process_shell_input(token_node **head, const char **cmd,
+void	process_shell_input(t_token_node **head, const char **cmd,
 		int *exit_st, t_expand *env_e)
 {
 	shell_signal_read(cmd, exit_st);

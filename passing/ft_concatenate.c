@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 03:08:59 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/09 03:12:25 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 04:05:36 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,11 @@ int	is_string_type(int type)
 		|| type == EXIT_STATUS);
 }
 
-void	concat_string_flag_check(token_node **head, token_node **new)
+void	concat_string_flag_check(t_token_node **head, t_token_node **new)
 {
-	token_node	*new_node;
-	bool		check;
-	char		*buffer;
+	t_token_node	*new_node;
+	bool			check;
+	char			*buffer;
 
 	check = false;
 	buffer = NULL;
@@ -46,9 +46,9 @@ void	concat_string_flag_check(token_node **head, token_node **new)
 	lstadd_back(new, new_node);
 }
 
-token_node	*ft_concatenate(token_node *head)
+t_token_node	*ft_concatenate(t_token_node *head)
 {
-	token_node	*new;
+	t_token_node	*new;
 
 	new = NULL;
 	while (head != NULL)

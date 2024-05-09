@@ -6,13 +6,13 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 21:20:05 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/05 15:38:16 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 04:16:31 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	ft_expand_var(token_node *head, t_expand *env)
+void	ft_expand_var(t_token_node *head, t_expand *env)
 {
 	char	*str;
 	int		i;
@@ -31,11 +31,11 @@ void	ft_expand_var(token_node *head, t_expand *env)
 	}
 }
 
-void	tokenize_and_add_to_list(char **output, token_node **new_head)
+void	tokenize_and_add_to_list(char **output, t_token_node **new_head)
 {
-	token_node	*tmp;
-	int			i;
-	token_node	*new;
+	t_token_node	*tmp;
+	int				i;
+	t_token_node	*new;
 
 	i = 0;
 	tmp = NULL;
@@ -53,12 +53,12 @@ void	tokenize_and_add_to_list(char **output, token_node **new_head)
 		tmp->flag = true;
 }
 
-void	expand_var_and_split(token_node **new_head,
-	token_node *head, t_expand *env)
+void	expand_var_and_split(t_token_node **new_head,
+	t_token_node *head, t_expand *env)
 {
-	char		**output;
-	token_node	*skip_space;
-	token_node	*new;
+	char			**output;
+	t_token_node	*skip_space;
+	t_token_node	*new;
 
 	ft_expand_var(head, env);
 	output = ft_split_last_cmd(head->value);
@@ -78,7 +78,7 @@ void	expand_var_and_split(token_node **new_head,
 	tokenize_and_add_to_list(output, new_head);
 }
 
-char	*expand_str_vars(token_node *head, t_expand *env, int exit_status)
+char	*expand_str_vars(t_token_node *head, t_expand *env, int exit_status)
 {
 	size_t	i;
 	char	*buffer;
@@ -101,10 +101,10 @@ char	*expand_str_vars(token_node *head, t_expand *env, int exit_status)
 	return (buffer);
 }
 
-token_node	*expand_and_print_vars(token_node *head,
+t_token_node	*expand_and_print_vars(t_token_node *head,
 	t_expand *env, int exit_status)
 {
-	token_node	*new_head;
+	t_token_node	*new_head;
 
 	new_head = NULL;
 	while (head)

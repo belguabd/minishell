@@ -6,13 +6,13 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 13:00:31 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/04 13:12:20 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 03:46:44 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	ft_single_double(token_node **head, const char *cmd, int i)
+int	ft_single_double(t_token_node **head, const char *cmd, int i)
 {
 	if (cmd[i] == '\'')
 	{
@@ -27,7 +27,7 @@ int	ft_single_double(token_node **head, const char *cmd, int i)
 	return (-1);
 }
 
-int	ft_dollar(token_node **head, const char *cmd, int *i)
+int	ft_dollar(t_token_node **head, const char *cmd, int *i)
 {
 	if (cmd[(*i)] == '$' && cmd[(*i) + 1] == '?')
 	{
@@ -54,7 +54,7 @@ int	ft_dollar(token_node **head, const char *cmd, int *i)
 	return (-1);
 }
 
-int	ft_spaces(token_node **head, const char *cmd, int *i)
+int	ft_spaces(t_token_node **head, const char *cmd, int *i)
 {
 	if (cmd[(*i)] && (cmd[(*i)] == ' ' || (cmd[(*i)] >= 9 && cmd[(*i)] <= 13)))
 	{
@@ -68,7 +68,7 @@ int	ft_spaces(token_node **head, const char *cmd, int *i)
 	return (-1);
 }
 
-void	handle_single_quotes(int start, const char *cmd, token_node **head)
+void	handle_single_quotes(int start, const char *cmd, t_token_node **head)
 {
 	int		j;
 	char	*str;
@@ -85,7 +85,7 @@ void	handle_single_quotes(int start, const char *cmd, token_node **head)
 	lstadd_back(head, addnew_tkn_node(SINGLE_Q, str, -2));
 }
 
-void	handle_double_quotes(int start, const char *cmd, token_node **head)
+void	handle_double_quotes(int start, const char *cmd, t_token_node **head)
 {
 	int		j;
 	char	*str;

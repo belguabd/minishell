@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 03:01:33 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/09 03:04:24 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 04:06:13 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	lst_addback_cmd(t_cmd **lst_cmd, t_cmd *new_cmd)
 	tmp->next = new_cmd;
 }
 
-t_cmd	*addnew_cmd(char **args, token_node *head_cmd)
+t_cmd	*addnew_cmd(char **args, t_token_node *head_cmd)
 {
 	t_cmd	*new_cmd;
 
@@ -42,11 +42,11 @@ t_cmd	*addnew_cmd(char **args, token_node *head_cmd)
 	return (new_cmd);
 }
 
-void	parse_arguments_redirects(token_node *new_head,
-		char **args, token_node **redir)
+void	parse_arguments_redirects(t_token_node *new_head,
+		char **args, t_token_node **redir)
 {
-	token_node	*new;
-	int			i;
+	t_token_node	*new;
+	int				i;
 
 	i = 0;
 	while (new_head)
@@ -66,12 +66,12 @@ void	parse_arguments_redirects(token_node *new_head,
 	args[i] = NULL;
 }
 
-t_cmd	*ft_split_cmd(token_node *new_head)
+t_cmd	*ft_split_cmd(t_token_node *new_head)
 {
-	token_node	*tmp;
-	token_node	*redir;
-	int			count;
-	char		**args;
+	t_token_node	*tmp;
+	t_token_node	*redir;
+	int				count;
+	char			**args;
 
 	count = 0;
 	tmp = new_head;
@@ -87,11 +87,11 @@ t_cmd	*ft_split_cmd(token_node *new_head)
 	return (addnew_cmd(args, redir));
 }
 
-t_cmd	*passing(token_node *head)
+t_cmd	*passing(t_token_node *head)
 {
-	token_node	*new_head;
-	token_node	*new_node;
-	t_cmd		*new_cmd;
+	t_token_node	*new_head;
+	t_token_node	*new_node;
+	t_cmd			*new_cmd;
 
 	new_cmd = NULL;
 	while (head)

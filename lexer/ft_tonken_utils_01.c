@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 09:49:47 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/05 10:17:57 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 03:46:44 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,11 @@ bool	is_string(char c)
 		|| c == '>' || c == '$' || c == '<' || is_spaces(c));
 }
 
-token_node	*addnew_tkn_node(int token, char *value, int fd)
+t_token_node	*addnew_tkn_node(int token, char *value, int fd)
 {
-	token_node	*new;
+	t_token_node	*new;
 
-	new = (token_node *)ft_malloc(sizeof(token_node), ALLOC);
+	new = (t_token_node *)ft_malloc(sizeof(t_token_node), ALLOC);
 	if (!new)
 		return (NULL);
 	new->type = token;
@@ -47,9 +47,9 @@ token_node	*addnew_tkn_node(int token, char *value, int fd)
 	return (new);
 }
 
-void	lstadd_back(token_node **lst, token_node *new)
+void	lstadd_back(t_token_node **lst, t_token_node *new)
 {
-	token_node	*cur;
+	t_token_node	*cur;
 
 	cur = *lst;
 	if (!*lst)

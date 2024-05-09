@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 20:43:47 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/09 02:56:05 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 03:46:44 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ int	ft_print_syntax_error(void)
 	return (-1);
 }
 
-int	print_error_redirection(token_node *head)
+int	print_error_redirection(t_token_node *head)
 {
-	token_node	*tmp;
+	t_token_node	*tmp;
 
 	tmp = head;
 	while (tmp)
@@ -44,9 +44,9 @@ int	print_error_redirection(token_node *head)
 	return (0);
 }
 
-int	print_check_pip_start_line(token_node *head)
+int	print_check_pip_start_line(t_token_node *head)
 {
-	token_node	*tmp;
+	t_token_node	*tmp;
 
 	tmp = head;
 	if (tmp && tmp->type == SPC)
@@ -59,9 +59,9 @@ int	print_check_pip_start_line(token_node *head)
 	return (0);
 }
 
-int	print_error_double_pipe(token_node *head)
+int	print_error_double_pipe(t_token_node *head)
 {
-	token_node	*tmp;
+	t_token_node	*tmp;
 
 	tmp = head;
 	while (tmp)
@@ -87,7 +87,7 @@ int	print_error_double_pipe(token_node *head)
 	return (0);
 }
 
-int	handle_errors_cmd(token_node *head, const char *cmd)
+int	handle_errors_cmd(t_token_node *head, const char *cmd)
 {
 	if (print_error_quote(cmd) == -1)
 		return (-1);
