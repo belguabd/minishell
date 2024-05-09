@@ -6,28 +6,25 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/05 14:17:38 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 03:40:49 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
-#define MINISHELL_H
+# define MINISHELL_H
+# include <stdio.h>
+# include <fcntl.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <stdbool.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <sys/param.h>
+# include <termios.h>
+# include <dirent.h>
 
-#include <stdio.h>
-#include <fcntl.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdbool.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <sys/param.h>
-#include <termios.h>
-#include <dirent.h>
-
-#define COLOR_RESET "\x1b[0m"
-#define COLOR_GREEN "\x1b[32m"
-
-// #define malloc(X) NULL
+# define COLOR_RESET "\x1b[0m"
+# define COLOR_GREEN "\x1b[32m"
 
 enum
 {
@@ -43,8 +40,8 @@ typedef struct ft_free
 } t_free;
 typedef struct s_fd
 {
-    int fd;
-    struct s_fd *next;
+	int fd;
+	struct s_fd *next;
 } t_fd;
 typedef struct token_node
 {
@@ -115,25 +112,25 @@ int ft_isalnum(int c);
 int ft_isdigit(int c);
 char *ft_itoa(int n);
 /*function for gc*/
-char	*ft_strjoin_env(char const *s1, char const *s2);
-char	*ft_strdup_env(const char *s1);
-char	*ft_substr_env(char const *s, unsigned int start, size_t len);
-t_expand	*addnew_expand_node_env(char *key, char *value);
-void	lstadd_back_expand_env(t_expand **lst, t_expand *new_node);
+char *ft_strjoin_env(char const *s1, char const *s2);
+char *ft_strdup_env(const char *s1);
+char *ft_substr_env(char const *s, unsigned int start, size_t len);
+t_expand *addnew_expand_node_env(char *key, char *value);
+void lstadd_back_expand_env(t_expand **lst, t_expand *new_node);
 /*split_cmd functions*/
-bool	not_space(char c);
-bool	is_space(char c);
+bool not_space(char c);
+bool is_space(char c);
 /*start functions for tokenization */
-int	ft_single_double(token_node **head, const char *cmd, int i);
-int	ft_dollar(token_node **head, const char *cmd, int *i);
-int	ft_spaces(token_node **head, const char *cmd, int *i);
-void	handle_single_quotes(int start, const char *cmd, token_node **head);
-void	handle_double_quotes(int start, const char *cmd, token_node **head);
-void	ft_process_vars(const char *cmd, token_node **head, int i);
+int ft_single_double(token_node **head, const char *cmd, int i);
+int ft_dollar(token_node **head, const char *cmd, int *i);
+int ft_spaces(token_node **head, const char *cmd, int *i);
+void handle_single_quotes(int start, const char *cmd, token_node **head);
+void handle_double_quotes(int start, const char *cmd, token_node **head);
+void ft_process_vars(const char *cmd, token_node **head, int i);
 /* end tokenization */
 /*start handle errors*/
-int	print_error_quote(const char *cmd);
-int	quote_error_handling(const char *buffer, size_t *i, char c);
+int print_error_quote(const char *cmd);
+int quote_error_handling(const char *buffer, size_t *i, char c);
 /*end handle errors*/
 
 token_node *ft_lstlast(token_node *lst);
@@ -190,7 +187,10 @@ int ft_unset(char **cmd, t_expand **envp);
 int ft_export(char **cmd, t_expand **envp);
 int is_builtin(t_cmd *cmd);
 void get_env_export(t_expand *envp);
-int ft_exit(char **cmd , int exit_status);
+int ft_exit(char **cmd, int exit_status);
+void rm_dbl_q(token_node *head);
+void rm_sgl_q(token_node *head);
+token_node *skip_dr(token_node *head);
 // tools
 
 char *ft_get_cwd(char *new_path, int mode);
@@ -202,27 +202,23 @@ t_expand *ft_lst_new(char *key, char *val);
 void ft_free_node(t_expand *node);
 size_t ft_lst_size(t_expand *lst);
 char *ft_itoa(int n);
-
-// static int allocationCount = 0;
-
-// static inline void* __malloc(size_t size, char *file, int line)
-// {
-// 	void* ptr = NULL;
-// 	if (!ft_strcmp(file, "gc/ft_free.c") && line == 30)
-// 	{
-// 		if (allocationCount >= 3)
-// 			return NULL;
-// 		allocationCount++;
-// 		ptr = malloc(size);
-// 	}
-// 	else
-// 		ptr = malloc(size);
-// 	return ptr;
-// }
-
-// #ifndef malloc
-// #define malloc(size) __malloc(size, __FILE__, __LINE__)
-// #endif
-char *ft_str_exp_double_q(char *str_var, t_expand *env , int exit_status);
-char	*ft_strtrim(char const *s1, char const *set);
+int is_string_type(int type);
+t_cmd *passing(token_node *head);
+token_node *rm_redirect(token_node *head);
+token_node *ft_concatenate(token_node *head);
+void process_shell_input(token_node **head, const char **cmd,
+						 int *exit_st, t_expand *env_e);
+void clean_fd_cmd(const char *cmd);
+void	clean_exit(const char *cmd, int *exit_st);
+void	shell_signal_read(const char **cmd, int *exit_st);
+/*start heredoc*/
+void ft_heredoc(token_node *head, t_expand *env, int *exit_status);
+void ft_sig_handler_her_doc(int sig);
+bool ft_hr_dc_cntrl_c(token_node *head);
+char *expand_heredoc(char *cmd, t_expand *env, int exit_status);
+int write_to_file(char *buffer);
+bool is_redirection(int type);
+/*end heredoc*/
+char *ft_str_exp_double_q(char *str_var, t_expand *env, int exit_status);
+char *ft_strtrim(char const *s1, char const *set);
 #endif

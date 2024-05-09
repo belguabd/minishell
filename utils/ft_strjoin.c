@@ -6,17 +6,31 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 01:19:54 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/05 18:10:48 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 03:28:32 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char *ft_strjoin(char const *s1, char const *s2)
+int	ft_strcpy_join(char *dest, char *src)
 {
-	char *string;
-	size_t i;
-	size_t j;
+	int	i;
+
+	i = 0;
+	while (src[i])
+	{
+		dest[i] = src[i];
+		i++;
+	}
+	dest[i] = '\0';
+	return (i);
+}
+
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	char	*string;
+	size_t	i;
+	size_t	j;
 
 	if (s1 && !s2)
 		return (ft_strdup(s1));
@@ -25,14 +39,7 @@ char *ft_strjoin(char const *s1, char const *s2)
 	if (!s1 || !s2)
 		return (NULL);
 	string = ft_malloc((ft_strlen(s1) + ft_strlen(s2)) + 1, ALLOC);
-	if (!string)
-		return (NULL);
-	i = 0;
-	while (s1[i])
-	{
-		string[i] = s1[i];
-		i++;
-	}
+	i = ft_strcpy_join(string, (char *)s1);
 	j = 0;
 	while (s2[j])
 	{
