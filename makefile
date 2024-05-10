@@ -22,9 +22,9 @@ SRC =minishell.c cleanup.c \
 	$(HANDLE_ERRORS)/handle_errors.c $(HANDLE_ERRORS)/handle_errors_utils.c \
 	$(EXPANDER)/expander.c $(EXPANDER)/expander_utils01.c $(EXPANDER)/expander_utils02.c \
 	$(GC)/ft_free.c  $(GC)/ft_free_env.c $(GC)/ft_close_fds.c $(GC)/ft_free_env_utils_01.c \
-	$(EXECUTION)/execution.c $(EXECUTION)/execution_tools.c \
-	$(BUILT_IN)/built_in_tools.c $(BUILT_IN)/cd.c $(BUILT_IN)/cd_part2.c $(BUILT_IN)/env.c $(BUILT_IN)/export.c $(BUILT_IN)/pwd.c $(BUILT_IN)/unset.c $(BUILT_IN)/echo.c $(BUILT_IN)/exit.c \
-	$(PIPE)/ft_pipe.c sigs/signals.c \
+	$(EXECUTION)/execution.c $(EXECUTION)/execution2.c $(EXECUTION)/execution3.c $(EXECUTION)/execution_tools.c \
+	$(BUILT_IN)/built_in_tools.c $(BUILT_IN)/cd.c $(BUILT_IN)/cd_part2.c $(BUILT_IN)/cd_part3.c $(BUILT_IN)/env.c $(BUILT_IN)/export.c $(BUILT_IN)/export2.c $(BUILT_IN)/pwd.c $(BUILT_IN)/unset.c $(BUILT_IN)/echo.c $(BUILT_IN)/exit.c \
+	$(PIPE)/ft_pipe.c $(PIPE)/ft_pipe2.c $(PIPE)/pipes_tools.c $(PIPE)/redirection.c sigs/signals.c \
 	$(HEREDOC)/ft_headoc.c $(HEREDOC)/ft_heredoc_utils.c \
 	$(PASSING)/ft_passing.c $(PASSING)/ft_concatenate.c $(PASSING)/ft_remove_redicrection.c  $(PASSING)/ft_remove_quotes_dlr.c $(PASSING)/ft_passing_utils.c\
 

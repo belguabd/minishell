@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   built_in_tools.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 23:57:58 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/17 13:20:42 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/10 05:22:49 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_expand *ft_lst_last(t_expand *lst)
+t_expand	*ft_lst_last(t_expand *lst)
 {
-	t_expand *last;
+	t_expand	*last;
 
 	if (lst == NULL)
 		return (NULL);
@@ -26,9 +26,9 @@ t_expand *ft_lst_last(t_expand *lst)
 	return (last);
 }
 
-void ft_lst_add_back(t_expand **lst, t_expand *new_node)
+void	ft_lst_add_back(t_expand **lst, t_expand *new_node)
 {
-	t_expand *last;
+	t_expand	*last;
 
 	last = ft_lst_last(*lst);
 	if (!last)
@@ -37,9 +37,9 @@ void ft_lst_add_back(t_expand **lst, t_expand *new_node)
 		last->next = new_node;
 }
 
-t_expand *ft_lst_new(char *key, char *val)
+t_expand	*ft_lst_new(char *key, char *val)
 {
-	t_expand *new;
+	t_expand	*new;
 
 	new = (t_expand *)ft_malloc(sizeof(t_expand), ALLOC);
 	if (!new)
@@ -48,15 +48,4 @@ t_expand *ft_lst_new(char *key, char *val)
 	new->value = val;
 	new->next = NULL;
 	return (new);
-}
-
-void ft_free_node(t_expand *node)
-{
-	(void)node;
-	// free(node->key);
-	// node->key = NULL;
-	// free(node->value);
-	// node->value = NULL;
-	// free(node);
-	// node = NULL;
 }

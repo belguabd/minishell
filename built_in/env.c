@@ -6,20 +6,20 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 01:12:43 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/05/06 20:23:54 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/10 03:39:12 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void ft_env(char **cmd, t_expand *envp)
+void	ft_env(char **cmd, t_expand *envp)
 {
-	t_expand *head;
+	t_expand	*head;
 
 	if (!envp)
 	{
 		ft_putstr_fd("env: No such file or directory\n", 2);
-		return;
+		return ;
 	}
 	if (cmd[1])
 		return ;
@@ -35,14 +35,15 @@ void ft_env(char **cmd, t_expand *envp)
 	}
 }
 
-void ft_sort_export(t_expand *head)
+void	ft_sort_export(t_expand *head)
 {
-	char *value;
-	char *key;
+	char		*value;
+	char		*key;
+	t_expand	*tmp;
 
 	while (head)
 	{
-		t_expand *tmp = head->next;
+		tmp = head->next;
 		while (tmp)
 		{
 			if (strcmp(head->key, tmp->key) > 0)
@@ -60,12 +61,12 @@ void ft_sort_export(t_expand *head)
 	}
 }
 
-void get_env_export(t_expand *envp)
+void	get_env_export(t_expand *envp)
 {
-	t_expand *head;
+	t_expand	*head;
 
 	if (!envp)
-		return;
+		return ;
 	head = envp;
 	while (head)
 	{

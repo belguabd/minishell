@@ -6,41 +6,15 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 01:53:18 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/05/08 07:29:55 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/10 05:20:34 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int pars_key(char *cmd)
+int	ft_join_value(t_expand *node, t_expand **envp)
 {
-	int i;
-	int len;
-
-	i = 0;
-	if (!cmd || !*cmd)
-	{
-		ft_putstr_fd("export: `", 2);
-		ft_putstr_fd(cmd, 2);
-		ft_putendl_fd("': not a valid identifier", 2);
-		return (1);
-	}
-	len = ft_strlen(cmd);
-	while (cmd[i] && (ft_isalnum(cmd[i]) || cmd[i] == '_') && !ft_isdigit(cmd[0]))
-		i++;
-	if (cmd[i])
-	{
-		ft_putstr_fd("export: `", 2);
-		ft_putstr_fd(cmd, 2);
-		ft_putendl_fd("': not a valid identifier", 2);
-		return (1);
-	}
-	return (0);
-}
-
-int ft_join_value(t_expand *node, t_expand **envp)
-{
-	t_expand *head;
+	t_expand	*head;
 
 	head = *envp;
 	while (head)
@@ -61,15 +35,15 @@ int ft_join_value(t_expand *node, t_expand **envp)
 	return (1);
 }
 
-void ft_export_exicted(t_expand *node, t_expand **envp, bool flag)
+void	ft_export_exicted(t_expand *node, t_expand **envp, bool flag)
 {
-	t_expand *head;
+	t_expand	*head;
 
 	head = *envp;
 	if (flag)
 	{
 		if ((ft_join_value(node, envp)) == 1)
-			return;
+			return ;
 	}
 	while (head)
 	{
@@ -80,14 +54,14 @@ void ft_export_exicted(t_expand *node, t_expand **envp, bool flag)
 				head->value = ft_strdup_env(&node->value[0]);
 				head->isnull = false;
 			}
-			return;
+			return ;
 		}
 		head = head->next;
 	}
 	lstadd_back_expand_env(envp, node);
 }
 
-void ft_valid_key_case(t_export *var, char **cmd)
+void	ft_valid_key_case(t_export *var, char **cmd)
 {
 	if (cmd[var->j][var->i])
 	{
@@ -115,29 +89,29 @@ void ft_valid_key_case(t_export *var, char **cmd)
 	}
 }
 
-void ft_get_key(t_export *var, char **cmd)
+void	ft_get_key(t_export *var, char **cmd)
 {
 	var->i = 0;
 	var->flag = false;
 	while (cmd[var->j][var->i] && (cmd[var->j][var->i] != '='))
 	{
 		if (cmd[var->j][var->i] == '+' && cmd[var->j][var->i + 1] == '=')
-			break;
+			break ;
 		var->i++;
 	}
 	var->key = ft_substr_env(cmd[var->j], 0, var->i);
 }
 
-int ft_export(char **cmd, t_expand **envp)
+int	ft_export(char **cmd, t_expand **envp)
 {
-	t_expand *new;
-	t_export var;
+	t_expand	*new;
+	t_export	var;
 
 	var.j = 0;
 	var.exit_status = 0;
 	var.value = NULL;
 	if (!cmd[1])
-		return (get_env_export(*envp),0);
+		return (get_env_export(*envp), 0);
 	while (cmd[++var.j])
 	{
 		ft_get_key(&var, cmd);

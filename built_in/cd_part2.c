@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 03:27:41 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/05/07 04:25:02 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/10 05:45:28 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,23 @@
 
 void	change_pwd(t_expand **env)
 {
-	char *cmd[] = {"export", "PWD", NULL};
-    
+	char	**cmd;
+
+	cmd = ft_malloc(sizeof(char *) * 3, ALLOC);
+	cmd[0] = "export";
+	cmd[1] = "PWD";
+	cmd[2] = NULL;
 	ft_export(cmd, env);
 }
 
 void	change_oldpwd(t_expand **env)
 {
-	char *cmd[] = {"export", "OLDPWD", NULL};
-    
+	char	**cmd;
+
+	cmd = ft_malloc(sizeof(char *) * 3, ALLOC);
+	cmd[0] = "export";
+	cmd[1] = "OLDPWD";
+	cmd[2] = NULL;
 	ft_export(cmd, env);
 }
 

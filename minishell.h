@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/10 02:52:15 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/10 05:56:28 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,16 +99,14 @@ typedef struct s_expand
 
 typedef struct s_export
 {
-	//t_expand	*new;
-	char 		*key;
-	char 		*value;
-	bool 		isnull;
-	bool 		flag;
-	int 		exit_status;
-	int 		i;
-	int 		j;
-} t_export;
-
+	char	*key;
+	char	*value;
+	bool	isnull;
+	bool	flag;
+	int		exit_status;
+	int		i;
+	int		j;
+}	t_export;
 
 char			**ft_split(char const *str, char c);
 size_t			ft_strlen(const char *s);
@@ -175,6 +173,7 @@ char			**ft_split_last_cmd(char *cmd);
 void			ft_putstr_fd(char *s, int fd);
 void			handler(int sig);
 void			set_cmd_false_true(t_cmd **cmds);
+int				*allocat_pids(t_cmd *cmd);
 void			init_fds(t_cmd **cmds);
 void			pipe_line(t_cmd *cmd, t_expand **env_lst, char *env[],
 					int *exit_status);
@@ -184,6 +183,7 @@ void			ft_echo(char **cmd);
 void			ft_env(char **cmd, t_expand *envp);
 int				ft_unset(char **cmd, t_expand **envp);
 int				ft_export(char **cmd, t_expand **envp);
+int				pars_key(char *cmd);
 int				is_builtin(t_cmd *cmd);
 void			get_env_export(t_expand *envp);
 int				ft_exit(char **cmd, int exit_status);
@@ -217,15 +217,29 @@ bool			is_redirection(int type);
 char			*ft_str_exp_double_q(char *str_var, t_expand *env,
 					int exit_status);
 char			*ft_strtrim(char const *s1, char const *set);
-t_cmd	*ft_split_cmd(t_token_node *new_head);	
-void	add_new_redir(t_token_node **new, t_token_node *new_head,
-		t_token_node **redir);
-		int	ft_count_cmd(t_token_node *head);
-		t_cmd	*addnew_cmd(char **args, t_token_node *head_cmd);
+t_cmd			*ft_split_cmd(t_token_node *new_head);	
+void			add_new_redir(t_token_node **new, t_token_node *new_head,
+					t_token_node **redir);
+int				ft_count_cmd(t_token_node *head);
+t_cmd			*addnew_cmd(char **args, t_token_node *head_cmd);
+void			change_pwd(t_expand **env);
+void			change_oldpwd(t_expand **env);
+t_expand		*get_oldpwd(t_expand *env);
+t_expand		*get_pwd(t_expand *env);
+char			*get_home(t_expand *env);
+int				red_out(t_token_node *tmp, t_cmd *head);
+int				red_append(t_token_node *tmp, t_cmd *head);
+int				red_in(t_token_node *tmp, t_cmd *head);
+int				red_heredoc(t_token_node *tmp, t_cmd *head);
+void			redirection_loop(t_token_node *tmp, t_cmd *head);
 
-void	change_pwd(t_expand **env);
-void	change_oldpwd(t_expand **env);
-t_expand	*get_oldpwd(t_expand *env);
-t_expand	*get_pwd(t_expand *env);
-char	*get_home(t_expand *env);
+void			ft_get_exit_status(int *exit_status,
+					int *pid, int i, struct termios *term);
+void			ft_cmd_redirection(t_cmd *cmd);
+void			ft_piping(t_cmd *cmd, int tmp_fd_in, int *fd);
+void			ft_close_cmd_fd(t_cmd *cmd, int *tmp_fd_in, int *fd);
+char			*check_path(char **path, char *cmd);
+void			ft_change_oldpwd(t_expand *oldpwd, t_expand *env, char *op);
+void			ft_change_pwd(t_expand *new_pwd, t_expand *env, char *np);
+
 #endif
