@@ -6,16 +6,16 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 01:39:25 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/05/02 15:14:37 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/07 04:21:21 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 #include <string.h>
 
-t_expand *get_pwd_cd(t_expand *env)
+t_expand	*get_pwd_cd(t_expand *env)
 {
-	t_expand *pwd;
+	t_expand	*pwd;
 
 	pwd = env;
 	while(pwd)
@@ -27,7 +27,7 @@ t_expand *get_pwd_cd(t_expand *env)
 	return (NULL);
 }
 
-char *ft_get_cwd(char *new_path, int mode)
+char	*ft_get_cwd(char *new_path, int mode)
 {
 	char		path[PATH_MAX];
 	static char	static_path[PATH_MAX];
@@ -47,7 +47,7 @@ char *ft_get_cwd(char *new_path, int mode)
 
 void	ft_pwd(t_expand *env)
 {
-	char *path;
+	char	*path;
 	
 	(void)env;
 	path = ft_get_cwd(NULL, 0);

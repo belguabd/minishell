@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/05/09 03:46:44 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 20:20:57 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,13 @@
 
 char **get_envp(t_expand *lst_envp)
 {
-	t_expand *head = lst_envp;
+	t_expand *head;
 	size_t size;
 	char **envp;
 	int i;
 
 	i = 0;
+	head = lst_envp;
 	if (lst_envp == NULL)
 		return (NULL);
 	size = ft_lst_size(lst_envp);
@@ -88,54 +89,71 @@ void ft_execute_bultin(char *cmd[], t_expand **envp, int *exit_status)
 		exit(ft_unset(cmd, envp));
 	}
 	if (ft_strcmp(cmd[0], "exit") == 0)
-		ft_exit(cmd,*exit_status);
+		ft_exit(cmd, *exit_status);
 }
 
-char *check_path(char **path, char *cmd)
+void no_path_error(char *cmd)
+{
+	DIR *mydir;
+
+	mydir = NULL;
+	if ((mydir = opendir(cmd)) && mydir)
+	{
+		closedir(mydir);
+		ft_putstr_fd(cmd, 2);
+		ft_putendl_fd(": is a directory", 2);
+		exit(126);
+	}
+	if (access(cmd, X_OK) && access(cmd, F_OK))
+	{
+		ft_putstr_fd(cmd, 2);
+		ft_putendl_fd(": No such file or directory", 2);
+		exit(127);
+	}
+}
+
+void direct_cmd_error(char *cmd)
+{
+	DIR *mydir;
+
+	mydir = NULL;
+	if (access(cmd, X_OK) == -1)
+	{
+		ft_putstr_fd(cmd, 2);
+		ft_putendl_fd(": Permission denied", 2);
+		exit(126);
+	}
+	if ((mydir = opendir(cmd)) && mydir && ft_strcmp(cmd, "..") && ft_strcmp(cmd, "."))
+	{
+		closedir(mydir);
+		ft_putstr_fd(cmd, 2);
+		ft_putendl_fd(": is a directory", 2);
+		exit(126);
+	}
+}
+
+void exit_127(char *cmd, char *error)
+{
+	ft_putstr_fd(cmd, 2);
+	ft_putendl_fd(error, 2);
+	exit(127);
+}
+char	*check_path(char **path, char *cmd)
 {
 	char *cmd_path;
-	DIR *mydir;
 	int i;
 
 	i = 0;
 	if ((!path || !*path))
-	{
-		if((mydir = opendir(cmd)) && mydir)
-		{
-			closedir(mydir);
-			ft_putstr_fd(cmd, 2);
-			ft_putendl_fd(": is a directory", 2);
-			exit(126);
-		}
-		if (access(cmd, X_OK) && access(cmd, F_OK))
-		{
-			ft_putstr_fd(cmd, 2);
-			ft_putendl_fd(": No such file or directory", 2);
-			exit(127);
-		}
-	}
+		no_path_error(cmd);
 	if (cmd[0] == '/' || cmd[0] == '.')
 	{
 		if (access(cmd, X_OK) == 0 || access(cmd, F_OK) == 0)
 		{
-			if (access(cmd, X_OK) == -1)
-			{
-				ft_putstr_fd(cmd, 2);
-				ft_putendl_fd(": Permission denied", 2);
-				exit(126);
-			}
-			if((mydir = opendir(cmd)) && mydir && ft_strcmp(cmd, "..") && ft_strcmp(cmd, "."))
-			{
-				closedir(mydir);
-				ft_putstr_fd(cmd, 2);
-				ft_putendl_fd(": is a directory", 2);
-				exit(126);
-			}
+			direct_cmd_error(cmd);
 			return (cmd);
 		}
-		ft_putstr_fd(cmd, 2);
-		ft_putendl_fd(": No such file or directory", 2);
-		exit(127);
+		exit_127(cmd, ": No such file or directory");
 	}
 	while (path[i])
 	{
@@ -146,9 +164,7 @@ char *check_path(char **path, char *cmd)
 		i++;
 		cmd_path = NULL;
 	}
-	ft_putstr_fd(cmd, 2);
-	ft_putendl_fd(": command not found", 2);
-	exit(127);
+	return (exit_127(cmd, ": command not found"), NULL);
 }
 
 int ft_count_word(char **output)
@@ -163,11 +179,12 @@ int ft_count_word(char **output)
 
 void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp, int *exit_status)
 {
-	char **paths = NULL;
+	char **paths;
 	char *new_cmd;
 
+	paths = NULL;
 	if (!cmd || !*cmd)
-		exit (0);
+		exit(0);
 	ft_execute_bultin(cmd, &envp, exit_status);
 	while (envp)
 	{
@@ -188,60 +205,3 @@ void ft_execute_node(char *cmd[], t_expand *envp, char **str_envp, int *exit_sta
 		perror(cmd[0]);
 	exit(127);
 }
-
-// int main()
-// {
-// 	t_expand *envp = NULL;
-// 	char *cmd1[] = {"cat", NULL};
-// 	char *cmd2[] = {"cat", NULL};
-// 	char *cmd3[] = {"wc","-l" , NULL};
-
-// 	ft_lst_add_back(&envp, ft_lst_new(ft_strdup("var1"), ft_strdup("jkanf")));
-// 	ft_lst_add_back(&envp, ft_lst_new(ft_strdup("PATH"), ft_strdup("/Users/soel-bou/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki:/Library/Apple/usr/bin:/Users/soel-bou/.brew/bin")));
-// 	ft_lst_add_back(&envp, ft_lst_new(ft_strdup("var3"), ft_strdup("jkanf")));
-
-// 	t_token_node *token = (t_token_node*)malloc(sizeof(t_token_node));
-// 	t_token_node *token2 = (t_token_node*)malloc(sizeof(t_token_node));
-// 	t_token_node *token3 = (t_token_node*)malloc(sizeof(t_token_node));
-//     token->type = REDIRECT_IN;
-//     token->value = "file";
-//     token->next = NULL;
-
-// 	token2->type = REDIRECT_IN;
-//     token2->value = "file2";
-//     token2->next = token3;
-
-// 	token3->type = REDIRECT_APPEND;
-//     token3->value = "file3";
-//     token3->next = NULL;
-
-//     t_cmd *head = (t_cmd *)malloc(sizeof(t_cmd));
-// 	t_cmd *head2 = (t_cmd *)malloc(sizeof(t_cmd));
-// 	t_cmd *head3 = (t_cmd *)malloc(sizeof(t_cmd));
-
-//     head->args = cmd1;
-// 	head->redir = token;
-//     head->next =head3;
-
-// 	head2->args = cmd2;
-// 	head2->outfile = 1;
-// 	head2->infile = 0;
-// 	head2->redir = NULL;
-//     head2->next = head3;
-
-// 	head3->args = cmd3;
-//     head3->next = NULL;
-// 	head3->redir = NULL;
-
-// 	ft_execution(head, &envp);
-// 	// pid_t pid = getpid();
-
-//     // // Create a buffer to hold the command
-//     // char command[100];
-
-//     // // Construct the command with the PID
-//     // snprintf(command, sizeof(command), "lsof -p %d", (int)pid);
-
-//     // // Execute the command
-//     // system(command);
-// }

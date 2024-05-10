@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 01:11:06 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/04/29 17:32:51 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/06 20:35:08 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,20 +53,20 @@ void	set_cmd_false_true(t_cmd **cmds)
 {
 	t_cmd *cmd = *cmds;
 
-	if(!cmds || !*cmds)
+	if (!cmds || !*cmds)
 		return ;
 	cmd->isfirst = true;
 	cmd->islast = false;
-	if(cmd->next)
+	if (cmd->next)
 	{
 		cmd = cmd->next;
-		while(cmd->next)
+		while (cmd->next)
 		{
 			cmd->isfirst = false;
 			cmd->islast = false;
 			cmd = cmd->next;
 		}
-		if(!cmd->next)
+		if (!cmd->next)
 		{
 			cmd->isfirst = false;
 			cmd->islast = true;

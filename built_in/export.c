@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 01:53:18 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/05/05 17:47:05 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/08 07:29:55 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ int pars_key(char *cmd)
 	i = 0;
 	if (!cmd || !*cmd)
 	{
-		// perror("invalid option");
 		ft_putstr_fd("export: `", 2);
 		ft_putstr_fd(cmd, 2);
 		ft_putendl_fd("': not a valid identifier", 2);
@@ -39,18 +38,18 @@ int pars_key(char *cmd)
 	return (0);
 }
 
-int	ft_join_value(t_expand *node, t_expand **envp)
+int ft_join_value(t_expand *node, t_expand **envp)
 {
 	t_expand *head;
 
 	head = *envp;
-	while(head)
+	while (head)
 	{
-		if(ft_strcmp(node->key, head->key) == 0)
+		if (ft_strcmp(node->key, head->key) == 0)
 		{
-			if(head->value && *head->value)
+			if (head->value && *head->value)
 				head->value = ft_strjoin_env(head->value, &node->value[2]);
-			else if(!head->value[0])
+			else if (!head->value[0])
 				head->value = ft_strdup_env(&node->value[2]);
 			head->isnull = false;
 			return (1);
@@ -67,10 +66,10 @@ void ft_export_exicted(t_expand *node, t_expand **envp, bool flag)
 	t_expand *head;
 
 	head = *envp;
-	if(flag)
+	if (flag)
 	{
-		if((ft_join_value(node, envp)) == 1)
-			return ;
+		if ((ft_join_value(node, envp)) == 1)
+			return;
 	}
 	while (head)
 	{
@@ -88,71 +87,71 @@ void ft_export_exicted(t_expand *node, t_expand **envp, bool flag)
 	lstadd_back_expand_env(envp, node);
 }
 
+void ft_valid_key_case(t_export *var, char **cmd)
+{
+	if (cmd[var->j][var->i])
+	{
+		if (cmd[var->j][var->i] == '=' && !cmd[var->j][var->i + 1])
+		{
+			var->isnull = false;
+			var->value = ft_strdup_env("");
+		}
+		else if (cmd[var->j][var->i] == '+')
+		{
+			var->isnull = false;
+			var->flag = true;
+			var->value = ft_strdup_env(&cmd[var->j][var->i]);
+		}
+		else
+		{
+			var->isnull = false;
+			var->value = ft_strdup_env(&cmd[var->j][var->i + 1]);
+		}
+	}
+	else
+	{
+		var->value = ft_strdup_env("");
+		var->isnull = true;
+	}
+}
+
+void ft_get_key(t_export *var, char **cmd)
+{
+	var->i = 0;
+	var->flag = false;
+	while (cmd[var->j][var->i] && (cmd[var->j][var->i] != '='))
+	{
+		if (cmd[var->j][var->i] == '+' && cmd[var->j][var->i + 1] == '=')
+			break;
+		var->i++;
+	}
+	var->key = ft_substr_env(cmd[var->j], 0, var->i);
+}
+
 int ft_export(char **cmd, t_expand **envp)
 {
 	t_expand *new;
-	char *key;
-	char *value;
-	bool isnull;
-	bool flag;
-	int exit_status;
-	int i;
-	int j;
+	t_export var;
 
-	i = 0;
-	j = 0;
-	exit_status = 0;
-	value = NULL;
+	var.j = 0;
+	var.exit_status = 0;
+	var.value = NULL;
 	if (!cmd[1])
+		return (get_env_export(*envp),0);
+	while (cmd[++var.j])
 	{
-		get_env_export(*envp);
-		return (0);
-	}
-	while (cmd[++j])
-	{
-		i = 0;
-		flag = false;
-		while (cmd[j][i] && (cmd[j][i] != '='))
+		ft_get_key(&var, cmd);
+		if (pars_key(var.key) == 0)
 		{
-			if(cmd[j][i] == '+' && cmd[j][i + 1] == '=')
-				break;
-			i++;
-		}
-		key = ft_substr_env(cmd[j], 0, i);
-		if (pars_key(key) == 0)
-		{
-			if (cmd[j][i])
-			{
-				if (cmd[j][i] == '=' && !cmd[j][i + 1])
-				{
-					isnull = false;
-					value = ft_strdup_env("");
-				}
-				else if(cmd[j][i] == '+')
-				{
-					isnull = false;
-					flag = true;
-					value = ft_strdup_env(&cmd[j][i]);
-				}
-				else
-				{
-					isnull = false;
-					value = ft_strdup_env(&cmd[j][i + 1]);
-				}
-			}
-			else
-			{
-				value = ft_strdup_env("");
-				isnull = true;
-			}
-			new = addnew_expand_node_env(key, value);
+			ft_valid_key_case(&var, cmd);
+			new = addnew_expand_node_env(var.key, var.value);
 			if (!new)
 				return (1);
-			new->isnull = isnull;
-			ft_export_exicted(new, envp, flag);
+			new->isnull = var.isnull;
+			ft_export_exicted(new, envp, var.flag);
 		}
 		else
-			exit_status = 1;
+			var.exit_status = 1;
 	}
-	return (exit_status);
+	return (var.exit_status);
 }

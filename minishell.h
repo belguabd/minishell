@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/10 02:21:33 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/10 02:52:15 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,20 @@ typedef struct s_expand
 	bool			ishiden;
 	struct s_expand	*next;
 }	t_expand;
+
+typedef struct s_export
+{
+	//t_expand	*new;
+	char 		*key;
+	char 		*value;
+	bool 		isnull;
+	bool 		flag;
+	int 		exit_status;
+	int 		i;
+	int 		j;
+} t_export;
+
+
 char			**ft_split(char const *str, char c);
 size_t			ft_strlen(const char *s);
 char			*ft_strdup(const char *s1);
@@ -208,4 +222,10 @@ void	add_new_redir(t_token_node **new, t_token_node *new_head,
 		t_token_node **redir);
 		int	ft_count_cmd(t_token_node *head);
 		t_cmd	*addnew_cmd(char **args, t_token_node *head_cmd);
+
+void	change_pwd(t_expand **env);
+void	change_oldpwd(t_expand **env);
+t_expand	*get_oldpwd(t_expand *env);
+t_expand	*get_pwd(t_expand *env);
+char	*get_home(t_expand *env);
 #endif

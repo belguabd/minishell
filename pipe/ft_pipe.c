@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_pipe.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 01:20:36 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/05/09 03:46:44 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/10 02:50:59 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,110 @@ int *allocat_pids(t_cmd *cmd)
 	return (pids);
 }
 
+int red_out(t_token_node *tmp, t_cmd *head)
+{
+	if (tmp->flag)
+	{
+		ft_putendl_fd("bash: ambiguous redirect", 2);
+		head->outfile = -1;
+		tmp->flag = false;
+	}
+	else
+	{
+		head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_TRUNC, 0644);
+		if (head->outfile > 2)
+			ft_close_fds(head->outfile, OPEN);
+		if (head->outfile < 0)
+		{
+			perror(tmp->value);
+			return (1);
+		}
+	}
+	return (0);
+}
+
+int red_append(t_token_node *tmp, t_cmd *head)
+{
+	if (tmp->flag)
+	{
+		head->outfile = -1;
+		ft_putendl_fd("bash: ambiguous redirect", 2);
+		tmp->flag = false;
+	}
+	else
+	{
+		head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_APPEND, 0644);
+		if (head->outfile > 2)
+			ft_close_fds(head->outfile, OPEN);
+		if (head->outfile < 0)
+		{
+			perror(tmp->value);
+			return (1);
+		}
+	}
+	return (0);
+}
+
+int red_in(t_token_node *tmp, t_cmd *head)
+{
+	if (tmp->flag)
+	{
+		head->infile = -1;
+		ft_putendl_fd("bash: ambiguous redirect", 2);
+		tmp->flag = false;
+	}
+	else
+	{
+		head->infile = open(tmp->value, O_RDWR, 0644);
+		if (head->infile > 2)
+			ft_close_fds(head->infile, OPEN);
+		if (head->infile < 0)
+		{
+			perror(tmp->value);
+			return (1);
+		}
+	}
+	return (0);
+}
+
+int red_heredoc(t_token_node *tmp, t_cmd *head)
+{
+	head->infile = tmp->fd_hrd;
+	// if (head->infile > 2)
+	// 	ft_close_fds(head->infile, OPEN);
+	if (head->infile < 0)
+		return (1);
+	return (0);
+}
+
+void redirection_loop(t_token_node *tmp, t_cmd *head)
+{
+	while (tmp)
+	{
+		if (tmp->type == REDIRECT_OUT)
+		{
+			if (red_out(tmp, head) == 1)
+				break;
+		}
+		else if (tmp->type == REDIRECT_APPEND)
+		{
+			if (red_append(tmp, head) == 1)
+				break;
+		}
+		else if (tmp->type == REDIRECT_IN)
+		{
+			if (red_in(tmp, head) == 1)
+				break;
+		}
+		else if (tmp->type == HEREDOC)
+		{
+			if (red_heredoc(tmp, head) == 1)
+				break;
+		}
+		tmp = tmp->next;
+	}
+}
+
 void init_fds(t_cmd **cmds)
 {
 	t_cmd *head;
@@ -42,90 +146,14 @@ void init_fds(t_cmd **cmds)
 	int old_fd_out;
 
 	head = *cmds;
-	while(head)
+	while (head)
 	{
 		tmp = head->redir;
 		old_fd_in = -2;
 		old_fd_out = -2;
 
-		// displayLinkedList(tmp);
 		if (tmp)
-		{
-			while (tmp)
-			{
-				if (tmp->type == REDIRECT_OUT)
-				{
-					if (tmp->flag)
-					{
-						ft_putendl_fd("bash: ambiguous redirect", 2);
-						head->outfile = -1;
-						tmp->flag = false;
-					}
-					else
-					{
-						head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_TRUNC, 0777);
-						if (head->outfile > 2)
-							ft_close_fds(head->outfile, OPEN);
-						if (head->outfile < 0)
-						{
-							perror(tmp->value);
-							break ;
-						}
-					}
-				}
-				else if (tmp->type == REDIRECT_APPEND)
-				{
-					if (tmp->flag)
-					{
-						head->outfile = -1;
-						ft_putendl_fd("bash: ambiguous redirect", 2);
-						tmp->flag = false;
-					}
-					else
-					{
-						head->outfile = open(tmp->value, O_RDWR | O_CREAT | O_APPEND, 0777);
-						if (head->outfile > 2)
-							ft_close_fds(head->outfile, OPEN);
-						if (head->outfile < 0)
-						{
-							perror(tmp->value);
-							break ;
-						}
-					}
-				}
-				else if (tmp->type == REDIRECT_IN)
-				{
-					if (tmp->flag)
-					{
-						head->infile = -1;
-						ft_putendl_fd("bash: ambiguous redirect", 2);
-						tmp->flag = false;
-					}
-					else
-					{
-						head->infile = open(tmp->value, O_RDWR, 0777);
-						if (head->infile > 2)
-							ft_close_fds(head->infile, OPEN);
-						if (head->infile < 0)
-						{
-							perror(tmp->value);
-							break ;
-						}
-					}
-				}
-				else if (tmp->type == HEREDOC)
-				{
-					head->infile = tmp->fd_hrd;
-					if (head->infile > 2)
-						ft_close_fds(head->infile, OPEN);
-					if (head->infile < 0)
-					{
-						break;
-					}
-				}
-				tmp = tmp->next;
-			}
-		}
+			redirection_loop(tmp, head);
 		else
 		{
 			head->infile = 0;
@@ -135,7 +163,7 @@ void init_fds(t_cmd **cmds)
 	}
 }
 
-void	ft_get_exit_status(int *exit_status, int *pid, int i, struct termios *term)
+void ft_get_exit_status(int *exit_status, int *pid, int i, struct termios *term)
 {
 	int j;
 
@@ -158,7 +186,7 @@ void	ft_get_exit_status(int *exit_status, int *pid, int i, struct termios *term)
 		*exit_status = WTERMSIG(*exit_status) + 128;
 }
 
-void	ft_cmd_redirection(t_cmd *cmd)
+void ft_cmd_redirection(t_cmd *cmd)
 {
 	if (cmd->infile != 0)
 	{
@@ -178,7 +206,7 @@ void	ft_cmd_redirection(t_cmd *cmd)
 	}
 }
 
-void	ft_piping(t_cmd *cmd, int tmp_fd_in, int *fd)
+void ft_piping(t_cmd *cmd, int tmp_fd_in, int *fd)
 {
 	if (!cmd->isfirst)
 	{
@@ -194,10 +222,10 @@ void	ft_piping(t_cmd *cmd, int tmp_fd_in, int *fd)
 	}
 }
 
-void	ft_close_cmd_fd(t_cmd *cmd, int *tmp_fd_in, int *fd)
+void ft_close_cmd_fd(t_cmd *cmd, int *tmp_fd_in, int *fd)
 {
 	if (!cmd->isfirst)
-			close(*tmp_fd_in);
+		close(*tmp_fd_in);
 	if (!cmd->islast)
 	{
 		close(fd[1]);
@@ -219,20 +247,20 @@ void	ft_close_cmd_fd(t_cmd *cmd, int *tmp_fd_in, int *fd)
 
 // }
 
-int	ft_start_execution(t_cmd **cmd, t_expand **env_lst, int *exit_status, int *tmp_fd_in)
+int ft_start_execution(t_cmd **cmd, t_expand **env_lst, int *exit_status, int *tmp_fd_in)
 {
 	*tmp_fd_in = -1;
 	if (!*cmd)
-		return(1);
+		return (1);
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 	init_fds(cmd);
 	if (exe_one_cmd_only(*cmd, env_lst, exit_status))
-		return(1);
+		return (1);
 	return (0);
 }
 
-void	ft_child_exe(t_cmd *cmd, int tmp_fd_in, int *fd)
+void ft_child_exe(t_cmd *cmd, int tmp_fd_in, int *fd)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
@@ -240,7 +268,7 @@ void	ft_child_exe(t_cmd *cmd, int tmp_fd_in, int *fd)
 	ft_piping(cmd, tmp_fd_in, fd);
 }
 
-void	ft_fork_and_pipe(t_cmd *cmd, int *pid, int *fd)
+void ft_fork_and_pipe(t_cmd *cmd, int *pid, int *fd)
 {
 	if (!cmd->islast)
 		pipe(fd);
@@ -248,11 +276,13 @@ void	ft_fork_and_pipe(t_cmd *cmd, int *pid, int *fd)
 	if (*pid < 0)
 		perror("fork");
 }
-void	ft_close_pipe(int *fd)
+
+void ft_close_pipe(int *fd)
 {
 	close(fd[0]);
 	close(fd[1]);
 }
+
 void pipe_line(t_cmd *cmd, t_expand **env_lst, char *env[], int *exit_status)
 {
 	struct termios term;
@@ -260,11 +290,11 @@ void pipe_line(t_cmd *cmd, t_expand **env_lst, char *env[], int *exit_status)
 	int *pid;
 	int tmp_fd_in;
 	int i;
-	
+
 	i = 0;
 	tcgetattr(STDIN_FILENO, &term);
 	if (ft_start_execution(&cmd, env_lst, exit_status, &tmp_fd_in))
-		return ;
+		return;
 	pid = allocat_pids(cmd);
 	while (cmd)
 	{
@@ -293,7 +323,7 @@ int exe_one_cmd_only(t_cmd *cmd, t_expand **env, int *exit_status)
 		save_out = dup(1);
 		if (cmd->infile != 0)
 		{
-			if(cmd->infile < 0)
+			if (cmd->infile < 0)
 				*exit_status = 1;
 			if ((dup2(cmd->infile, 0) < 0))
 				return (1);
@@ -301,7 +331,7 @@ int exe_one_cmd_only(t_cmd *cmd, t_expand **env, int *exit_status)
 		}
 		if (cmd->outfile != 1)
 		{
-			if(cmd->outfile < 0)
+			if (cmd->outfile < 0)
 				*exit_status = 1;
 			if ((dup2(cmd->outfile, 1) < 0))
 				return (1);
@@ -324,7 +354,12 @@ int is_builtin(t_cmd *cmd)
 {
 	if (!cmd->args || !cmd->args[0])
 		return (0);
-	if ((ft_strcmp(cmd->args[0], "echo") == 0) || (ft_strcmp(cmd->args[0], "export") == 0) || (ft_strcmp(cmd->args[0], "env") == 0) || (ft_strcmp(cmd->args[0], "cd") == 0) || (ft_strcmp(cmd->args[0], "pwd") == 0) || (ft_strcmp(cmd->args[0], "unset") == 0) || (ft_strcmp(cmd->args[0], "/bin/echo") == 0) || (ft_strcmp(cmd->args[0], "/usr/bin/cd") == 0) || (ft_strcmp(cmd->args[0], "/usr/bin/env") == 0) || (ft_strcmp(cmd->args[0], "/bin/pwd") == 0) || (ft_strcmp(cmd->args[0], "exit") == 0))
+	if ((ft_strcmp(cmd->args[0], "echo") == 0) || (ft_strcmp(cmd->args[0], "export") == 0)
+		|| (ft_strcmp(cmd->args[0], "env") == 0) || (ft_strcmp(cmd->args[0], "cd") == 0) ||
+		(ft_strcmp(cmd->args[0], "pwd") == 0) || (ft_strcmp(cmd->args[0], "unset") == 0) ||
+		(ft_strcmp(cmd->args[0], "/bin/echo") == 0) || (ft_strcmp(cmd->args[0], "/usr/bin/cd") == 0)
+		|| (ft_strcmp(cmd->args[0], "/usr/bin/env") == 0) || (ft_strcmp(cmd->args[0], "/bin/pwd") == 0)
+		|| (ft_strcmp(cmd->args[0], "exit") == 0))
 		return (1);
 	return (0);
 }
@@ -339,7 +374,7 @@ int exe_bultin_in_parent(char *cmd[], t_expand **env, int *exit_status)
 	}
 	else if (ft_strcmp(cmd[0], "exit") == 0)
 	{
-		*exit_status = ft_exit(cmd , *exit_status);
+		*exit_status = ft_exit(cmd, *exit_status);
 		return (1);
 	}
 	else if (ft_strcmp(cmd[0], "export") == 0)

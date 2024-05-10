@@ -6,7 +6,7 @@
 /*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 01:12:43 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/05/03 22:38:39 by soel-bou         ###   ########.fr       */
+/*   Updated: 2024/05/06 20:23:54 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void ft_env(char **cmd, t_expand *envp)
 {
-	(void)cmd;
 	t_expand *head;
 
 	if (!envp)
@@ -22,7 +21,7 @@ void ft_env(char **cmd, t_expand *envp)
 		ft_putstr_fd("env: No such file or directory\n", 2);
 		return;
 	}
-	if(cmd[1])
+	if (cmd[1])
 		return ;
 	head = envp;
 	while (head)
@@ -40,6 +39,7 @@ void ft_sort_export(t_expand *head)
 {
 	char *value;
 	char *key;
+
 	while (head)
 	{
 		t_expand *tmp = head->next;
@@ -67,7 +67,6 @@ void get_env_export(t_expand *envp)
 	if (!envp)
 		return;
 	head = envp;
-	// ft_sort_export(head);
 	while (head)
 	{
 		printf("declare -x %s", head->key);

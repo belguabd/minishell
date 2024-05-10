@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
+/*   By: soel-bou <soel-bou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 01:34:47 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/05/04 20:25:42 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/07 04:23:39 by soel-bou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int checkn(char **cmd)
+int	checkn(char **cmd)
 {
-	int i;
-	int j;
-	int checkn;
+	int	i;
+	int	j;
+	int	checkn;
 
 	i = 1;
 	checkn = 0;
@@ -40,10 +40,11 @@ int checkn(char **cmd)
 	return (checkn);
 }
 
-void ft_echo(char **cmd)
+void	ft_echo(char **cmd)
 {
-	int i;
-	int n;
+	int	i;
+	int	n;
+
 	n = checkn(cmd);
 	i = n + 1;
 	if (cmd[i])
