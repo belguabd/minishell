@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/09 04:01:26 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/10 02:21:33 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,4 +203,9 @@ bool			is_redirection(int type);
 char			*ft_str_exp_double_q(char *str_var, t_expand *env,
 					int exit_status);
 char			*ft_strtrim(char const *s1, char const *set);
+t_cmd	*ft_split_cmd(t_token_node *new_head);	
+void	add_new_redir(t_token_node **new, t_token_node *new_head,
+		t_token_node **redir);
+		int	ft_count_cmd(t_token_node *head);
+		t_cmd	*addnew_cmd(char **args, t_token_node *head_cmd);
 #endif

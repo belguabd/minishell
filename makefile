@@ -26,7 +26,7 @@ SRC =minishell.c cleanup.c \
 	$(BUILT_IN)/built_in_tools.c $(BUILT_IN)/cd.c $(BUILT_IN)/env.c $(BUILT_IN)/export.c $(BUILT_IN)/pwd.c $(BUILT_IN)/unset.c $(BUILT_IN)/echo.c $(BUILT_IN)/exit.c \
 	$(PIPE)/ft_pipe.c sigs/signals.c \
 	$(HEREDOC)/ft_headoc.c $(HEREDOC)/ft_heredoc_utils.c \
-	$(PASSING)/ft_passing.c $(PASSING)/ft_concatenate.c $(PASSING)/ft_remove_redicrection.c  $(PASSING)/ft_remove_quotes_dlr.c\
+	$(PASSING)/ft_passing.c $(PASSING)/ft_concatenate.c $(PASSING)/ft_remove_redicrection.c  $(PASSING)/ft_remove_quotes_dlr.c $(PASSING)/ft_passing_utils.c\
 
 OBJ = $(SRC:.c=.o)
 

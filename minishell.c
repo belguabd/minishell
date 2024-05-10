@@ -6,13 +6,13 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/09 04:04:28 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/09 22:49:41 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-int		g_sig;
-void	sig_handler(int sig)
+int g_sig;
+void sig_handler(int sig)
 {
 	rl_catch_signals = 0;
 	if (sig == SIGINT)
@@ -25,10 +25,11 @@ void	sig_handler(int sig)
 	}
 }
 
-void	shell_signal_read(const char **cmd, int *exit_st)
+void shell_signal_read(const char **cmd, int *exit_st)
 {
 	signal(SIGINT, sig_handler);
 	signal(SIGQUIT, handler);
+	open(ttyname(2), O_RDWR);
 	*cmd = readline("➜ minishell ");
 	if (g_sig == 1)
 		*exit_st = 1;
@@ -44,12 +45,12 @@ void	shell_signal_read(const char **cmd, int *exit_st)
 		add_history(*cmd);
 }
 
-int	main(int ac, char const *av[], char *env[])
+int main(int ac, char const *av[], char *env[])
 {
-	const char		*cmd;
-	t_token_node	*head;
-	t_expand		*env_e;
-	int				exit_st;
+	const char *cmd;
+	t_token_node *head;
+	t_expand *env_e;
+	int exit_st;
 
 	(1) && ((void)ac, (void)av, cmd = NULL, env_e = NULL);
 	init_env(&env_e, env);

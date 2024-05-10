@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 03:01:33 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/09 04:06:13 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/10 02:18:04 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,49 +42,18 @@ t_cmd	*addnew_cmd(char **args, t_token_node *head_cmd)
 	return (new_cmd);
 }
 
-void	parse_arguments_redirects(t_token_node *new_head,
-		char **args, t_token_node **redir)
+int	ft_count_cmd(t_token_node *head)
 {
-	t_token_node	*new;
-	int				i;
-
-	i = 0;
-	while (new_head)
-	{
-		if (new_head->type == STRING)
-			args[i++] = ft_strdup(new_head->value);
-		if (is_redirection(new_head->type))
-		{
-			new = addnew_tkn_node(new_head->type, new_head->value,
-					new_head->fd_hrd);
-			if (new_head->flag)
-				new->flag = true;
-			lstadd_back(redir, new);
-		}
-		new_head = new_head->next;
-	}
-	args[i] = NULL;
-}
-
-t_cmd	*ft_split_cmd(t_token_node *new_head)
-{
-	t_token_node	*tmp;
-	t_token_node	*redir;
-	int				count;
-	char			**args;
+	int	count;
 
 	count = 0;
-	tmp = new_head;
-	redir = NULL;
-	while (tmp)
+	while (head)
 	{
-		if (tmp->type == STRING)
+		if (head->type == STRING)
 			count++;
-		tmp = tmp->next;
+		head = head->next;
 	}
-	args = (char **)ft_malloc(sizeof(char *) * (count + 1), ALLOC);
-	parse_arguments_redirects(new_head, args, &redir);
-	return (addnew_cmd(args, redir));
+	return (count);
 }
 
 t_cmd	*passing(t_token_node *head)
