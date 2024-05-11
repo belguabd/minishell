@@ -54,14 +54,6 @@ $(NAME): $(OBJ)
 %.o: %.c include/minishell.h
 	@printf "\033[0;32m Compiling minishell: \033[0;33m$<\033[0m\r"
 	@$(CC) $(CFLAGS) -I $(READLINE1) -c $< -o $@
-# $(NAME): $(OBJ)
-# 	@$(CC) $(CFLAGS) $(OBJ) -lreadline -L $(READLINE) -o $(NAME)
-# 	@echo "\033[0;32m Minishell compiled\033[0m"
-
-# %.o: %.c include/minishell.h
-# 	@printf "\033[0;32m Compiling minishell: \033[0;33m$<\033[0m\r"
-# 	@$(CC) $(CFLAGS) -I $(READLINE1) -c $< -o $@
-
 clean:
 	@rm -rf $(OBJ)
 	@echo "\033[0;32m Cleaned\033[0m"

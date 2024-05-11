@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 21:00:39 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/05/10 08:42:27 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/11 08:26:00 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,11 @@ void	ft_execution(t_cmd *cmd, t_expand **envp, int *exit_status)
 
 void	ft_execute_bultin_part2(char *cmd[], t_expand **envp, int *exit_status)
 {
-	if (ft_strcmp(cmd[0], "cd") == 0 || ft_strcmp(cmd[0], "/usr/bin/cd") == 0)
+	if (ft_strcmp(cmd[0], "cd") == 0)
 	{
 		exit(ft_cd(cmd[1], *envp));
 	}
-	if (ft_strcmp(cmd[0], "pwd") == 0 || ft_strcmp(cmd[0], "/bin/pwd") == 0)
+	if (ft_strcmp(cmd[0], "pwd") == 0)
 	{
 		ft_pwd(*envp);
 		exit(0);
@@ -78,7 +78,7 @@ void	ft_execute_bultin(char *cmd[], t_expand **envp, int *exit_status)
 {
 	if (!cmd || !*cmd)
 		return ;
-	if (ft_strcmp(cmd[0], "echo") == 0 || ft_strcmp(cmd[0], "/bin/echo") == 0)
+	if (ft_strcmp(cmd[0], "echo") == 0)
 	{
 		ft_echo(cmd);
 		exit(0);
@@ -87,7 +87,7 @@ void	ft_execute_bultin(char *cmd[], t_expand **envp, int *exit_status)
 	{
 		exit(ft_export(cmd, envp));
 	}
-	if (ft_strcmp(cmd[0], "env") == 0 || ft_strcmp(cmd[0], "/usr/bin/env") == 0)
+	if (ft_strcmp(cmd[0], "env") == 0)
 	{
 		ft_env(cmd, *envp);
 		exit(0);

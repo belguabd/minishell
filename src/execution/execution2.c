@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 04:15:27 by soel-bou          #+#    #+#             */
-/*   Updated: 2024/05/10 08:42:31 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/11 09:59:44 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ int	exe_one_cmd_only(t_cmd *cmd, t_expand **env, int *exit_status)
 	{
 		save_in = dup(0);
 		save_out = dup(1);
+		if (save_in < 0 || save_out < 0)
+			ft_putendl_fd("dup error", 2);
 		if (ft_red(cmd, exit_status) == 1)
 			return (1);
 		if (!exe_bultin_in_parent(cmd->args, env, exit_status))
@@ -74,16 +76,14 @@ int	is_builtin(t_cmd *cmd)
 
 int	exe_part2(char *cmd[], t_expand **env, int *exit_status)
 {
-	if (ft_strcmp(cmd[0], "env") == 0
-		|| ft_strcmp(cmd[0], "/usr/bin/env") == 0)
+	if (ft_strcmp(cmd[0], "env") == 0)
 		return (ft_env(cmd, *env), *exit_status = 0, 1);
 	else if (ft_strcmp(cmd[0], "cd") == 0)
 	{
 		*exit_status = ft_cd(cmd[1], *env);
 		return (1);
 	}
-	else if (ft_strcmp(cmd[0], "pwd") == 0
-		|| ft_strcmp(cmd[0], "/bin/pwd") == 0)
+	else if (ft_strcmp(cmd[0], "pwd") == 0)
 		return (ft_pwd(*env), *exit_status = 0, 1);
 	else if (ft_strcmp(cmd[0], "unset") == 0)
 	{
@@ -95,7 +95,7 @@ int	exe_part2(char *cmd[], t_expand **env, int *exit_status)
 
 int	exe_bultin_in_parent(char *cmd[], t_expand **env, int *exit_status)
 {
-	if (ft_strcmp(cmd[0], "echo") == 0 || ft_strcmp(cmd[0], "/bin/echo") == 0)
+	if (ft_strcmp(cmd[0], "echo") == 0)
 	{
 		*exit_status = 0;
 		return (ft_echo(cmd), 1);

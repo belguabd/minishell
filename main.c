@@ -6,7 +6,7 @@
 /*   By: belguabd <belguabd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 13:54:22 by belguabd          #+#    #+#             */
-/*   Updated: 2024/05/10 09:21:59 by belguabd         ###   ########.fr       */
+/*   Updated: 2024/05/11 09:51:50 by belguabd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	shell_signal_read(const char **cmd, int *exit_st)
 		ft_malloc_env(FREE, FREE);
 		ft_close_fds(FREE, CLOSE);
 		write(1, "exit\n", 5);
-		exit(0);
+		exit(*exit_st);
 	}
 	if (*cmd[0])
 		add_history(*cmd);
